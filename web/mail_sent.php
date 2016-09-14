@@ -44,7 +44,7 @@
 	require 'Send_Mail.php';
 	$to = "mark.mckee@publishforce.com";
 	$subject = "Publishforce pre-go-live sign-up notification";
-	$body = "Hi, this user has registered thier interest in publishforce's go-live: $_POST[user_email]"; // HTML  tags
+	$body = "Hi, this user has registered their interest in publishforce's go-live: $_POST[user_email]"; // HTML  tags
 	Send_Mail($to,$subject,$body);
 
 ?>

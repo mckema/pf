@@ -83,16 +83,21 @@ INSERT INTO `pf_user`(`user_name`, `user_email`, `fname`, `lname`, `user_company
   VALUES ('fsmith','fred.smith@ubs.com','Fred','Smith','UBS AG','Portfolio Manager','07977 098033',1,0,0,NOW(), 1);
 INSERT INTO `pf_user`(`user_name`, `user_email`, `fname`, `lname`, `user_company`, `job_title`, `user_mobile`, `publisher_user`, `consumer_user`, `publisher_and_consumer_user`, `creation_date`, `active_flag`) 
   VALUES ('asimpson','Angela.Simpson@hungerfords.com','Angela','Simpson','Hungerford Research','Analyst','07968 111022',1,0,0,NOW(), 1);
+INSERT INTO `pf_user`(`user_name`, `user_email`, `fname`, `lname`, `user_company`, `job_title`, `user_mobile`, `publisher_user`, `consumer_user`, `publisher_and_consumer_user`, `creation_date`, `active_flag`) 
+  VALUES ('fsimon','Fred.Simon@publishforce.com','Fred','Simon','Hungerford Research','Analyst','07968 111022',1,0,0,NOW(), 1);
 
+DROP TABLE login;
 
 CREATE TABLE login(
 id int(10) NOT NULL AUTO_INCREMENT,
 username varchar(255) NOT NULL,
 password varchar(255) NOT NULL,
+is_temp_psswd bit(1) NOT NULL,
 PRIMARY KEY (id)
-)
+);
 
-INSERT INTO `login`(`id`, `username`, `password`) VALUES (1, 'mmckee','PublishForce')
+INSERT INTO `login`(`username`, `password`, `is_temp_psswd`) VALUES ('mmckee','PublishForce', 0);
+INSERT INTO `login`(`username`, `password`, `is_temp_psswd`) VALUES ('fsimon','PublishForce', 1);
 
 --  UPLOADS TABLE
 DROP TABLE `pf_research_files`;
@@ -109,7 +114,7 @@ CREATE TABLE `pf_research_files` (
   `creation_date` datetime NOT NULL,
   PRIMARY KEY (file_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-;
+
 
 INSERT INTO `pf_research_files`(`user_id`, `file_name`, `file_type`, `file_title`, `industry_type`, `search_tags`, `user_company`, `creation_date`) 
 VALUES ('mmckee','brazil_comm.pdf','pdf','Brazil Commodities 2016','commodities','Brazil raw materials, commodities, Latin America','ABC Research Ltd',NOW())
@@ -136,7 +141,6 @@ CREATE TABLE `pf_user_registration` (
   `creation_date` datetime NOT NULL,
   PRIMARY KEY (user_reg_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-;
 
 INSERT INTO `pf_user_registration`(`user_email`, `fname`, `lname`, `user_company`, `job_title`, `user_mobile`, `publisher_user`, `consumer_user`, `publisher_and_consumer_user`, `active_flag`, `creation_date`) 
   VALUES ('mary.giles@grl.com','Mary','Giles','Global Research Ltd', 'Research Analyst','07001 111999', 1, 0, 0, 0, NOW());
@@ -155,6 +159,12 @@ UNIQUE (user_id, file_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 INSERT INTO `pf_research_inbox`(`user_id`, `file_id`, `read_flag`) VALUES (1, 1, 0);
-INSERT INTO `pf_research_inbox`(`user_id`, `file_id`, `read_flag`) VALUES (1, 1, 0);
+INSERT INTO `pf_research_inbox`(`user_id`, `file_id`, `read_flag`) VALUES (1, 2, 0);
 
+-- query for my inbox
+select b.file_name as fn, b.file_title as ft, b.industry_type as it, b.user_company as uc, b.creation_date as cd from pf_research_inbox a, pf_research_files b where a.user_id = 1
+and a.file_id = b.file_id
 
+-- main user session query:
+
+select a.user_name as user_name, a.user_id from pf_user a, login b where a.user_name='$user_check' and a.user_name = b.username and a.active_flag=1 and b.is_temp_psswd = 0;

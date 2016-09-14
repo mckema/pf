@@ -7,7 +7,8 @@ session_start();// Starting Session
 // Storing Session
 $user_check=$_SESSION['login_user'];
 // SQL Query To Fetch Complete Information Of ACTIVE User
-$ses_sql=mysql_query("select user_name, user_id from pf_user where user_name='$user_check' and active_flag=1", $connection);
+$ses_sql=mysql_query("select a.user_name as user_name, a.user_id from pf_user a, login b 
+where a.user_name='$user_check' and a.user_name = b.username and a.active_flag=1 and b.is_temp_psswd = 0;", $connection);
 $row = mysql_fetch_assoc($ses_sql);
 $login_session =$row['user_name'];
 $session_user_id =$row['user_id'];
@@ -22,7 +23,13 @@ if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY'] > 
 $_SESSION['LAST_ACTIVITY'] = time(); // update last activity time stamp
 
 if(!isset($login_session)){
-mysql_close($connection); // Closing Connection
-header('Location: index.php'); // Redirecting To Home Page
+	mysql_close($connection); // Closing Connection
+    session_unset();     // unset $_SESSION variable for the run-time 
+    session_destroy();   // destroy session data in storage
+	header('Location: index.php?my_session=not-set'); // Redirecting To Home Page
+	//echo "closing db conn";
+}
+else {
+	mysql_close($connection); // Closing Connection just to be sure!
 }
 ?>

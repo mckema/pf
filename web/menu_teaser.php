@@ -12,7 +12,7 @@
                     <li class="nav-item"><a href="research_producers.php">Research producers</a></li>
                     <li class="nav-item"><a href="research_consumers.php">Research consumers</a></li>
                     <li class="nav-item"><a href="contact_short.php">Contact</a></li>
-                    <li class="nav-item-green"><a href="login.php">Login</a></li>
+                    <li class="nav-item-green"><a href="login.php">Login</a><?php echo $login_session =$row['user_name'];?></li>
                     <li class="nav-item-green"><a href="admin_user_registration.php">Register</a></li>
                 </ul>
             </nav>

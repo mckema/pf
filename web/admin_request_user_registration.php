@@ -43,7 +43,8 @@
         <p>
         << <a href="index.php">Back</a> to home page<br/>
 <?php
-		
+		//sends an email to the sys adming that someone has submitted a registration request
+		require 'Send_Mail.php';
 		// fname, lname, user_company, job_title, user_email, user_mobile, publisher_user, 
 		// consumer_user, publisher_and_consumer_user
 		$regStatus = $_REQUEST["reg_action"];
@@ -81,6 +82,14 @@
 		$sql = "INSERT INTO `pf_user_registration`(`user_email`, `fname`, `lname`, `user_company`, `job_title`, `user_mobile`, `publisher_user`, `consumer_user`, `publisher_and_consumer_user`, `active_flag`, `creation_date`) 
 		VALUES ('$userEmail', '$fName', '$lName', '$userCompany', '$jobTitle', '$userMobile', $publisherUser, $consumerUser, $publisherAndConsumerUser, 0, NOW())"; 
 		
+		//send the email about the new user request
+		$to = "mark.mckee@publishforce.com";
+		$subject = "Publishforce new user registration notification";
+		$body = "Hi, this user has registered their interest in a PublishForce account: $userEmail, $jobTitle at $userCompany.
+		Go to the requested users page to review it.";
+		Send_Mail($to,$subject,$body);
+
+?>		
 		if ($connection->query($sql) === TRUE) {
     		echo "<br/>Thanks. Your user registration request was successfully submitted";
     		//TO DO... fire off an email to tell administrator of a new user registration request to review!

@@ -43,7 +43,7 @@
         <h3>PublishForce will provide a solution to the research market</h3>
 
 			<p>
-			The PublishForce team are bringing a new approach to the market. 
+			The PublishForce team are bringing a new approach to the research market. 
 			Born from more than 100 years collective experience within the financial markets, the PublishForce 
 			platform draws on extensive experience in delivering and managing OTC eCommerce trading in the 
 			wholesale markets. This delivers an efficient, secure and intuitive platform where research can be bought and 
