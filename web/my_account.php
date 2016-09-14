@@ -48,21 +48,21 @@ include('session.php');
 	
 			<li class="nav-item">
 				<ul class="ul-sidebar-title">
-					<li class="li-sidebar-title"><a href="lifecycle.php">Research</a></li>
+					<li class="li-sidebar-title"><a href="#">Research</a></li>
 						<ul class="ul-sidebar">
 							<li class="li-sidebar">Inbox</li>
 							<li class="li-sidebar">Blotter</li>							
 							<li class="li-sidebar">Programs</li>
 						</ul>
 					</li>
-					<li class="li-sidebar-title"><a href="xxxx.php">Budget</a></li>
+					<li class="li-sidebar-title"><a href="#">Budget</a></li>
 						<ul class="ul-sidebar">
 							<li class="li-sidebar">Spending</li>
 							<li class="li-sidebar">Programs</li>							
 							<li class="li-sidebar">Projects</li>
 						</ul>
 					</li>
-					<li class="li-sidebar-title"><a href="xxxx.php">Firm</a></li>
+					<li class="li-sidebar-title"><a href="#">Firm</a></li>
 						<ul class="ul-sidebar">
 							<li class="li-sidebar">Funds</li>
 							<li class="li-sidebar">Desks</li>							

@@ -102,33 +102,13 @@ include('session.php');
     		// output data of each row
     		while($row = $result->fetch_assoc()) {
         		
-        		echo "<tr><td><a href='" . $row["file_name"]. "'</a>" . $row["file_title"]. "</td><td>" . $row["industry_type"] . "</td><td>" . $row["user_company"]. "</td><td>" . $row["creation_date"]. "</td></tr>";
+        		echo "<tr><td><a href='display_research.php?file_id=" . $row["file_id"]. "'</a>" . $row["file_title"]. "</td><td>" . $row["industry_type"] . "</td><td>" . $row["user_company"]. "</td><td>" . $row["creation_date"]. "</td></tr>";
     		}
 		} else {
     		echo "Try refining your search";
 		}
-		//mysql_close($connection); // Closing Connection
 		$connection->close();
 ?>
-			<!--<tr>
-				<td><a href="china_outlook_abstract.php">China outlook 2016-17</a></td>
-				<td>95%</td>
-				<td>31-Mar-2016</td>
-				<td>Boutique Research Ltd</td>
-			</tr>
-			<tr class="td-alternate">
-				<td><a href="nada.php">China economic trends</a></td>
-				<td>90%</td>
-				<td>09-Jan-2016</td>
-				<td>Orange Bank Plc</td>
-			</tr>
-			<tr>
-				<td><a href="nada.php">China and energy policy 2016-2020</a></td>
-				<td>85%</td>
-				<td>01-Dec-2015</td>
-				<td>Credit Banca SA</td>
-			</tr>-->
-			
 		</table>
 		
 </p>

@@ -92,6 +92,7 @@ include('session.php');
         		<tr><td>File name: </td><td><input type='text' class='search-text' name='file_name' id='file_name' value='". $row["file_name"] . "'/></td></tr>
         		<tr><td>Publisher: </td><td><input type='text' class='search-text' name='user_company' id='user_company' value='". $row["user_company"] . "'/></td></tr>
         		<tr><td>Industry: </td><td><input type='text' class='search-text' name='industry_type' id='industry_type' value='" . $row["industry_type"]. "' /></td></tr>
+        		<tr><td>Abstract: </td><td><input type='text' class='search-text' name='file_abstract' id='file_abstract' value='" . $row["file_abstract"]. "' /></td></tr>
         		<tr><td>Tags: </td><td><input type='text' class='search-text' name='search_tags' id='search_tags' value='" . $row["search_tags"]. "' />
         		<input type='hidden' name='file_id' id='file_id' value='" . $row["file_id"]. "' /></td></tr>
         		<tr><td>Creation date: </td><td>" . $row["creation_date"]. "  </td></tr>

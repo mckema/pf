@@ -54,6 +54,7 @@ SET time_zone = "+00:00";
   PRIMARY KEY (user_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 */
+
 DROP TABLE `pf_user`;
 
 CREATE TABLE `pf_user` (
@@ -84,7 +85,7 @@ INSERT INTO `pf_user`(`user_name`, `user_email`, `fname`, `lname`, `user_company
 INSERT INTO `pf_user`(`user_name`, `user_email`, `fname`, `lname`, `user_company`, `job_title`, `user_mobile`, `publisher_user`, `consumer_user`, `publisher_and_consumer_user`, `creation_date`, `active_flag`) 
   VALUES ('asimpson','Angela.Simpson@hungerfords.com','Angela','Simpson','Hungerford Research','Analyst','07968 111022',1,0,0,NOW(), 1);
 INSERT INTO `pf_user`(`user_name`, `user_email`, `fname`, `lname`, `user_company`, `job_title`, `user_mobile`, `publisher_user`, `consumer_user`, `publisher_and_consumer_user`, `creation_date`, `active_flag`) 
-  VALUES ('fsimon','Fred.Simon@publishforce.com','Fred','Simon','Hungerford Research','Analyst','07968 111022',1,0,0,NOW(), 1);
+  VALUES ('fsimon','Fred.Simon@publishforce.com','Fred','Simon','Paris Research','Analyst','07968 111022',1,0,0,NOW(), 1);
 
 DROP TABLE login;
 
@@ -109,6 +110,7 @@ CREATE TABLE `pf_research_files` (
   `file_type` varchar(20) NOT NULL,
   `user_id` varchar(20) NOT NULL,
   `industry_type` varchar(50) NOT NULL,
+  `file_abstract` varchar(255) NOT NULL,
   `search_tags` varchar(255) NOT NULL,
   `user_company` varchar(100) NOT NULL,
   `creation_date` datetime NOT NULL,
@@ -116,15 +118,17 @@ CREATE TABLE `pf_research_files` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
-INSERT INTO `pf_research_files`(`user_id`, `file_name`, `file_type`, `file_title`, `industry_type`, `search_tags`, `user_company`, `creation_date`) 
-VALUES ('mmckee','brazil_comm.pdf','pdf','Brazil Commodities 2016','commodities','Brazil raw materials, commodities, Latin America','ABC Research Ltd',NOW())
+INSERT INTO `pf_research_files`(`user_id`, `file_name`, `file_type`, `file_title`, `industry_type`, `file_abstract`, `search_tags`, `user_company`, `creation_date`) 
+VALUES ('mmckee','brazil_comm.pdf','pdf','Brazil Commodities 2016','commodities','Some abstract information here...','Brazil raw materials, commodities, Latin America','ABC Research Ltd',NOW());
+INSERT INTO `pf_research_files`(`user_id`, `file_name`, `file_type`, `file_title`, `industry_type`, `file_abstract`, `search_tags`, `user_company`, `creation_date`) 
+VALUES ('mmckee','uploads/car_email_img.jpg','pdf','Machinery in Ukraine','Agriculture','Some abstract information here...','farming, ukraine, manufacturing, xyz','Farm Research Ltd',NOW());
 
 --
 -- Table structure for table `pf_user_registration`
 -- fname, lname, user_company, job_title, user_email, user_mobile, publisher_user, 
 -- consumer_user, publisher_and_consumer_user
 
--- DROP TABLE `pf_user_registration`
+DROP TABLE `pf_user_registration`;
 
 CREATE TABLE `pf_user_registration` (
   `user_reg_id` int(10) NOT NULL AUTO_INCREMENT,
@@ -168,3 +172,21 @@ and a.file_id = b.file_id
 -- main user session query:
 
 select a.user_name as user_name, a.user_id from pf_user a, login b where a.user_name='$user_check' and a.user_name = b.username and a.active_flag=1 and b.is_temp_psswd = 0;
+
+-- purchase history table
+-- RESEARCH INBOX
+DROP TABLE `pf_purchase_history`;
+
+CREATE TABLE `pf_purchase_history` (
+  `user_id` int(10) NOT NULL,
+  `file_id` int NOT NULL,
+  `purchased_date` datetime NOT NULL,
+  CONSTRAINT pf_research_inbox_primary 
+UNIQUE (user_id, file_id)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+INSERT INTO `pf_purchase_history`(`user_id`, `file_id`, `purchased_date`) VALUES (2, 1, NOW());
+
+
+
+

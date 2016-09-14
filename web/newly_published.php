@@ -98,7 +98,7 @@ include('session.php');
     		// output data of each row
     		while($row = $result->fetch_assoc()) {
         		
-        		echo "<tr><td><a href='" . $row["file_name"]. "'</a>" . $row["file_title"]. "</td><td>" . $row["industry_type"] . "</td><td>" . $row["user_company"]. "</td><td>" . $row["creation_date"]. "</td></tr>";
+        		echo "<tr><td><a href='display_research.php?file_id=" . $row["file_id"]. "'</a>" . $row["file_title"]. "</td><td>" . $row["industry_type"] . "</td><td>" . $row["user_company"]. "</td><td>" . $row["creation_date"]. "</td></tr>";
     		}
 		} else {
     		echo "Try refining your search";

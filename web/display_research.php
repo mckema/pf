@@ -37,24 +37,17 @@ include('session.php');
 	<div style="text-align:center;">
 
 		<!-- menu for my account -->
-		<?php require("menu_admin.php"); ?>
+		<?php require("menu_my_account.php"); ?>
         <!-- END menu for my account -->
     </div>
 
     <div class="white-section">
         <div class="container">
-        <h3>Edit publications</h3>
+        <h3>View publication</h3>
         <p>
-        << <a href="admin_publications_list.php">Back</a> to list of publications<br/>
+        << <a href="search.php">Back</a> to search<br/>
 <?php
-		$fileId = $_POST["file_id"];
-		$fileId = $_POST["file_id"];
-		$fileName = $_POST["file_name"];
-		$fileTitle = $_POST["file_title"];
-		$userCompany = $_POST["user_company"];
-		$industryType = $_POST["industry_type"];
-		$fileAbstract = $_POST["file_abstract"];
-		$searchTags = $_POST["search_tags"];
+		$fileId = $_REQUEST["file_id"];
 		$servername = "127.0.0.1";
 		$username = "publishforce";
 		$password = "publishforce";
@@ -69,25 +62,85 @@ include('session.php');
 		} else {
     		//echo "CONNECT OK";
 		}
-		$sql = "update pf_research_files set file_name = '$fileName', file_title = '$fileTitle', 
-		industry_type = '$industryType', file_abstract = '$fileAbstract', user_company = '$userCompany', search_tags = '$searchTags' where file_id = $fileId";
+		$sql = "select * from pf_research_files where file_id = $fileId";
+		//echo $sql;
 		$result = $connection->query($sql);
+		//now tell the DB that the user has read this publication
+        $readFlag = $_REQUEST["read"];
+        if ($readFlag == "yes") {
+        	$sqlResearchFileRead = "update pf_research_inbox set read_flag = 1 where file_id= $fileId and user_id = $session_user_id";
+        	$resultResearchFileRead = $connection->query($sqlResearchFileRead);
+        	if ($result->num_rows > 0) {
+        		//row has been updated
+        		echo "ok: $sqlResearchFileRead";
+        	}
+        	else
+        	{
+        		//didnt work
+        		echo "nope $sqlResearchFileRead";
+        	}
+        }
 ?>
 	
 	
-        
+        <form id="updatePublications" action="admin_update_publications.php" method="post" enctype="multipart/form-data">
+
+	<p>
+			<table class="search-table" style="width:700px;">
+			<tr>
+				<th>Name</th>
+				<th>Value</th>
+			</tr>
+			
 <?php
 
-		if ($connection->query($sql) === TRUE) {
-    		echo "Record updated successfully";
+
+		if ($result->num_rows > 0) {  // && $searchTag!="") {
+    		// output data of each row
+    		while($row = $result->fetch_assoc()) {
+    			$purchasedFlag = "";
+        		$sqlPurchased = "select file_id, purchased_date from pf_purchase_history where file_id= $fileId and user_id = $session_user_id";
+        		//echo $sqlPurchased;
+        		$resultFilePurchased = $connection->query($sqlPurchased);
+        		if ($resultFilePurchased->num_rows > 0) {
+        			while($rowPurchased = $resultFilePurchased->fetch_assoc()) {
+        				$purchasedFlag = " (<em>purchsed on " .$rowPurchased["purchased_date"] ."</em>)";
+        			}
+        		}
+        		else {
+        			//nada
+        		}
+        		echo "<tr>
+        		<td width='100'>Title: </td><td width='600'>" . $row["file_title"]. " " . $purchasedFlag . "</td></tr>
+        		<tr><td>File name: </td><td>". $row["file_name"] . "</td></tr>
+        		<tr><td>Publisher: </td><td>". $row["user_company"] . "</td></tr>
+        		<tr><td>Industry: </td><td>" . $row["industry_type"]. "</td></tr>
+        		<tr><td>Abstract: </td><td>" . $row["file_abstract"]. "</td>
+        		<tr><td>Tags: </td><td>" . $row["search_tags"]. "
+        		<input type='hidden' name='file_id' id='file_id' value='" . $row["file_id"]. "' /></td></tr>
+        		<tr><td>Creation date: </td><td>" . $row["creation_date"]. "  </td></tr>
+        		<tr><td><strong>Action?</strong></td><td>[ <a href='". $row["file_name"] . "'>view</a> ]  
+        		</td></tr>";
+    		}
 		} else {
-    		echo "Error updating record: " . $conn->error;
+    		//echo "Try refining your search";
 		}
 		$connection->close();
 ?>
 			
-		</p>
+		</table>
+		
+</p>
 		</form>
+		
+<!-- The function that submits the form-->
+<script type="text/javascript">
+function submitform()
+{
+ 	var user_form = document.getElementById("updatePublications");
+ 	user_form.submit();
+}
+</script>
 <p>		
 		<!--If these results were not what you are looking for, please try the following options:
 	

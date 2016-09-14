@@ -86,16 +86,11 @@ include('session.php');
 			$userName = strtolower($fName[0]). strtolower($lName);
 			$sql = "INSERT INTO `pf_user`(`user_name`, `user_email`, `fname`, `lname`, `user_company`, `job_title`, `user_mobile`, `publisher_user`, `consumer_user`, `publisher_and_consumer_user`, `active_flag`, `creation_date`) 
 			 values ('$userName', '$userEmail', '$fName', '$lName', '$userCompany', '$jobTitle', '$userMobile', $publisherUser, $consumerUser, $publisherAndConsumerUser, 1, NOW())";
-			//TO DO: update the pf_user_registration and set active_flag = 1
+			//update the pf_user_registration and set active_flag = 1
+			//then insert a new record in the login table, set to first time password for user to change on first login
 			$sqlUserReg = "update pf_user_registration set active_flag = 1 where user_reg_id = $userRegId";
+			$sqlInsertNewLogin = "insert into login(username, password, is_temp_psswd) values('$userName', 'abc123', 1)";
 		}
-		
-		//$result = $connection->query($sql);
-?>
-	
-	
-        
-<?php
 
 		if ($connection_1->query($sql) === TRUE) {
     		//echo "User record updated successfully";
@@ -104,10 +99,17 @@ include('session.php');
     		echo "Error updating record: " . $connection_1->error;
 		}
 		if ( $userRegId != "" ) {
-			if ( $connection_2->query($sqlUserReg) === TRUE ) {
-			//echo "User registration record updated successfully";
+			if ( $connection_2->query($sqlUserReg) === TRUE && $connection_2->query($sqlInsertNewLogin) === TRUE) {
+				echo "User registration record updated successfully";
+				//TODO, send an email to the user of their new account
+				require 'Send_Mail.php';
+				$to = $userEmail;
+				$subject = "Publishforce [dev] new account notification";
+				$body = "Hi, $fName, your PublishForce account name is <br/>$userName <br/>And your one-time password is <br/>abc123 <br/> go to dev.publishforce.com to login and reset your password."; // HTML  tags
+				Send_Mail($to,$subject,$body);
 			}
 			else {
+				//echo "The SQL is: " . $sqlUserReg;
     			echo "Error amending registration record: " . $connection_2->error;
 			}
 		}
@@ -117,14 +119,7 @@ include('session.php');
 			
 		</p>
 		</form>
-<p>		
-		<!--If these results were not what you are looking for, please try the following options:
-	
-<ul>
-	
-	<li>Contact us for help</li>
-	<li>Put a request to publishers for the material you are looking for</li>
-</ul>-->
+	<p>
 	</p>
             
         </div>

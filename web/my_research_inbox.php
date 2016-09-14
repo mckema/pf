@@ -68,19 +68,10 @@ include('session.php');
 		}
 		
 		//$sql = "select * from pf_research_files";
-		$sql = "select b.file_name as fn, b.file_title as ft, b.industry_type as it, b.user_company as uc, b.creation_date as cd 
+		$sql = "select b.file_id as fid, b.file_name as fn, b.file_title as ft, b.industry_type as it, b.user_company as uc, b.creation_date as cd 
 		from pf_research_inbox a, pf_research_files b 
-		where a.user_id = $session_user_id and a.file_id = b.file_id";
+		where a.user_id = $session_user_id and a.file_id = b.file_id and a.read_flag = 0";
 		$result = $connection->query($sql);
-		/*if ( $searchTag!="" ) {
-			$result = $connection->query($sql);
-			if ($result->num_rows == 1) {
-				echo $result->num_rows . " result for " . $searchTag;
-			}
-			if ($result->num_rows > 1) {
-				echo $result->num_rows . " results for " . $searchTag;
-			}
-		}*/
 ?>
 	<p>
 		<table class="search-table">
@@ -97,8 +88,8 @@ include('session.php');
 		if ($result->num_rows > 0) {
     		// output data of each row
     		while($row = $result->fetch_assoc()) {
+        		echo "<tr><td><a href='display_research.php?read=yes&file_id=" . $row["fid"]. "'</a>" . $row["ft"]. "</td><td>" . $row["it"] . "</td><td>" . $row["uc"]. "</td><td>" . $row["cd"]. "</td></tr>";
         		
-        		echo "<tr><td><a href='" . $row["fn"]. "'</a>" . $row["ft"]. "</td><td>" . $row["it"] . "</td><td>" . $row["uc"]. "</td><td>" . $row["cd"]. "</td></tr>";
     		}
 		} else {
     		echo "Try refining your search";
