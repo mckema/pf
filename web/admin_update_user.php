@@ -107,7 +107,7 @@ include('session.php');
 				$headers = "From: Name support@publishforce.com \n";
 				$headers .= "Return-Path: support@publishforce.com \n";
 				$subject = "Publishforce [dev] new account notification";
-				$body = "Hi, $fName, your PublishForce account name is <br/>$userName <br/>And your one-time password is <br/>abc123 <br/> go to dev.publishforce.com to login and reset your password."; // HTML  tags
+				$body = "Hi $fName, your PublishForce account name is <br/>$userName <br/>And your one-time password is <br/>abc123 <br/> go to dev.publishforce.com to login and reset your password."; // HTML  tags
 				Send_Mail($to,$subject,$body,$headers);
 			}
 			else {

@@ -37,7 +37,7 @@ include('session.php');
 	<div style="text-align:center;">
 
 		<!-- menu for my account -->
-		<?php require("menu_admin.php"); ?>
+		<?php require("menu_my_account.php"); ?>
         <!-- END menu for my account -->
     </div>
 

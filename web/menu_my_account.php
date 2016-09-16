@@ -1,6 +1,15 @@
+<?php
+include('session.php');
+//echo "session_sys_admin: $session_sys_admin";
+?>
 
-		<br/> 
-		<a href="admin_home.php">[<em>admin tasks</em>]</a> &nbsp;&nbsp; 
+
+		<br/>
+<?php
+	if ($session_sys_admin == 1) {
+		echo "<a href='admin_home.php'>[<em>admin tasks</em>]</a> &nbsp;&nbsp; ";
+	}
+?>
 		<a href="admin_edit_my_account.php">[<em>manage my details</em>]</a> &nbsp;&nbsp;
 		<a href="file_chooser.php">[<em>upload a file</em>]</a> &nbsp;&nbsp;   
 		<a href="search.php">Search Materials</a> &nbsp;&nbsp;   

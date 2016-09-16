@@ -54,7 +54,7 @@
         <p>
 	<p>
 		<strong>Our address</strong>: 92 Langbourne Place, London E14 3WW<br />
-		<strong>Email:</strong> <a href="mailto:sales@publishforce.com">sales@publishforce.com</a><br />
+		<strong>Email:</strong> <a href="mailto:pfsales@publishforce.com">pfsales@publishforce.com</a><br />
 		<strong>Phone:</strong> +44 (0) 20 3000 0000<br /><br />
      
 		A contact form will be added at a later point as this is simply a wireframe currently...

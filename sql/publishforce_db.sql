@@ -70,6 +70,7 @@ CREATE TABLE `pf_user` (
   `consumer_user` bit(1) NOT NULL,
   `publisher_and_consumer_user` bit(1) NOT NULL,
   `creation_date` datetime NOT NULL,
+  `sys_admin_flag` bit(1) NOT NULL,
   `active_flag` bit(1) NOT NULL,
   PRIMARY KEY (user_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -78,14 +79,14 @@ CREATE TABLE `pf_user` (
 
 -- TEST VALUES
 
-INSERT INTO `pf_user`(`user_name`, `user_email`, `fname`, `lname`, `user_company`, `job_title`, `user_mobile`, `publisher_user`, `consumer_user`, `publisher_and_consumer_user`, `creation_date`, `active_flag`) 
-  VALUES ('mmckee','mark.mckee@publishforce.com','Mark','McKee','PublishForce Ltd','Sys admin','07801 105014',1,0,0,NOW(),1);
-INSERT INTO `pf_user`(`user_name`, `user_email`, `fname`, `lname`, `user_company`, `job_title`, `user_mobile`, `publisher_user`, `consumer_user`, `publisher_and_consumer_user`, `creation_date`, `active_flag`) 
-  VALUES ('fsmith','fred.smith@ubs.com','Fred','Smith','UBS AG','Portfolio Manager','07977 098033',1,0,0,NOW(), 1);
-INSERT INTO `pf_user`(`user_name`, `user_email`, `fname`, `lname`, `user_company`, `job_title`, `user_mobile`, `publisher_user`, `consumer_user`, `publisher_and_consumer_user`, `creation_date`, `active_flag`) 
-  VALUES ('asimpson','Angela.Simpson@hungerfords.com','Angela','Simpson','Hungerford Research','Analyst','07968 111022',1,0,0,NOW(), 1);
-INSERT INTO `pf_user`(`user_name`, `user_email`, `fname`, `lname`, `user_company`, `job_title`, `user_mobile`, `publisher_user`, `consumer_user`, `publisher_and_consumer_user`, `creation_date`, `active_flag`) 
-  VALUES ('fsimon','Fred.Simon@publishforce.com','Fred','Simon','Paris Research','Analyst','07968 111022',1,0,0,NOW(), 1);
+INSERT INTO `pf_user`(`user_name`, `user_email`, `fname`, `lname`, `user_company`, `job_title`, `user_mobile`, `publisher_user`, `consumer_user`, `publisher_and_consumer_user`, `creation_date`, `sys_admin_flag`, `active_flag`) 
+  VALUES ('mmckee','mark.mckee@publishforce.com','Mark','McKee','PublishForce Ltd','Sys admin','07801 105014',1,0,0,NOW(),1,1);
+INSERT INTO `pf_user`(`user_name`, `user_email`, `fname`, `lname`, `user_company`, `job_title`, `user_mobile`, `publisher_user`, `consumer_user`, `publisher_and_consumer_user`, `creation_date`, `sys_admin_flag`, `active_flag`) 
+  VALUES ('fsmith','fred.smith@ubs.com','Fred','Smith','UBS AG','Portfolio Manager','07977 098033',1,0,0,NOW(),0, 1);
+INSERT INTO `pf_user`(`user_name`, `user_email`, `fname`, `lname`, `user_company`, `job_title`, `user_mobile`, `publisher_user`, `consumer_user`, `publisher_and_consumer_user`, `creation_date`, `sys_admin_flag`, `active_flag`) 
+  VALUES ('asimpson','Angela.Simpson@hungerfords.com','Angela','Simpson','Hungerford Research','Analyst','07968 111022',1,0,0,NOW(),0, 1);
+INSERT INTO `pf_user`(`user_name`, `user_email`, `fname`, `lname`, `user_company`, `job_title`, `user_mobile`, `publisher_user`, `consumer_user`, `publisher_and_consumer_user`, `creation_date`, `sys_admin_flag`, `active_flag`) 
+  VALUES ('fsimon','Fred.Simon@publishforce.com','Fred','Simon','Paris Research','Analyst','07968 111022',1,0,0,NOW(),0, 1);
 
 DROP TABLE login;
 
@@ -188,10 +189,11 @@ UNIQUE (user_id, file_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 INSERT INTO `pf_purchase_history`(`user_id`, `file_id`, `purchased_date`, `purchased_fee`, `purchased_ccy`) VALUES (2, 1, NOW(), 1000.00, 'GBP');
+INSERT INTO `pf_purchase_history`(`user_id`, `file_id`, `purchased_date`, `purchased_fee`, `purchased_ccy`) VALUES (1, 1, NOW(), 1000.00, 'GBP');
 
 -- US31, build a blotter: select statement to show what user has bought
 select a.file_name, b.purchased_date, b.purchased_fee, b.purchased_ccy
-from pf_research_files a, pf_purchase_history
-where a.file_id = b.file_id and b.user_id = 2
+from pf_research_files a, pf_purchase_history b
+where a.file_id = b.file_id and b.user_id = 1
 
 
