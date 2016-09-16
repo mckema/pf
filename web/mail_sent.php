@@ -43,9 +43,13 @@
 <?php
 	require 'Send_Mail.php';
 	$to = "mark.mckee@publishforce.com";
+	$headers = "From: Name $to \n";
+	$headers .= "Return-Path: $to \n";
 	$subject = "Publishforce pre-go-live sign-up notification";
 	$body = "Hi, this user has registered their interest in publishforce's go-live: $_POST[user_email]"; // HTML  tags
-	Send_Mail($to,$subject,$body);
+	
+	//echo "headers: $headers";
+	Send_Mail($to,$subject,$body,$headers);
 
 ?>
                     

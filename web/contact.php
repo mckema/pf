@@ -36,7 +36,7 @@
 <div id="header-section">
 	<div id="header-bar">
 		<!-- menu nav -->
-		<?php require("menu.php"); ?>
+		<?php require("menu_teaser.php"); ?>
         <!-- END menu nav -->
         <div class="clr"></div>
     </div>

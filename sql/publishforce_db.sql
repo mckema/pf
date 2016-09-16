@@ -181,12 +181,17 @@ CREATE TABLE `pf_purchase_history` (
   `user_id` int(10) NOT NULL,
   `file_id` int NOT NULL,
   `purchased_date` datetime NOT NULL,
-  CONSTRAINT pf_research_inbox_primary 
+  `purchased_fee` decimal(15,2) NOT NULL,
+  `purchased_ccy` varchar(3) NOT NULL,
+  CONSTRAINT pf_purchase_history_primary 
 UNIQUE (user_id, file_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO `pf_purchase_history`(`user_id`, `file_id`, `purchased_date`) VALUES (2, 1, NOW());
+INSERT INTO `pf_purchase_history`(`user_id`, `file_id`, `purchased_date`, `purchased_fee`, `purchased_ccy`) VALUES (2, 1, NOW(), 1000.00, 'GBP');
 
-
+-- US31, build a blotter: select statement to show what user has bought
+select a.file_name, b.purchased_date, b.purchased_fee, b.purchased_ccy
+from pf_research_files a, pf_purchase_history
+where a.file_id = b.file_id and b.user_id = 2
 
 

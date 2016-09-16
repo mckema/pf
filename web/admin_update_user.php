@@ -47,7 +47,8 @@ include('session.php');
         <p>
         << <a href="admin_user_list.php">Back</a> to list of users<br/>
 <?php
-		//$userId = $_REQUEST["user_id"];
+		//sends an email to the sys adming that someone has submitted a registration request
+		require 'Send_Mail.php';
 		$userId = $_POST["user_id"];
 		$userRegId = $_POST["user_reg_id"];
 		//echo "userId: $userId; userRegId: $userRegId;";
@@ -101,12 +102,13 @@ include('session.php');
 		if ( $userRegId != "" ) {
 			if ( $connection_2->query($sqlUserReg) === TRUE && $connection_2->query($sqlInsertNewLogin) === TRUE) {
 				echo "User registration record updated successfully";
-				//TODO, send an email to the user of their new account
-				require 'Send_Mail.php';
+				//TODO, verify SES email and get upgrade to send the requesters in the to field
 				$to = $userEmail;
+				$headers = "From: Name support@publishforce.com \n";
+				$headers .= "Return-Path: support@publishforce.com \n";
 				$subject = "Publishforce [dev] new account notification";
 				$body = "Hi, $fName, your PublishForce account name is <br/>$userName <br/>And your one-time password is <br/>abc123 <br/> go to dev.publishforce.com to login and reset your password."; // HTML  tags
-				Send_Mail($to,$subject,$body);
+				Send_Mail($to,$subject,$body,$headers);
 			}
 			else {
 				//echo "The SQL is: " . $sqlUserReg;

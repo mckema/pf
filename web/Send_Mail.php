@@ -1,5 +1,5 @@
 <?php
-function Send_Mail($to,$subject,$body)
+function Send_Mail($to,$subject,$body,$headers)
 {
 require_once ('class.phpmailer.php');
 $mail = new PHPMailer();
@@ -11,11 +11,11 @@ $mail -> Host = "email-smtp.eu-west-1.amazonaws.com";
 $mail -> Port = 587;  // SMTP Port
 $mail -> Username = "AKIAJIN4MKQLL6BRRNPQ";
 $mail -> Password = "AjIHhkTEBr3SXOqnp+3+AML6PjKQyHx95B7nenwjhdYc";  // SMTP Password
-$myfrom = "mark.mckee@publishforce.com"; //"mark_a_mckee@hotmail.com";
+$myfrom = "support@publishforce.com";
 $mail -> SetFrom("$myfrom", ''); //$user_email;
 $mail -> Subject = $subject;
 $mail -> MsgHTML($body);
-$mail -> AddAddress("$to", "");
+$mail -> AddAddress("$to", $headers);
 //print "about to send to $to with subject $subject and text $body , from $myfrom <br>";
 if ($mail -> Send()) {
     return 1;

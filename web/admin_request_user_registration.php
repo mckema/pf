@@ -88,8 +88,7 @@
 		$body = "Hi, this user has registered their interest in a PublishForce account: $userEmail, $jobTitle at $userCompany.
 		Go to the requested users page to review it.";
 		Send_Mail($to,$subject,$body);
-
-?>		
+	
 		if ($connection->query($sql) === TRUE) {
     		echo "<br/>Thanks. Your user registration request was successfully submitted";
     		//TO DO... fire off an email to tell administrator of a new user registration request to review!
