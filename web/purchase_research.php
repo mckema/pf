@@ -43,9 +43,11 @@ include('session.php');
 
     <div class="white-section">
         <div class="container">
-        <h3>View publication</h3>
+        <h3>Purchase publication</h3>
         <p>
         << <a href="search.php">Back</a> to search<br/>
+        
+        //TO DO: funds I am allocating this research to?
 <?php
 		$fileId = $_REQUEST["file_id"];
 		$servername = "127.0.0.1";
@@ -83,7 +85,7 @@ include('session.php');
 ?>
 	
 	
-        <form id="updatePublications" action="admin_update_publications.php" method="post" enctype="multipart/form-data">
+        <form id="purchasePublications" action="confirm_purchase.php" method="post" enctype="multipart/form-data">
 
 	<p>
 			<table class="search-table" style="width:700px;">
@@ -99,7 +101,7 @@ include('session.php');
     		// output data of each row
     		while($row = $result->fetch_assoc()) {
     			$purchasedFlag = "";
-        		$sqlPurchased = "select file_id, purchased_date from pf_purchase_history where file_id= $fileId and user_id = $session_user_id";
+        		$sqlPurchase = "select file_id, purchased_date from pf_purchase_history where file_id= $fileId and user_id = $session_user_id";
         		//echo $sqlPurchased;
         		$resultFilePurchased = $connection->query($sqlPurchased);
         		if ($resultFilePurchased->num_rows > 0) {
@@ -120,20 +122,9 @@ include('session.php');
         		<tr><td>Tags: </td><td>" . $row["search_tags"]. "
         		<input type='hidden' name='file_id' id='file_id' value='" . $row["file_id"]. "' /></td></tr>
         		<tr><td>Creation date: </td><td>" . $row["creation_date"]. "  </td></tr>
-        		<tr><td><strong>Action?</strong></td><td> 
-        		";
-        		
-    			if ($purchasedFlag != "")
-    			{
-    				//read the document you have already purchased
-    				echo "[ <a href='". $row["file_name"] . "'>read</a> ] ";
-    			}
-    			else {
-    				//purchase this document
-    				echo "[ <a href='purchase_research.php?file_id=". $row["file_id"] . "'>purchase</a> ] ";
-    			}
-    			echo "</td></tr>";
-    			}
+        		<tr><td><strong>Action?</strong></td> <td>I agree to [ <a href='confirm_purchase.php?file_id=". $row["file_id"] . "'>purchase</a> ]  this research
+        		</td></tr>";
+    		}
 		} else {
     		//echo "Try refining your search";
 		}
@@ -149,7 +140,7 @@ include('session.php');
 <script type="text/javascript">
 function submitform()
 {
- 	var user_form = document.getElementById("updatePublications");
+ 	var user_form = document.getElementById("purchasePublications");
  	user_form.submit();
 }
 </script>

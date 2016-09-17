@@ -43,9 +43,10 @@ include('session.php');
 
     <div class="white-section">
         <div class="container">
-        <h3>View publication</h3>
+        <h3>Purchase confirmation</h3>
         <p>
         << <a href="search.php">Back</a> to search<br/>
+        You have successfully purchased the following research:
 <?php
 		$fileId = $_REQUEST["file_id"];
 		$servername = "127.0.0.1";
@@ -66,24 +67,24 @@ include('session.php');
 		//echo $sql;
 		$result = $connection->query($sql);
 		//now tell the DB that the user has read this publication
-        $readFlag = $_REQUEST["read"];
-        if ($readFlag == "yes") {
-        	$sqlResearchFileRead = "update pf_research_inbox set read_flag = 1 where file_id= $fileId and user_id = $session_user_id";
-        	$resultResearchFileRead = $connection->query($sqlResearchFileRead);
-        	if ($result->num_rows > 0) {
-        		//row has been updated
-        		echo "ok: $sqlResearchFileRead";
-        	}
-        	else
-        	{
-        		//didnt work
-        		echo "nope $sqlResearchFileRead";
-        	}
+        $sqlResearchFilePurchased = "insert into pf_purchase_history(`user_id`, `file_id`, `purchased_date`, `purchased_fee`, `purchased_ccy`) 
+        	values ($session_user_id, $fileId, NOW(), 1000.00, 'GBP')";
+        //echo "sqlResearchFilePurchased: $sqlResearchFilePurchased";
+        $sqlResearchFilePurchased = $connection->query($sqlResearchFilePurchased);
+        if ($result->num_rows > 0) {
+        	//row has been updated
+        	echo "Thanks. Your purchase is being processed... You can read your research here...";
         }
+        else
+        {
+        	//didnt work
+        	echo "We had a problem.";
+        }
+        
 ?>
 	
 	
-        <form id="updatePublications" action="admin_update_publications.php" method="post" enctype="multipart/form-data">
+        <form id="purchasePublications" action="confirm_purchase.php" method="post" enctype="multipart/form-data">
 
 	<p>
 			<table class="search-table" style="width:700px;">
@@ -120,20 +121,9 @@ include('session.php');
         		<tr><td>Tags: </td><td>" . $row["search_tags"]. "
         		<input type='hidden' name='file_id' id='file_id' value='" . $row["file_id"]. "' /></td></tr>
         		<tr><td>Creation date: </td><td>" . $row["creation_date"]. "  </td></tr>
-        		<tr><td><strong>Action?</strong></td><td> 
-        		";
-        		
-    			if ($purchasedFlag != "")
-    			{
-    				//read the document you have already purchased
-    				echo "[ <a href='". $row["file_name"] . "'>read</a> ] ";
-    			}
-    			else {
-    				//purchase this document
-    				echo "[ <a href='purchase_research.php?file_id=". $row["file_id"] . "'>purchase</a> ] ";
-    			}
-    			echo "</td></tr>";
-    			}
+        		<tr><td><strong>Action?</strong></td> <td>I agree to [ <a href='purchase_research.php?file_id=". $row["file_id"] . "'>purchase</a> ]  this research
+        		</td></tr>";
+    		}
 		} else {
     		//echo "Try refining your search";
 		}
@@ -149,7 +139,7 @@ include('session.php');
 <script type="text/javascript">
 function submitform()
 {
- 	var user_form = document.getElementById("updatePublications");
+ 	var user_form = document.getElementById("purchasePublications");
  	user_form.submit();
 }
 </script>

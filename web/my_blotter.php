@@ -53,8 +53,42 @@ include('session.php');
 <table class="allocation-table">
 			<tr>
 				<th colspan="2">Read & purchased</th>
-				<th>100%</th>	
+				<th>Amount</th>	
 			</tr>
+<?php
+		$servername = "127.0.0.1";
+		$username = "publishforce";
+		$password = "publishforce";
+		$dbname = "publishforce";
+
+		// Create connection
+		$connection = new mysqli($servername, $username, $password, $dbname);
+		// Check connection
+		if ($connection->connect_error) {
+    		die("Connection failed: " . $connection->connect_error);
+    		echo "FAILED TO CONNECT";
+		} else {
+    		//echo "CONNECT OK";
+		}
+		$sql = "select a.file_title as file_title, b.purchased_date as purchased_date, b.purchased_fee as purchased_fee, b.purchased_ccy as purchased_ccy
+			from pf_research_files a, pf_purchase_history b
+			where a.file_id = b.file_id and b.user_id = $session_user_id";
+		//echo $sql;
+		$result = $connection->query($sql);
+		
+		//display the data
+		if ($result->num_rows > 0) {
+    		// output data of each row
+    		while($row = $result->fetch_assoc()) {
+    			
+        		echo "<tr>
+        		<td>" . $row["file_title"]. "</td>
+        		<td>". $row["purchased_date"] . "</td>
+        		<td>". $row["purchased_ccy"] . " " . $row["purchased_fee"] . "</td>
+        		</tr>";
+			}
+		}	
+?>
 			<tr>
 				<td>Fund-0001</td>
 				<td>20%</td>
