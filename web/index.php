@@ -37,7 +37,7 @@ $session_expiry_msg = $_REQUEST["my_session"];
 		<?php require("menu_teaser.php"); ?>
         <!-- END menu nav -->
         <?php
-        if( $session_expiry_msg == "expired" )
+        if( $session_expiry_msg == "expired" || $session_expiry_msg == "not-set" )
 		{
 				Print("Please login again");
               

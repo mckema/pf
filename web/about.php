@@ -40,9 +40,44 @@
 
 <div class="white-section">
 	<div class="container">
-        <h3>PublishForce will provide a solution to the research market</h3>
-
+        <h3>PublishForce is the solution to the research market</h3>
 			<p>
+				The PublishForce team are bringing a new approach to the research market. 
+				Born from more than 100 years collective experience within the financial markets, the PublishForce platform 
+				draws on extensive experience in delivering and managing OTC eCommerce trading in the wholesale markets
+			</p>
+			<table style="width:680px">
+				<tr>
+					<td><img src="images/interface/robinp.jpg" /> </td>
+					<td style="width:400px">
+						Robin Poynder has a track record of 30+ years managing and developing businesses in global 
+						banking and financial services. His vision on the evolution of regulation led him to successfully 
+						develop an independent practice, highly specialised on conduct and MIFID2
+					</td>
+					<td style="width:100px">&nbsp;</td>
+				</tr>
+				<tr>
+					<td><img src="images/interface/freds.jpg" /> </td>
+					<td style="width:400px">
+						Frederic Simon has a track record of 25+ years managing operations and businesses in hedge funds 
+						and global corporate &amp; investment banking. His credo is about building business strategies 
+						around technology, innovation and regulation
+
+					</td>
+					<td style="width:100px">&nbsp;</td>
+				</tr>
+				<tr>
+					<td><img src="images/interface/markm.jpg" /> </td>
+					<td style="width:400px">
+						Mark McKee has a track record of 18 years in developing trading technology for global investment banks. 
+						Delivering technology systems that are stable, reliable, secure, and that can adapt to 
+						ever-evolving business requirements is at the core of his expertise
+
+					</td>
+					<td style="width:100px">&nbsp;</td>
+				</tr>
+			</table>
+			<!--<p>
 			The PublishForce team are bringing a new approach to the research market. 
 			Born from more than 100 years collective experience within the financial markets, the PublishForce 
 			platform draws on extensive experience in delivering and managing OTC eCommerce trading in the 
@@ -50,7 +85,7 @@
 			sold by market participants as required. Crucially, compliance is built in as an intrinsic element of the service. 
 			Ensuring that clients are only permissioned for research that is appropriate for them is part of the publication process, 
 			as is measuring and demonstrating that the compliance procedures are being met.
-			</p>
+			</p>-->
     </div>   
 </div>
 
