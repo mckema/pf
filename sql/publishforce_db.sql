@@ -114,15 +114,17 @@ CREATE TABLE `pf_research_files` (
   `file_abstract` varchar(255) NOT NULL,
   `search_tags` varchar(255) NOT NULL,
   `user_company` varchar(100) NOT NULL,
+  `face_value` decimal(15,2) NOT NULL,
+  `sell_ccy` varchar(3) NOT NULL,
   `creation_date` datetime NOT NULL,
   PRIMARY KEY (file_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
-INSERT INTO `pf_research_files`(`user_id`, `file_name`, `file_type`, `file_title`, `industry_type`, `file_abstract`, `search_tags`, `user_company`, `creation_date`) 
-VALUES ('mmckee','brazil_comm.pdf','pdf','Brazil Commodities 2016','commodities','Some abstract information here...','Brazil raw materials, commodities, Latin America','ABC Research Ltd',NOW());
-INSERT INTO `pf_research_files`(`user_id`, `file_name`, `file_type`, `file_title`, `industry_type`, `file_abstract`, `search_tags`, `user_company`, `creation_date`) 
-VALUES ('mmckee','uploads/car_email_img.jpg','pdf','Machinery in Ukraine','Agriculture','Some abstract information here...','farming, ukraine, manufacturing, xyz','Farm Research Ltd',NOW());
+INSERT INTO `pf_research_files`(`user_id`, `file_name`, `file_type`, `file_title`, `industry_type`, `file_abstract`, `search_tags`, `user_company`, `face_value`, `sell_ccy`, `creation_date`) 
+VALUES ('mmckee','brazil_comm.pdf','pdf','Brazil Commodities 2016','commodities','Some abstract information here...','Brazil raw materials, commodities, Latin America','ABC Research Ltd',5000.00, 'GBP', NOW());
+INSERT INTO `pf_research_files`(`user_id`, `file_name`, `file_type`, `file_title`, `industry_type`, `file_abstract`, `search_tags`, `user_company`, `face_value`, `sell_ccy`, `creation_date`) 
+VALUES ('mmckee','uploads/car_email_img.jpg','pdf','Machinery in Ukraine','Agriculture','Some abstract information here...','farming, ukraine, manufacturing, xyz','Farm Research Ltd',10000.00, 'GBP', NOW());
 
 --
 -- Table structure for table `pf_user_registration`
@@ -191,8 +193,8 @@ UNIQUE (user_id, file_id)
 INSERT INTO `pf_purchase_history`(`user_id`, `file_id`, `purchased_date`, `purchased_fee`, `purchased_ccy`) VALUES (2, 1, NOW(), 1000.00, 'GBP');
 INSERT INTO `pf_purchase_history`(`user_id`, `file_id`, `purchased_date`, `purchased_fee`, `purchased_ccy`) VALUES (1, 1, NOW(), 1000.00, 'GBP');
 
--- US31, build a blotter: select statement to show what user has bought
-select a.file_name, b.purchased_date, b.purchased_fee, b.purchased_ccy
+-- US31, 32, build a blotter and basic purchasing: select statement to show what user has bought
+select a.file_name as file_name, b.purchased_date as purchased_date, b.purchased_fee as purchased_fee, b.purchased_ccy as purchased_ccy
 from pf_research_files a, pf_purchase_history b
 where a.file_id = b.file_id and b.user_id = 1
 
