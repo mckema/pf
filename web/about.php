@@ -43,7 +43,7 @@
         <h3>PublishForce is the solution to the research market</h3>
 			<p>
 				The PublishForce team are bringing a new approach to the research market. 
-				Born from more than 100 years collective experience within the financial markets, the PublishForce platform 
+				Born from many years of broad experience within the financial markets, the PublishForce platform 
 				draws on extensive experience in delivering and managing OTC eCommerce trading in the wholesale markets
 			</p>
 			<table style="width:680px">

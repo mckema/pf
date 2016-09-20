@@ -46,7 +46,7 @@ include('session.php');
         <h3>Purchase confirmation</h3>
         <p>
         << <a href="search.php">Back</a> to search<br/>
-        You have successfully purchased the following research:
+        You have successfully purchased this research:
 <?php
 		$fileId = $_REQUEST["file_id"];
 		$servername = "127.0.0.1";
@@ -73,7 +73,7 @@ include('session.php');
         $sqlResearchFilePurchased = $connection->query($sqlResearchFilePurchased);
         if ($result->num_rows > 0) {
         	//row has been updated
-        	echo "Thanks. Your purchase is being processed... You can read your research here...";
+        	//echo "Thanks. Your purchase is being processed... You can read your research here...";
         }
         else
         {
@@ -113,7 +113,6 @@ include('session.php');
         		}
         		echo "<tr>
         		<td width='100'>Title: </td><td width='600'>" . $row["file_title"]. " " . $purchasedFlag . "</td></tr>
-        		<tr><td>File name: </td><td>". $row["file_name"] . "</td></tr>
         		<tr><td>Publisher: </td><td>". $row["user_company"] . "</td></tr>
         		<tr><td>Face value: </td><td>". $row["sell_ccy"] . " ". $row["face_value"] . "</td></tr>
         		<tr><td>Industry: </td><td>" . $row["industry_type"]. "</td></tr>
@@ -121,7 +120,7 @@ include('session.php');
         		<tr><td>Tags: </td><td>" . $row["search_tags"]. "
         		<input type='hidden' name='file_id' id='file_id' value='" . $row["file_id"]. "' /></td></tr>
         		<tr><td>Creation date: </td><td>" . $row["creation_date"]. "  </td></tr>
-        		<tr><td><strong>Action?</strong></td> <td>I agree to [ <a href='purchase_research.php?file_id=". $row["file_id"] . "'>purchase</a> ]  this research
+        		<tr><td><strong>Action?</strong></td> <td>[ <a href='". $row["file_name"] . "'>view</a> ]  this research
         		</td></tr>";
     		}
 		} else {

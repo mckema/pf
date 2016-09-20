@@ -106,7 +106,7 @@ include('session.php');
         		$resultFilePurchased = $connection->query($sqlPurchased);
         		if ($resultFilePurchased->num_rows > 0) {
         			while($rowPurchased = $resultFilePurchased->fetch_assoc()) {
-        				$purchasedFlag = " (<em>purchsed on " .$rowPurchased["purchased_date"] ."</em>)";
+        				$purchasedFlag = " (<em>purchased on " .$rowPurchased["purchased_date"] ."</em>)";
         			}
         		}
         		else {
@@ -114,7 +114,6 @@ include('session.php');
         		}
         		echo "<tr>
         		<td width='100'>Title: </td><td width='600'>" . $row["file_title"]. " " . $purchasedFlag . "</td></tr>
-        		<tr><td>File name: </td><td>". $row["file_name"] . "</td></tr>
         		<tr><td>Publisher: </td><td>". $row["user_company"] . "</td></tr>
         		<tr><td>Face value: </td><td>". $row["sell_ccy"] . " ". $row["face_value"] . "</td></tr>
         		<tr><td>Industry: </td><td>" . $row["industry_type"]. "</td></tr>

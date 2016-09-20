@@ -148,24 +148,25 @@ p {
 	border:1px solid #CCCCCC;
 	width:320px;
 }
-/*.shortcuts-table-td {
-	background:url(../images/green_box.png) no-repeat;
-	text-align:center;
-}*/
-.shortcuts-table-td {
-	text-align:center;
-}
 
-.shortcuts-table-td a {
-	text-align:center;
-	display: inline-block;
-  	height:100%;
-  	width:100%;
+.shortcuts-table-td {
+	text-align:left;
 }
+/*.shortcuts-table-td a {
+	color:inherit;
+    font-family:"Open Sans", Helvetica, Arial, sans-serif;
+    font-size:13px;
+    display:inline;
+	height:13px;
+	line-height:13px;
+	padding:0 10px;
+}*/
+
 .allocation-table {
 	border:1px solid #CCCCCC;
 	width:300px;
 }
+
 .allocation-layout {
 	display:block;
 }
@@ -870,6 +871,19 @@ table tr td {
 .nav-item-green a:hover {
 	color:#54534A; 
 }
+
+
+.blotter-lnk a {
+	color:inherit;
+    font-family:"Open Sans", Helvetica, Arial, sans-serif;
+    font-size:13px;
+    display:inline;
+	height:13px;
+	line-height:13px;
+	padding:0 10px;
+}
+
+
 
 /* Mobile Navigation */
 .nav-mobile {

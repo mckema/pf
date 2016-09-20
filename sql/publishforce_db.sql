@@ -41,21 +41,7 @@ SET time_zone = "+00:00";
 -- Table structure for table `pf_user`
 --
 
-/*CREATE TABLE `pf_user` (
-  `user_id` int(10) NOT NULL AUTO_INCREMENT,
-  `user_email` varchar(80) NOT NULL,
-  `fname` varchar(50) NOT NULL,
-  `lname` varchar(50) NOT NULL,
-  `user_company` varchar(100) NOT NULL,
-  `user_mobile` varchar(50) NOT NULL,
-  `user_type` varchar(50) NOT NULL,
-  `creation_date` datetime NOT NULL,
-  `active_flag` bit(1) NOT NULL,
-  PRIMARY KEY (user_id)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-*/
-
-DROP TABLE `pf_user`;
+DROP TABLE IF EXISTS `pf_user`;
 
 CREATE TABLE `pf_user` (
   `user_id` int(10) NOT NULL AUTO_INCREMENT,
@@ -88,7 +74,7 @@ INSERT INTO `pf_user`(`user_name`, `user_email`, `fname`, `lname`, `user_company
 INSERT INTO `pf_user`(`user_name`, `user_email`, `fname`, `lname`, `user_company`, `job_title`, `user_mobile`, `publisher_user`, `consumer_user`, `publisher_and_consumer_user`, `creation_date`, `sys_admin_flag`, `active_flag`) 
   VALUES ('fsimon','Fred.Simon@publishforce.com','Fred','Simon','Paris Research','Analyst','07968 111022',1,0,0,NOW(),0, 1);
 
-DROP TABLE login;
+DROP TABLE IF EXISTS login;
 
 CREATE TABLE login(
 id int(10) NOT NULL AUTO_INCREMENT,
@@ -102,7 +88,7 @@ INSERT INTO `login`(`username`, `password`, `is_temp_psswd`) VALUES ('mmckee','P
 INSERT INTO `login`(`username`, `password`, `is_temp_psswd`) VALUES ('fsimon','PublishForce', 1);
 
 --  UPLOADS TABLE
-DROP TABLE `pf_research_files`;
+DROP TABLE IF EXISTS `pf_research_files`;
 
 CREATE TABLE `pf_research_files` (
   `file_id` int NOT NULL AUTO_INCREMENT,
@@ -122,16 +108,18 @@ CREATE TABLE `pf_research_files` (
 
 
 INSERT INTO `pf_research_files`(`user_id`, `file_name`, `file_type`, `file_title`, `industry_type`, `file_abstract`, `search_tags`, `user_company`, `face_value`, `sell_ccy`, `creation_date`) 
-VALUES ('mmckee','brazil_comm.pdf','pdf','Brazil Commodities 2016','commodities','Some abstract information here...','Brazil raw materials, commodities, Latin America','ABC Research Ltd',5000.00, 'GBP', NOW());
+VALUES ('mmckee','uploads/brazil_comm.pdf','pdf','Brazil Commodities 2016','commodities','Some abstract information here...','Brazil raw materials, commodities, Latin America','ABC Research Ltd',5000.00, 'GBP', NOW());
 INSERT INTO `pf_research_files`(`user_id`, `file_name`, `file_type`, `file_title`, `industry_type`, `file_abstract`, `search_tags`, `user_company`, `face_value`, `sell_ccy`, `creation_date`) 
-VALUES ('mmckee','uploads/car_email_img.jpg','pdf','Machinery in Ukraine','Agriculture','Some abstract information here...','farming, ukraine, manufacturing, xyz','Farm Research Ltd',10000.00, 'GBP', NOW());
+VALUES ('mmckee','uploads/ukraine_machinery.pdf','pdf','Machinery in Ukraine','Agriculture','Some abstract information here...','farming, ukraine, manufacturing, xyz','Farm Research Ltd',10000.00, 'GBP', NOW());
+INSERT INTO `pf_research_files`(`user_id`, `file_name`, `file_type`, `file_title`, `industry_type`, `file_abstract`, `search_tags`, `user_company`, `face_value`, `sell_ccy`, `creation_date`) 
+VALUES ('mmckee','uploads/craft_beer.pdf','pdf','London craft ale','Beverages','The beer brewing industry is changing and we think now is the time to invest...','brewing, upstart industry, beer','Value Add Ltd',12000.00, 'GBP', NOW());
 
 --
 -- Table structure for table `pf_user_registration`
 -- fname, lname, user_company, job_title, user_email, user_mobile, publisher_user, 
 -- consumer_user, publisher_and_consumer_user
 
-DROP TABLE `pf_user_registration`;
+DROP TABLE IF EXISTS `pf_user_registration`;
 
 CREATE TABLE `pf_user_registration` (
   `user_reg_id` int(10) NOT NULL AUTO_INCREMENT,
@@ -155,7 +143,7 @@ INSERT INTO `pf_user_registration`(`user_email`, `fname`, `lname`, `user_company
   VALUES ('bill@smithresearch.com','Bill','Smith','Smith Research Ltd', 'Research Director','07000 111777', 1, 0, 0, 0, NOW());
 
 -- RESEARCH INBOX
-DROP TABLE `pf_research_inbox`;
+DROP TABLE IF EXISTS `pf_research_inbox`;
 
 CREATE TABLE `pf_research_inbox` (
   `user_id` int(10) NOT NULL,
@@ -178,7 +166,7 @@ select a.user_name as user_name, a.user_id from pf_user a, login b where a.user_
 
 -- purchase history table
 -- RESEARCH INBOX
-DROP TABLE `pf_purchase_history`;
+DROP TABLE IF EXISTS `pf_purchase_history`;
 
 CREATE TABLE `pf_purchase_history` (
   `user_id` int(10) NOT NULL,
@@ -192,6 +180,22 @@ UNIQUE (user_id, file_id)
 
 INSERT INTO `pf_purchase_history`(`user_id`, `file_id`, `purchased_date`, `purchased_fee`, `purchased_ccy`) VALUES (2, 1, NOW(), 1000.00, 'GBP');
 INSERT INTO `pf_purchase_history`(`user_id`, `file_id`, `purchased_date`, `purchased_fee`, `purchased_ccy`) VALUES (1, 1, NOW(), 1000.00, 'GBP');
+
+-- RESEARCH SELECTED BUT NOT PURCHASED
+DROP TABLE IF EXISTS `pf_research_bookmarks`;
+
+CREATE TABLE `pf_research_bookmarks` (
+  `user_id` int(10) NOT NULL,
+  `file_id` int NOT NULL,
+  `bookmarks_date` datetime NOT NULL,
+  CONSTRAINT pf_research_bookmarks_primary 
+UNIQUE (user_id, file_id)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+INSERT INTO `pf_research_bookmarks`(`user_id`, `file_id`, `bookmarks_date`) VALUES (1, 1, NOW());
+
+select a.file_title as file_title, b.bookmarks_date as bookmarks_date from pf_research_files a, pf_research_bookmarks b where a.file_id = b.file_id and b.user_id = 1
+
 
 -- US31, 32, build a blotter and basic purchasing: select statement to show what user has bought
 select a.file_name as file_name, b.purchased_date as purchased_date, b.purchased_fee as purchased_fee, b.purchased_ccy as purchased_ccy

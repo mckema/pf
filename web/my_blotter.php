@@ -49,8 +49,7 @@ include('session.php');
 <ul class="nav-list">
 	
 	<li class="nav-item">
-
-<table class="allocation-table">
+		<table class="shortcuts-table">
 			<tr>
 				<th colspan="2">Read & purchased</th>
 				<th>Amount</th>	
@@ -70,7 +69,7 @@ include('session.php');
 		} else {
     		//echo "CONNECT OK";
 		}
-		$sql = "select a.file_title as file_title, b.purchased_date as purchased_date, b.purchased_fee as purchased_fee, b.purchased_ccy as purchased_ccy
+		$sql = "select a.file_name as file_name, a.file_title as file_title, b.purchased_date as purchased_date, b.purchased_fee as purchased_fee, b.purchased_ccy as purchased_ccy
 			from pf_research_files a, pf_purchase_history b
 			where a.file_id = b.file_id and b.user_id = $session_user_id";
 		//echo $sql;
@@ -82,68 +81,68 @@ include('session.php');
     		while($row = $result->fetch_assoc()) {
     			
         		echo "<tr>
-        		<td>" . $row["file_title"]. "</td>
+        		<td class=\"blotter-lnk\"><a href='" . $row["file_name"] . "'>" . $row["file_title"]. "</a></td>
         		<td>". $row["purchased_date"] . "</td>
         		<td>". $row["purchased_ccy"] . " " . $row["purchased_fee"] . "</td>
         		</tr>";
 			}
 		}	
 ?>
-			<tr>
-				<td>Fund-0001</td>
-				<td>20%</td>
-				<td>2,000</td>
-			</tr>
-			<tr>
-				<td>Fund-0027</td>
-				<td>5%</td>
-				<td>500</td>
-			</tr>
-			<tr>
-				<td>Fund-0245</td>
-				<td>45%</td>
-				<td>4,500</td>
-			</tr>
-			<tr>
-				<td>Fund-2987</td>
-				<td>30%</td>
-				<td>3,000</td>
-			</tr>
-			<tr>
-				<td>TOTAL</td>
-				<td>EUR</td>
-				<td>10,000</td>
-			</tr>
 			
 		</table>
 	</li>
-	<li class="nav-item">
+	<li class="nav-item"></li>
 	<li class="nav-item">
 		&nbsp;&nbsp;&nbsp;&nbsp;
-	</li>		
+	</li>
+	<li class="nav-item">
+	
 	<table class="shortcuts-table">
 			<tr>
 				<th colspan="2">Selected and not purchased</th>
 			</tr>
+<?php			
+		//show bookmarked publications
+		$sqlBookmarks = "select a.file_id as file_id, a.file_title as file_title, b.bookmarks_date as bookmarks_date
+			from pf_research_files a, pf_research_bookmarks b
+			where a.file_id = b.file_id and b.user_id = $session_user_id";
+		//echo $sqlBookmarks;
+		$resultBookmarks = $connection->query($sqlBookmarks);
+		
+		//display the data
+		if ($resultBookmarks->num_rows > 0) {
+    		// output data of each row
+    		while($row = $resultBookmarks->fetch_assoc()) {
+    			
+        		echo "<tr>
+        		<td class=\"blotter-lnk\"><a href='display_research.php?file_id=" . $row["file_id"] . "'>" . $row["file_title"]. "</a></td>
+        		<td>". $row["bookmarks_date"] . "</td>
+        		</tr>";
+			}
+		}	
+		
+		$connection->close();
+?>		
+
 			<tr>
-				<td>EUR</td>
-				<td>10,000</td>
+				<td>Which CCY?</td>
+				<td>TBD amount</td>
 			</tr>
 			<tr>
 				<td>Payment method</td>
-				<td>Cash</td>
+				<td>TBD</td>
 			</tr>
 			<tr>
 				<td>External invoicing</td>
-				<td>Ref: 223399817</td>
+				<td>Ref: ???</td>
 			</tr>
 			<tr>
 				<td>Internal invoicing</td>
-				<td>N/A</td>
+				<td>???</td>
 			</tr>
 			<tr>
 				<td>Volume retrocession</td>
-				<td>N/A</td>
+				<td>???</td>
 			</tr>
 			
 		</table>		
@@ -151,7 +150,7 @@ include('session.php');
 </ul>
 <!--</span>	-->
 
-	</p>
+	</p><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
             
         </div>
     </div>

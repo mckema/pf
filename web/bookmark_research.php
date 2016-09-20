@@ -43,9 +43,10 @@ include('session.php');
 
     <div class="white-section">
         <div class="container">
-        <h3>View publication</h3>
+        <h3>Bookmark this publication</h3>
         <p>
         << <a href="search.php">Back</a> to search<br/>
+        
 <?php
 		$fileId = $_REQUEST["file_id"];
 		$servername = "127.0.0.1";
@@ -65,25 +66,23 @@ include('session.php');
 		$sql = "select * from pf_research_files where file_id = $fileId";
 		//echo $sql;
 		$result = $connection->query($sql);
-		//now tell the DB that the user has read this publication
-        $readFlag = $_REQUEST["read"];
-        if ($readFlag == "yes") {
-        	$sqlResearchFileRead = "update pf_research_inbox set read_flag = 1 where file_id= $fileId and user_id = $session_user_id";
-        	$resultResearchFileRead = $connection->query($sqlResearchFileRead);
-        	if ($result->num_rows > 0) {
-        		//row has been updated
-        		//echo "ok: $sqlResearchFileRead";
-        	}
-        	else
-        	{
-        		//didnt work
-        		echo "nope $sqlResearchFileRead";
-        	}
+		//bookmark this publication
+        //$sqlResearchFileRead = "update pf_research_inbox set read_flag = 1 where file_id= $fileId and user_id = $session_user_id";
+    	$sqlResearchBookmark = "INSERT INTO `pf_research_bookmarks`(`user_id`, `file_id`, `bookmarks_date`) VALUES ($session_user_id, $fileId, NOW())";
+    	$resultResearchBookmark = $connection->query($sqlResearchBookmark);
+        if ($result->num_rows > 0) {
+        	//row has been updated
+        	echo "ok: $sqlResearchBookmark";
+        }
+        else
+        {
+        	//didnt work
+        	echo "nope $sqlResearchBookmark";
         }
 ?>
 	
 	
-        <form id="updatePublications" action="admin_update_publications.php" method="post" enctype="multipart/form-data">
+        <form id="bookmarkPublications" action="confirm_bookmark.php" method="post" enctype="multipart/form-data">
 
 	<p>
 			<table class="search-table" style="width:700px;">
@@ -98,35 +97,19 @@ include('session.php');
 		if ($result->num_rows > 0) {  // && $searchTag!="") {
     		// output data of each row
     		while($row = $result->fetch_assoc()) {
-    			// has this file already been purchased?
     			$purchasedFlag = "";
-        		$sqlPurchased = "select file_id, purchased_date from pf_purchase_history where file_id= $fileId and user_id = $session_user_id";
-        		//echo $sqlPurchased;
+        		$sqlPurchase = "select file_id, bookmarks_date from pf_research_bookmarks where file_id= $fileId and user_id = $session_user_id";
         		$resultFilePurchased = $connection->query($sqlPurchased);
         		if ($resultFilePurchased->num_rows > 0) {
         			while($rowPurchased = $resultFilePurchased->fetch_assoc()) {
-        				$purchasedFlag = " (<em>purchased on " .$rowPurchased["purchased_date"] ."</em>)";
-        			}
-        		}
-        		else {
-        			//nada
-        		}
-        		// has this file been bookmarked?
-    			$bookmarkedFlag = "";
-        		$sqlBookmarked = "select file_id, bookmarks_date from pf_research_bookmarks where file_id= $fileId and user_id = $session_user_id";
-        		//echo $sqlBookmarked;
-        		$resultFileBookmarked = $connection->query($sqlBookmarked);
-        		if ($resultFileBookmarked->num_rows > 0) {
-        			while($rowBookmarked = $resultFileBookmarked->fetch_assoc()) {
-        				$bookmarkedFlag = " (<em>bookmarked on " .$rowBookmarked["bookmarks_date"] ."</em>)";
+        				$purchasedFlag = " (<em>bookmarked on " .$rowPurchased["bookmarks_date"] ."</em>)";
         			}
         		}
         		else {
         			//nada
         		}
         		echo "<tr>
-        		<td width='100'>Title: </td><td width='600'>" . $row["file_title"]. " " . $purchasedFlag . "" . $bookmarkedFlag . "</td></tr>
-        		
+        		<td width='100'>Title: </td><td width='600'>" . $row["file_title"]. " " . $purchasedFlag . "</td></tr>
         		<tr><td>Publisher: </td><td>". $row["user_company"] . "</td></tr>
         		<tr><td>Face value: </td><td>". $row["sell_ccy"] . " ". $row["face_value"] . "</td></tr>
         		<tr><td>Industry: </td><td>" . $row["industry_type"]. "</td></tr>
@@ -134,27 +117,9 @@ include('session.php');
         		<tr><td>Tags: </td><td>" . $row["search_tags"]. "
         		<input type='hidden' name='file_id' id='file_id' value='" . $row["file_id"]. "' /></td></tr>
         		<tr><td>Creation date: </td><td>" . $row["creation_date"]. "  </td></tr>
-        		<tr><td><strong>Action?</strong></td><td> 
-        		";
-        		//<tr><td>File name: </td><td>". $row["file_name"] . "</td></tr>
-    			if ($purchasedFlag != "")
-    			{
-    				//read the document you have already purchased
-    				echo "[ <a href='". $row["file_name"] . "'>read</a> ] ";
-    			}
-    			else {
-    				//purchase this document
-    				echo "[ <a href='purchase_research.php?file_id=". $row["file_id"] . "'>purchase</a> ] ";
-    				//check for bookmark status on this document
-    				if ($bookmarkedFlag == "") {
-    					echo "[ <a href='bookmark_research.php?file_id=". $row["file_id"] . "'>bookmark</a> ] ";
-    				}
-    				else {
-    					echo "[ <a href='bookmark_research.php?action=unbookmark&file_id=". $row["file_id"] . "'>un-bookmark</a> ] ";
-    				}
-    			}
-    			echo "</td></tr>";
-    			}
+        		<tr><td><strong>Action?</strong></td> <td>[ <a href='purchase_research.php?file_id=". $row["file_id"] . "'>purchase</a> ] or [ <a href='bookmark_research.php?action=unbookmark&file_id=". $row["file_id"] . "'>un-bookmark</a> ] this research
+        		</td></tr>";
+    		}
 		} else {
     		//echo "Try refining your search";
 		}
@@ -170,18 +135,11 @@ include('session.php');
 <script type="text/javascript">
 function submitform()
 {
- 	var user_form = document.getElementById("updatePublications");
+ 	var user_form = document.getElementById("bookmarkPublications");
  	user_form.submit();
 }
 </script>
-<p>		
-		<!--If these results were not what you are looking for, please try the following options:
-	
-<ul>
-	
-	<li>Contact us for help</li>
-	<li>Put a request to publishers for the material you are looking for</li>
-</ul>-->
+<p>
 	</p>
             
         </div>
