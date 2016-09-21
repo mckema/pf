@@ -102,17 +102,19 @@ CREATE TABLE `pf_research_files` (
   `user_company` varchar(100) NOT NULL,
   `face_value` decimal(15,2) NOT NULL,
   `sell_ccy` varchar(3) NOT NULL,
+  `published_flag` BIT(1) NOT NULL,
   `creation_date` datetime NOT NULL,
   PRIMARY KEY (file_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+-- ALTER TABLE `pf_research_files` ADD `published_flag` BIT(1) NOT NULL AFTER `sell_ccy`;
 
-INSERT INTO `pf_research_files`(`user_id`, `file_name`, `file_type`, `file_title`, `industry_type`, `file_abstract`, `search_tags`, `user_company`, `face_value`, `sell_ccy`, `creation_date`) 
-VALUES ('mmckee','uploads/brazil_comm.pdf','pdf','Brazil Commodities 2016','commodities','Some abstract information here...','Brazil raw materials, commodities, Latin America','ABC Research Ltd',5000.00, 'GBP', NOW());
-INSERT INTO `pf_research_files`(`user_id`, `file_name`, `file_type`, `file_title`, `industry_type`, `file_abstract`, `search_tags`, `user_company`, `face_value`, `sell_ccy`, `creation_date`) 
-VALUES ('mmckee','uploads/ukraine_machinery.pdf','pdf','Machinery in Ukraine','Agriculture','Some abstract information here...','farming, ukraine, manufacturing, xyz','Farm Research Ltd',10000.00, 'GBP', NOW());
-INSERT INTO `pf_research_files`(`user_id`, `file_name`, `file_type`, `file_title`, `industry_type`, `file_abstract`, `search_tags`, `user_company`, `face_value`, `sell_ccy`, `creation_date`) 
-VALUES ('mmckee','uploads/craft_beer.pdf','pdf','London craft ale','Beverages','The beer brewing industry is changing and we think now is the time to invest...','brewing, upstart industry, beer','Value Add Ltd',12000.00, 'GBP', NOW());
+INSERT INTO `pf_research_files`(`user_id`, `file_name`, `file_type`, `file_title`, `industry_type`, `file_abstract`, `search_tags`, `user_company`, `face_value`, `sell_ccy`, `published_flag`, `creation_date`) 
+VALUES ('mmckee','uploads/brazil_comm.pdf','pdf','Brazil Commodities 2016','commodities','Some abstract information here...','Brazil raw materials, commodities, Latin America','ABC Research Ltd',5000.00, 'GBP', 0, NOW());
+INSERT INTO `pf_research_files`(`user_id`, `file_name`, `file_type`, `file_title`, `industry_type`, `file_abstract`, `search_tags`, `user_company`, `face_value`, `sell_ccy`, `published_flag`, `creation_date`) 
+VALUES ('mmckee','uploads/ukraine_machinery.pdf','pdf','Machinery in Ukraine','Agriculture','Some abstract information here...','farming, ukraine, manufacturing, xyz','Farm Research Ltd',10000.00, 'GBP', 0, NOW());
+INSERT INTO `pf_research_files`(`user_id`, `file_name`, `file_type`, `file_title`, `industry_type`, `file_abstract`, `search_tags`, `user_company`, `face_value`, `sell_ccy`, `published_flag`, `creation_date`) 
+VALUES ('mmckee','uploads/craft_beer.pdf','pdf','London craft ale','Beverages','The beer brewing industry is changing and we think now is the time to invest...','brewing, upstart industry, beer','Value Add Ltd',12000.00, 'GBP', 0, NOW());
 
 --
 -- Table structure for table `pf_user_registration`
@@ -194,6 +196,74 @@ UNIQUE (user_id, file_id)
 
 INSERT INTO `pf_research_bookmarks`(`user_id`, `file_id`, `bookmarks_date`) VALUES (1, 1, NOW());
 
+-- FIRM DETAILS
+DROP TABLE IF EXISTS `pf_firm_details`;
+
+CREATE TABLE `pf_firm_details` (
+  `firm_id` int(10) NOT NULL AUTO_INCREMENT,
+  `firm_name` varchar(100) NOT NULL,
+  `active_flag` bit(1) NOT NULL,
+  `creation_date` datetime NOT NULL,
+  PRIMARY KEY (firm_id)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+INSERT INTO `pf_firm_details`(`firm_name`, `active_flag`, `creation_date`) VALUES ('ABC Research Ltd', 1, NOW());
+
+-- FUND DETAILS
+DROP TABLE IF EXISTS `pf_funds`;
+
+CREATE TABLE `pf_funds` (
+  `fund_id` int(10) NOT NULL AUTO_INCREMENT,
+  `fund_name` varchar(100) NOT NULL,
+  `firm_id` int(10) NOT NULL,
+  `fund_amount` decimal(15,2) NOT NULL,
+  `fund_ccy` varchar(3) NOT NULL,
+  `active_flag` bit(1) NOT NULL,
+  `creation_date` datetime NOT NULL,
+  CONSTRAINT pf_funds_primary 
+UNIQUE (fund_id, firm_id)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+INSERT INTO `pf_funds`(`fund_name`,`firm_id`, `fund_amount`, `fund_ccy`, `active_flag`, `creation_date`) 
+	VALUES ('ABC Fund 1', 1, 100000.00, 'GBP', 1, NOW());
+INSERT INTO `pf_funds`(`fund_name`,`firm_id`, `fund_amount`, `fund_ccy`, `active_flag`, `creation_date`) 
+	VALUES ('ABC Fund 2', 1, 150000.00, 'GBP', 1, NOW());
+
+-- RESEARCH PURCHASE ACCOUNT DETAILS
+DROP TABLE IF EXISTS `pf_rpa`;
+
+CREATE TABLE `pf_rpa` (
+  `rpa_id` int(10) NOT NULL AUTO_INCREMENT,
+  `rpa_name` varchar(100) NOT NULL,
+  `firm_id` int(10) NOT NULL,
+  `active_flag` bit(1) NOT NULL,
+  `creation_date` datetime NOT NULL,
+  PRIMARY KEY (rpa_id)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+INSERT INTO `pf_rpa`(`rpa_name`, `firm_id`, `active_flag`, `creation_date`) VALUES ('ABC RPA', 1, 1, NOW());
+
+
+-- RESEARCH ALLOCATION HISTORY
+DROP TABLE IF EXISTS `pf_allocation_history`;
+
+CREATE TABLE `pf_allocation_history` (
+  `fund_id` int(10) NOT NULL,
+  `file_id` int(10) NOT NULL,
+  `allocation_amount` decimal(15,2) NOT NULL,
+  `allocation_ccy` varchar(3) NOT NULL,
+  `active_flag` bit(1) NOT NULL,
+  `creation_date` datetime NOT NULL,
+  CONSTRAINT pf_allocation_history_primary 
+UNIQUE (fund_id, file_id)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+INSERT INTO `pf_allocation_history`(`fund_id`, `file_id`, `allocation_amount`, `allocation_ccy`, `active_flag`, `creation_date`) 
+VALUES (1, 1, 11000.00, 'GBP', 1, NOW());
+
+
+
+
 select a.file_title as file_title, b.bookmarks_date as bookmarks_date from pf_research_files a, pf_research_bookmarks b where a.file_id = b.file_id and b.user_id = 1
 
 
@@ -202,4 +272,7 @@ select a.file_name as file_name, b.purchased_date as purchased_date, b.purchased
 from pf_research_files a, pf_purchase_history b
 where a.file_id = b.file_id and b.user_id = 1
 
-
+-- show my funds that I am allocating to for my purchase
+select fd.firm_name, f.fund_name, f.fund_amount, f.fund_ccy from pf_firm_details fd, pf_funds f
+where fd.firm_id = f.firm_id
+and fd.firm_id = 1

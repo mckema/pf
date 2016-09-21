@@ -47,17 +47,26 @@ include('session.php');
         <p>
 <?php
 $fileTitle = $_POST['file-title'];
+$fileAbstract = $_POST['file-abstract'];
 $fileSector = $_POST['file-sector'];
 $fileKeywords = $_POST['file-keywords'];
+$filePublisher = $_POST['file-publisher'];
+$fileFaceValue = $_POST['file-face-value'];
+$fileCcy = $_POST['file-ccy'];
 
 // Establishing DB connection to persist file upload details, tags, author, etc.
-$connection = mysql_connect("127.0.0.1", "publishforce", "publishforce");
-// Selecting Database
-$db = mysql_select_db("publishforce", $connection);
+$servername = "127.0.0.1";
+$username = "publishforce";
+$password = "publishforce";
+$dbname = "publishforce";
+
+// Create connection
+$connection = new mysqli($servername, $username, $password, $dbname);
 $target_dir = "uploads/";
 $target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
 $uploadOk = 1;
-$imageFileType = pathinfo($target_file,PATHINFO_EXTENSION);
+$userName = $_SESSION['login_user'];
+$fileType = pathinfo($target_file,PATHINFO_EXTENSION);
 // Check if image file is a actual image or fake image
 if(isset($_POST["submit"])) {
     //$check = getimagesize($_FILES["fileToUpload"]["tmp_name"]);
@@ -66,13 +75,25 @@ if(isset($_POST["submit"])) {
         echo "File is ok" . $check["mime"] . ".";
         $uploadOk = 1;
         // Write details to the database on the file...
-        //$ses_sql=mysql_query("select username from login where username='$user_check'", $connection);
+        $sql = "INSERT INTO `pf_research_files`(`user_id`, `file_name`, `file_type`, `file_title`, `file_abstract`, `industry_type`, `search_tags`, `user_company`, `face_value`, `sell_ccy`, `creation_date`) 
+			VALUES ('$userName','$target_file','$fileType', '$fileTitle', '$fileAbstract', '$fileSector','$fileKeywords','$filePublisher', $fileFaceValue, '$fileCcy', NOW())";
         
-        $ses_sql=mysql_query("INSERT INTO `pf_research_files`(`user_id`, `file_name`, `file_type`, `file_title`, `industry_type`, `search_tags`, `user_company`, `creation_date`) 
-VALUES ('mmckee','$target_file','pdf','$fileTitle', '$fileSector','$fileKeywords','Bank of Research Inc',NOW())", $connection);
-
+		if ($connection->connect_error) {
+    		die("Connection failed: " . $connection->connect_error);
+    		echo "FAILED TO CONNECT";
+		} 
+		else {
+			if ($connection->query($sql) === TRUE) {
+    			//echo "inserted successfully";
+			}
+			else {
+    			echo "Error inserting record: " . $connection->error;
+			}
+			$connection->close();
+		}
         
-    } else {
+    } 
+    else {
         echo "File is not valid.";
         $uploadOk = 0;
     }
@@ -97,24 +118,28 @@ if (file_exists($target_file)) {
 if ($uploadOk == 0) {
     echo "Sorry, your file was not uploaded.";
 // if everything is ok, try to upload file
-} else {
+} 
+else {
     if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
         echo "The file ". basename( $_FILES["fileToUpload"]["name"]). " has been uploaded.";
         echo " <a href='$target_file'>Link</a>";
+        if (!$connection->connect_error) {
+        	//echo "closing DB connection";
+        	$connection->close();
+        }
+        
     } else {
         echo "Sorry, there was an error uploading your file.";
         //TO DO don;t upload the file if you have seen it already exists
     }
 }
+
+
 ?>
 		</p>
 		
-<br/><br/>
-<ul>
-	
-	<li>Contact us for help</li>
-	<li>Put a request to publishers for the material you are looking for</li>
-</ul>
+	<p>
+		Please note you will still need to publish this research for clients to see it
 	</p>
             
         </div>

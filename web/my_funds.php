@@ -43,52 +43,79 @@ include('session.php');
 
     <div class="white-section">
         <div class="container">
-        <form action="file_upload.php" method="post" enctype="multipart/form-data">
-        <h3>Add your research content here:</h3>
-        <p>
-        	<!-- put this in a table -->
-        	<table class="search-table" style="width:700px;">
+        <h3>Manage my funds</h3>
+        <p>       
+<?php
+		$fileId = $_REQUEST["file_id"];
+		$servername = "127.0.0.1";
+		$username = "publishforce";
+		$password = "publishforce";
+		$dbname = "publishforce";
+		
+		// Create connection
+		$connection = new mysqli($servername, $username, $password, $dbname);
+		// Check connection
+		if ($connection->connect_error) {
+    		die("Connection failed: " . $connection->connect_error);
+    		echo "FAILED TO CONNECT";
+		} else {
+    		//echo "CONNECT OK";
+		}
+?>
+	
+	
+        <form id="purchasePublications" action="confirm_purchase.php" method="post" enctype="multipart/form-data">
+
+	<p>
+			<table class="search-table" style="width:700px;">
 			<tr>
-				<th>Name</th>
-				<th>Value</th>
+				<th>Fund name</th>
+				<th>Fund value</th>
 			</tr>
-			<tr>
-				<td width="200">Title:</td>
-				<td width="400"><input type="text" class="search-text" name="file-title" id="file-title" style="width: 300px;" /></td>
-			</tr>
-			<tr>
-				<td>Sector:</td>
-				<td><input type="text" class="search-text" name="file-sector" id="file-sector" style="width: 100px;" /> </td>
-			</tr>
-			<tr>
-				<td>Keywords:</td>
-				<td><input type="text" class="search-text" name="file-keywords" id="file-keywords" style="width: 300px;" /> (e.g. equities, mid-cap) </td>
-			</tr>
-			<tr>
-				<td>Abstract:</td>
-				<td><input type="text" class="search-text" name="file-abstract" id="file-abstract" style="width: 500px;" /> (e.g. The outlook for the year ahead is ...) </td>
-			</tr> 
-			<tr>
-				<td>Publisher:</td>
-        		<td><input type="text" class="search-text" name="file-publisher" id="file-publisher" style="width: 100px;" /> (e.g. ABC Macro Research) </td>
-			<tr>
-				<td>Currency &amp; face value:</td>
-        		<td><input type="text" class="search-text" name="file-ccy" id="file-ccy" style="width: 20px;" /> (e.g. GBP)
-        	&nbsp;&nbsp;&nbsp;<input type="text" class="search-text" name="file-face-value" id="file-face-value" style="width: 60px;" /> (e.g. 1000.00)</td>
-        	</tr>
-        </table>
-        <p>
-    		Select file to upload:
-    		<input type="file" name="fileToUpload" id="fileToUpload">
-    		<input type="submit" value="Upload file" name="submit">
-    	</p>
+			
+<?php
+		//TBD, display the firm ID of the session user!
+        $sqlFunds = "select fd.firm_name as firm_name, f.fund_name as fund_name, f.fund_amount as fund_amount, 
+        	f.fund_ccy as fund_ccy from pf_firm_details fd, pf_funds f
+			where fd.firm_id = f.firm_id
+			and fd.firm_id = 1";
+		$resultFunds = $connection->query($sqlFunds);
+		if ($resultFunds->num_rows > 0) {
+    		// output data of each row
+    		while($row = $resultFunds->fetch_assoc()) {
+    			echo "<tr>
+        		<td width='200'>" . $row["fund_name"]. "</td>
+        		<td width='300'>". $row["fund_ccy"] . " ". $row["fund_amount"] . "</td>
+        		</tr>";
+    		}
+    	}
+    	else{
+    		echo "<tr><td width='100'>nada</td><td>nada</td></tr>";
+    	}
+		$connection->close();
+?>
+			
+		</table>
+		[ <a href="#"> edit funds </a> ]
+</p>
 		</form>
-<br/><br/>
+		
+<!-- The function that submits the form-->
+<script type="text/javascript">
+function submitform()
+{
+ 	var user_form = document.getElementById("purchasePublications");
+ 	user_form.submit();
+}
+</script>
+<p>		
+		<!--If these results were not what you are looking for, please try the following options:
+	
 <ul>
 	
 	<li>Contact us for help</li>
 	<li>Put a request to publishers for the material you are looking for</li>
-</ul>
+</ul>-->
 	</p>
             
         </div>
@@ -98,7 +125,7 @@ include('session.php');
     <div class="white-section">
 	
     <div class="container" style="text-align:center;">
-    	<div style="padding:0 15px;">
+    	<div style="padding:0 150px;">
             <h4 class="large-header">Contact Us</h4>
             <p class="mbottom10">If you have any questions about our research platform, or if you have an enquiry, please contact us using the details below, or by filling out the form on our contact page.</p>
             <a href="contact.php"><span class="button3">Get in touch</span></a>
@@ -110,7 +137,6 @@ include('session.php');
 <!-- footer section -->
 <?php require("footer_empty.php"); ?>
 <!-- END footer section -->
-
 
 </body>
 </html>

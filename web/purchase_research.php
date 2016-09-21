@@ -43,18 +43,18 @@ include('session.php');
 
     <div class="white-section">
         <div class="container">
-        <h3>Purchase publication</h3>
+        <h3>Allocate to funds and Purchase publication</h3>
         <p>
-        << <a href="search.php">Back</a> to search<br/>
         
-        //TO DO: funds I am allocating this research to?
+        
+        
 <?php
 		$fileId = $_REQUEST["file_id"];
 		$servername = "127.0.0.1";
 		$username = "publishforce";
 		$password = "publishforce";
 		$dbname = "publishforce";
-
+		echo "<< <a href='display_research.php?file_id=$file_id'>Back</a> to summary<br/>";
 		// Create connection
 		$connection = new mysqli($servername, $username, $password, $dbname);
 		// Check connection
@@ -80,6 +80,18 @@ include('session.php');
         	{
         		//didnt work
         		echo "nope $sqlResearchFileRead";
+        	}
+        }
+        //display the funds you will be allocating to:
+        $sqlFunds = "select fd.firm_name as firm_name, f.fund_name as fund_name, f.fund_amount as fund_amount, 
+        	f.fund_ccy as fund_ccy from pf_firm_details fd, pf_funds f
+			where fd.firm_id = f.firm_id
+			and fd.firm_id = 1";
+		$resultFunds = $connection->query($sqlFunds);
+		echo "<strong>Funds I manage:</strong><br/>";
+		if ($resultFunds->num_rows > 0) {
+        	while($rowFunds = $resultFunds->fetch_assoc()) {
+        		echo "<strong>Fund name</strong>: " . $rowFunds["fund_name"]. " &nbsp;&nbsp;<strong>Amount</strong>: "  . $rowFunds["fund_ccy"]. " " . $rowFunds["fund_amount"]. " [ <a href='#'>add this fund</a> ]<br/>";
         	}
         }
 ?>
