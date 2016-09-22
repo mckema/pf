@@ -74,7 +74,7 @@ include('session.php');
 		}
 		
 		//$sql = "select * from pf_research_files";
-		$sql = "select * from pf_research_files where search_tags like '%$searchTag%'";
+		$sql = "select * from pf_research_files where search_tags like '%$searchTag%' and published_flag = 1";
 		//echo "SQL " . $sql;
 		if ( $searchTag!="" ) {
 			$result = $connection->query($sql);

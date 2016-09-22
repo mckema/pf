@@ -11,7 +11,7 @@ include('session.php');
 	}
 ?>
 		<a href="admin_edit_my_account.php">[<em>manage my details</em>]</a> &nbsp;&nbsp;
-		<a href="file_chooser.php">[<em>upload a file</em>]</a> &nbsp;&nbsp;   
+		<a href="publications_home.php">[<em>manage publications</em>]</a> &nbsp;&nbsp;   
 		<a href="search.php">Search Materials</a> &nbsp;&nbsp;   
 		<a href="my_research_inbox.php">Inbox</a> &nbsp;&nbsp; 
 		<a href="my_blotter.php">Blotter</a> &nbsp;&nbsp; 

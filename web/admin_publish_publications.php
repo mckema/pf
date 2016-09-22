@@ -29,6 +29,8 @@ include('session.php');
 	<div id="header-bar">
 		<!-- menu nav -->
 		<?php require("menu_logged-in.php"); ?>
+        <!-- END menu nav -->
+        <!--<div class="clr"></div>-->
     </div>
 </div>
 <!-- CLOSE HEADING DIVS -->
@@ -41,17 +43,12 @@ include('session.php');
 
     <div class="white-section">
         <div class="container">
-        <h3>Newly published</h3>
+        <h3>Publish my research</h3>
         <p>
-        	Research you may be interested in seeing:
-        <!--<form id="searchForm" method="POST" action="search_results.php?action=completed">
-        	<input type="text" name="search_text" id="search_text" style="width: 100;" />
-        	<a href='javascript:document.getElementById("searchForm").submit();'><span class="button1">search</span></a>
-        	
-        </form>-->
+        << <a href="publications_home.php">Back</a> to list of publications<br/>
 <?php
-		//echo "session_user_id: $session_user_id";
-		$searchTag = $_POST['search_text'];
+		$fileId = $_REQUEST["file_id"];
+		$publishAction = $_REQUEST["action"];
 		$servername = "127.0.0.1";
 		$username = "publishforce";
 		$password = "publishforce";
@@ -67,45 +64,29 @@ include('session.php');
     		//echo "CONNECT OK";
 		}
 		
-		$sql = "select * from pf_research_files where published_flag = 1";
-		$result = $connection->query($sql);
-?>
-	<p>
-		<table class="search-table">
-			<tr>
-				<th>Title</th>
-				<th>Industry/sector</th>
-				<th>Publisher</th>
-				<th>Issue date</th>
-			</tr>
-			
-<?php
-
-
-		if ($result->num_rows > 0) {
-    		// output data of each row
-    		while($row = $result->fetch_assoc()) {
-        		
-        		echo "<tr><td><a href='display_research.php?file_id=" . $row["file_id"]. "'</a>" . $row["file_title"]. "</td><td>" . $row["industry_type"] . "</td><td>" . $row["user_company"]. "</td><td>" . $row["creation_date"]. "</td></tr>";
-    		}
-		} else {
-    		echo "Try refining your search";
+		if( $publishAction == "unpublish" ) {
+			$sql = "update pf_research_files set published_flag = 0, published_date = NULL where file_id = $fileId";
 		}
-		//mysql_close($connection); // Closing Connection
+		else { 
+			$sql = "update pf_research_files set published_flag = 1, published_date = NOW() where file_id = $fileId";
+			$publishAction = "publish";
+		}
+		//echo "SQL: $sql;";
+		$result = $connection->query($sql);
+
+
+		if ($connection->query($sql) === TRUE) {
+    		echo "Research $publishAction successfully";
+		} else {
+    		echo "Error $publishAction research: " . $conn->error;
+		}
 		$connection->close();
 ?>
 			
-			
-		</table>
-</p>
+		</p>
+		</form>
 <p>		
-		If these results were not what you are looking for, please try the following options:
-	
-<ul>
-	
-	<li>Contact us for help</li>
-	<li>Put a request to publishers for the material you are looking for</li>
-</ul>
+		
 	</p>
             
         </div>

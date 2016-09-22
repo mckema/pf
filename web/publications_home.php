@@ -32,22 +32,38 @@ include('session.php');
         <!-- END menu nav -->
         <!--<div class="clr"></div>-->
     </div>
+	<!--<div class="container">
+	<div id="title-container">
+        	<h2>Search PublishForce</h2>
+        </div>-->
+        <!-- CLOSE HEADING DIVS -->
+    <!--</div>-->
 </div>
 <!-- CLOSE HEADING DIVS -->
 	<div style="text-align:center;">
 
 		<!-- menu for my account -->
-		<?php require("menu_admin.php"); ?>
+		<?php require("menu_my_account.php"); ?>
         <!-- END menu for my account -->
     </div>
-
     <div class="white-section">
         <div class="container">
-        <h3>Edit publication</h3>
+        <h3>Manage my publications</h3>
         <p>
-        << <a href="publications_home.php">Back</a> to my list of publications<br/>
+        	<a href="file_chooser.php">Upload and tag a new research file</a>
+			
+			<table class="search-table">
+			<tr>
+				<th>Title</th>
+				<th>Industry/sector</th>
+				<th>Search tags</th>
+				<th>Upload date</th>
+				<th>Publication date</th>
+				<th>Action</th>
+			</tr>
 <?php
-		$fileId = $_REQUEST["file_id"];
+		$userName = $_SESSION['login_user'];
+		//$searchTag = $_POST['search_text'];
 		$servername = "127.0.0.1";
 		$username = "publishforce";
 		$password = "publishforce";
@@ -62,79 +78,40 @@ include('session.php');
 		} else {
     		//echo "CONNECT OK";
 		}
-		$sql = "select * from pf_research_files where file_id = $fileId";
-		//echo $sql;
+		
+		$sql = "select * from pf_research_files where user_id = '$userName'";
 		$result = $connection->query($sql);
-?>
-	
-	
-        <form id="updatePublications" action="admin_update_publications.php" method="post" enctype="multipart/form-data">
-
-	<p>
-			<table class="search-table" style="width:700px;">
-			<tr>
-				<th>Name</th>
-				<th>Value</th>
-			</tr>
-			
-<?php
-
-
 		if ($result->num_rows > 0) {  // && $searchTag!="") {
     		// output data of each row
     		while($row = $result->fetch_assoc()) {
-        		// file_id, file_name, file_title, file_type, user_id, industry_type, 
-        		// search_tags, user_company, creation_date
-        		//echo "something " . $row["file_title"]. "again? ";
-        		$publishFlag = "publish";
-        		$publicationStatus = "Not published";
-        		if( $row["published_flag"] == 1 ) {
-        			$publishFlag = "unpublish";
-        			$publicationStatus = "Published on " . $row["published_date"];
-        		}
-        		
+				$published_status = "N/A";
+    			if( $row["published_flag"] == 1 ) {
+    				$published_status = $row["published_date"];
+    			}     		
         		echo "<tr>
-        		<td width='100'>Title: </td><td width='600'><input type='text' class='search-text' name='file_title' id='file_title' value='" . $row["file_title"]. "'/></td></tr>
-        		<tr><td>File name: </td><td>". $row["file_name"] . "</td></tr>
-        		<tr><td>Publisher: </td><td><input type='text' class='search-text' name='user_company' id='user_company' value='". $row["user_company"] . "'/></td></tr>
-        		<tr><td>Industry: </td><td><input type='text' class='search-text' name='industry_type' id='industry_type' value='" . $row["industry_type"]. "' /></td></tr>
-        		<tr><td>Abstract: </td><td><textarea name='file_abstract' id='file_abstract' cols='4'>" . $row["file_abstract"]. "</textarea></td></tr>
-        		<tr><td>Tags: </td><td><input type='text' style='width:400px;' class='search-text' name='search_tags' id='search_tags' value='" . $row["search_tags"]. "' />
-        		<input type='hidden' name='file_id' id='file_id' value='" . $row["file_id"]. "' /></td></tr>
-        		<tr><td>Creation date: </td><td>" . $row["creation_date"]. "  </td></tr>
-        		<tr><td>Publication status: </td><td>$publicationStatus</td></tr>
-        		<tr><td><strong>Action?</strong></td><td>[ <a href='javascript:submitform();'>update</a> ]  
-        		&nbsp;&nbsp;&nbsp;&nbsp;
-        		[ <a href='admin_publish_publications.php?file_id=" . $row["file_id"]. "&action=$publishFlag'>$publishFlag this research</a> ]
-        		</td></tr>";
+        		<td><a href='" . $row["file_name"]. "'</a>" . $row["file_title"]. "</td>
+        		<td>" . $row["industry_type"] . "</td>
+        		<td>" . $row["search_tags"] . "</td>
+        		<td>" . $row["creation_date"]. "</td>
+        		<td>" . $published_status . "</td>
+        		<td>[ <a href='admin_edit_publications.php?file_id=" . $row["file_id"]. "'>edit or publish</a> ]</td>
+        		</tr>";
     		}
 		} else {
     		echo "Try refining your search";
 		}
 		$connection->close();
-?>
-			
-		</table>
-		
-</p>
-		</form>
-		
-<!-- The function that submits the form-->
-<script type="text/javascript">
-function submitform()
-{
- 	var user_form = document.getElementById("updatePublications");
- 	user_form.submit();
-}
-</script>
-<p>		
-		<!--If these results were not what you are looking for, please try the following options:
+?>				
+        	</table>
+        </p>
+	<p>
+		If you don't find what you are looking for then you may want to try the following options:
 	
 <ul>
 	
 	<li>Contact us for help</li>
 	<li>Put a request to publishers for the material you are looking for</li>
-</ul>-->
+</ul>
 	</p>
             
         </div>
@@ -144,7 +121,7 @@ function submitform()
     <div class="white-section">
 	
     <div class="container" style="text-align:center;">
-    	<div style="padding:0 150px;">
+    	<div style="padding:0 15px;">
             <h4 class="large-header">Contact Us</h4>
             <p class="mbottom10">If you have any questions about our research platform, or if you have an enquiry, please contact us using the details below, or by filling out the form on our contact page.</p>
             <a href="contact.php"><span class="button3">Get in touch</span></a>

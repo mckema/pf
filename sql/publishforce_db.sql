@@ -103,6 +103,7 @@ CREATE TABLE `pf_research_files` (
   `face_value` decimal(15,2) NOT NULL,
   `sell_ccy` varchar(3) NOT NULL,
   `published_flag` BIT(1) NOT NULL,
+  `published_date` datetime DEFAULT NULL,
   `creation_date` datetime NOT NULL,
   PRIMARY KEY (file_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;

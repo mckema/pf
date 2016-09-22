@@ -37,7 +37,7 @@ include('session.php');
 	<div style="text-align:center;">
 
 		<!-- menu for my account -->
-		<?php require("menu_admin.php"); ?>
+		<?php require("menu_my_account.php"); ?>
         <!-- END menu for my account -->
     </div>
 
@@ -45,7 +45,7 @@ include('session.php');
         <div class="container">
         <h3>Edit publications</h3>
         <p>
-        << <a href="admin_publications_list.php">Back</a> to list of publications<br/>
+        << <a href="publications_home.php">Back</a> to list of publications<br/>
 <?php
 		$fileId = $_POST["file_id"];
 		$fileId = $_POST["file_id"];
