@@ -37,7 +37,7 @@ include('session.php');
 	<div style="text-align:center;">
 
 		<!-- menu for my account -->
-		<?php require("menu_admin.php"); ?>
+		<?php require("menu_my_account.php"); ?>
         <!-- END menu for my account -->
     </div>
 
@@ -101,11 +101,17 @@ include('session.php');
         		<tr><td>Abstract: </td><td><textarea name='file_abstract' id='file_abstract' cols='4'>" . $row["file_abstract"]. "</textarea></td></tr>
         		<tr><td>Tags: </td><td><input type='text' style='width:400px;' class='search-text' name='search_tags' id='search_tags' value='" . $row["search_tags"]. "' />
         		<input type='hidden' name='file_id' id='file_id' value='" . $row["file_id"]. "' /></td></tr>
+        		<tr><td>Standard price:</td><td>
+        			<input type='text' style='width:40px;' class='search-text' name='sell_ccy' id='sell_ccy' value='" . $row["sell_ccy"]. "' />
+        			<input type='text' style='width:60px;' class='search-text' name='face_value' id='face_value' value='" . $row["face_value"]. "' />
+        			</td></tr>
+        		<tr><td>Author name: </td><td><input type='text' class='search-text' name='file_author' id='file_author' value='". $row["file_author"] . "'/></td></tr>
+        		<tr><td>Author email: </td><td><input type='text' class='search-text' name='file_author_email' id='file_author_email' value='". $row["file_author_email"] . "'/></td></tr>
         		<tr><td>Creation date: </td><td>" . $row["creation_date"]. "  </td></tr>
         		<tr><td>Publication status: </td><td>$publicationStatus</td></tr>
-        		<tr><td><strong>Action?</strong></td><td>[ <a href='javascript:submitform();'>update</a> ]  
+        		<tr><td><strong>Action?</strong></td><td>[ <a href='javascript:submitform();'>save for later</a> ]  
         		&nbsp;&nbsp;&nbsp;&nbsp;
-        		[ <a href='admin_publish_publications.php?file_id=" . $row["file_id"]. "&action=$publishFlag'>$publishFlag this research</a> ]
+        		[ <a href='admin_publish_publications.php?file_id=" . $row["file_id"]. "&action=$publishFlag'>$publishFlag now</a> ]
         		</td></tr>";
     		}
 		} else {

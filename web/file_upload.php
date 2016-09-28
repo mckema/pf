@@ -46,6 +46,7 @@ include('session.php');
         <h3>Add your research content here:</h3>
         <p>
 <?php
+//grab values from form fields
 $fileTitle = $_POST['file-title'];
 $fileAbstract = $_POST['file-abstract'];
 $fileSector = $_POST['file-sector'];
@@ -53,6 +54,9 @@ $fileKeywords = $_POST['file-keywords'];
 $filePublisher = $_POST['file-publisher'];
 $fileFaceValue = $_POST['file-face-value'];
 $fileCcy = $_POST['file-ccy'];
+$fileAuthor = $_POST['file-author'];
+$fileEuthorEmail = $_POST['file-author-email'];
+$fileFrequency =  $_POST['file-frequency'];
 
 // Establishing DB connection to persist file upload details, tags, author, etc.
 $servername = "127.0.0.1";
@@ -63,21 +67,32 @@ $dbname = "publishforce";
 // Create connection
 $connection = new mysqli($servername, $username, $password, $dbname);
 $target_dir = "uploads/";
+$myDate = $_SERVER['REQUEST_TIME'];
 $target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
+$ext = explode('.',$target_file);
+$extension = $ext[1];
+$fileNameWithTimestamp = $ext[0].'_'.$myDate.".".$extension;
+//echo "newname: $fileNameWithTimestamp";
+//$target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
+//echo "target_file: $target_file";
 $uploadOk = 1;
 $userName = $_SESSION['login_user'];
-$fileType = pathinfo($target_file,PATHINFO_EXTENSION);
+$fileType = pathinfo($fileNameWithTimestamp,PATHINFO_EXTENSION);
 // Check if image file is a actual image or fake image
+/*if ($_FILES["fileToUpload"]["size"] > 500000) {
+    echo "Sorry, your file is too large.";
+}*/
 if(isset($_POST["submit"])) {
     //$check = getimagesize($_FILES["fileToUpload"]["tmp_name"]);
     $check = filesize($_FILES["fileToUpload"]["tmp_name"]);
+    //echo "check: $check"; 
     if($check !== false) {
-        echo "File is ok" . $check["mime"] . ".";
+        //echo "File is ok" . $check["mime"] . ".";
         $uploadOk = 1;
         // Write details to the database on the file...
-        $sql = "INSERT INTO `pf_research_files`(`user_id`, `file_name`, `file_type`, `file_title`, `file_abstract`, `industry_type`, `search_tags`, `user_company`, `face_value`, `sell_ccy`, `creation_date`) 
-			VALUES ('$userName','$target_file','$fileType', '$fileTitle', '$fileAbstract', '$fileSector','$fileKeywords','$filePublisher', $fileFaceValue, '$fileCcy', NOW())";
-        
+        $sql = "INSERT INTO `pf_research_files`(`user_id`, `file_name`, `file_type`, `file_title`, `file_abstract`, `industry_type`, `search_tags`, `user_company`, `face_value`, `sell_ccy`, `published_flag`, `creation_date`, `file_author`, `file_author_email`, `file_frequency`) 
+			VALUES ('$userName','$fileNameWithTimestamp','$fileType', '$fileTitle', '$fileAbstract', '$fileSector','$fileKeywords','$filePublisher', $fileFaceValue, '$fileCcy',0, NOW(), '$fileAuthor', '$fileEuthorEmail', '$fileFrequency')";
+        //echo "sql: $sql";
 		if ($connection->connect_error) {
     		die("Connection failed: " . $connection->connect_error);
     		echo "FAILED TO CONNECT";
@@ -99,7 +114,7 @@ if(isset($_POST["submit"])) {
     }
 }
 // Check if file already exists
-if (file_exists($target_file)) {
+if (file_exists($fileNameWithTimestamp)) {
     echo "Sorry, file already exists.";
     $uploadOk = 0;
 }
@@ -120,11 +135,15 @@ if ($uploadOk == 0) {
 // if everything is ok, try to upload file
 } 
 else {
-    if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
-        echo "The file ". basename( $_FILES["fileToUpload"]["name"]). " has been uploaded.";
-        echo " <a href='$target_file'>Link</a>";
+    //if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
+    if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $fileNameWithTimestamp)) {
+        //echo "The file ". basename( $_FILES["fileToUpload"]["name"]). " has been uploaded.";
+        echo "The file <strong>". $fileTitle . "</strong> has been uploaded";
+        echo " <a target='_blank' href='$fileNameWithTimestamp'>here</a>";
         if (!$connection->connect_error) {
         	//echo "closing DB connection";
+        	echo "<br/>The next action is publication and validation. If you do not wish to publish right now, no problem. Just go back to the summary on the menu above<br/><br/>";
+        	echo "<a href='#'>I can validate</a> or <a href='#'>request validation</a><br/>";
         	$connection->close();
         }
         
@@ -138,8 +157,9 @@ else {
 ?>
 		</p>
 		
+	
 	<p>
-		Please note you will still need to publish this research for clients to see it
+		
 	</p>
             
         </div>

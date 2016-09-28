@@ -43,18 +43,16 @@ include('session.php');
 
     <div class="white-section">
         <div class="container">
-        <h3>Allocate to funds and Purchase publication</h3>
+        <h3>Step 1: Review publication details</h3>
         <p>
-        
-        
-        
+            
 <?php
 		$fileId = $_REQUEST["file_id"];
 		$servername = "127.0.0.1";
 		$username = "publishforce";
 		$password = "publishforce";
 		$dbname = "publishforce";
-		echo "<< <a href='display_research.php?file_id=$file_id'>Back</a> to summary<br/>";
+		echo "<< <a href='display_research.php?file_id=$fileId'>Back</a> to summary<br/>";
 		// Create connection
 		$connection = new mysqli($servername, $username, $password, $dbname);
 		// Check connection
@@ -82,22 +80,8 @@ include('session.php');
         		echo "nope $sqlResearchFileRead";
         	}
         }
-        //display the funds you will be allocating to:
-        $sqlFunds = "select fd.firm_name as firm_name, f.fund_name as fund_name, f.fund_amount as fund_amount, 
-        	f.fund_ccy as fund_ccy from pf_firm_details fd, pf_funds f
-			where fd.firm_id = f.firm_id
-			and fd.firm_id = 1";
-		$resultFunds = $connection->query($sqlFunds);
-		echo "<strong>Funds I manage:</strong><br/>";
-		if ($resultFunds->num_rows > 0) {
-        	while($rowFunds = $resultFunds->fetch_assoc()) {
-        		echo "<strong>Fund name</strong>: " . $rowFunds["fund_name"]. " &nbsp;&nbsp;<strong>Amount</strong>: "  . $rowFunds["fund_ccy"]. " " . $rowFunds["fund_amount"]. " [ <a href='#'>add this fund</a> ]<br/>";
-        	}
-        }
 ?>
-	
-	
-        <form id="purchasePublications" action="confirm_purchase.php" method="post" enctype="multipart/form-data">
+<form id="purchasePublications" action="confirm_purchase.php" method="post" enctype="multipart/form-data">
 
 	<p>
 			<table class="search-table" style="width:700px;">
@@ -133,7 +117,7 @@ include('session.php');
         		<tr><td>Tags: </td><td>" . $row["search_tags"]. "
         		<input type='hidden' name='file_id' id='file_id' value='" . $row["file_id"]. "' /></td></tr>
         		<tr><td>Creation date: </td><td>" . $row["creation_date"]. "  </td></tr>
-        		<tr><td><strong>Action?</strong></td> <td>I agree to [ <a href='confirm_purchase.php?file_id=". $row["file_id"] . "'>purchase</a> ]  this research
+        		<tr><td><strong>Action?</strong></td> <td>I agree to [ <a href='allocate_purchase.php?file_id=". $row["file_id"] . "'>purchase</a> ]  this research
         		</td></tr>";
     		}
 		} else {
@@ -144,8 +128,8 @@ include('session.php');
 			
 		</table>
 		
-</p>
-		</form>
+	</p>
+</form>
 		
 <!-- The function that submits the form-->
 <script type="text/javascript">
@@ -155,14 +139,7 @@ function submitform()
  	user_form.submit();
 }
 </script>
-<p>		
-		<!--If these results were not what you are looking for, please try the following options:
-	
-<ul>
-	
-	<li>Contact us for help</li>
-	<li>Put a request to publishers for the material you are looking for</li>
-</ul>-->
+	<p>
 	</p>
             
         </div>

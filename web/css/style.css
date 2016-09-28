@@ -712,7 +712,62 @@ textarea {
 	margin-left:-1px;	
 	border-radius:6px;
 }
+select {
+	color:#999;
+	border:1px solid #00a651;
+	width: 160px;
+	height: 32px;
+	padding:5px 1%;
+	margin-left:1px;	
+	border-radius:6px;
+}
+/*.select-style {
+    padding: 0;
+    margin: 0;
+    border: 1px solid #ccc;
+    width: 120px;
+    border-radius: 3px;
+    overflow: hidden;
+    background-color: #fff;
+    background: #fff;
+}
 
+.select-style select {
+    padding: 5px 8px;
+    width: 130%;
+    border: none;
+    box-shadow: none;
+    background-color: transparent;
+    background-image: none;
+    -webkit-appearance: none;
+       -moz-appearance: none;
+            appearance: none;
+}
+
+.select-style select:focus {
+    outline: none;
+}*/
+
+/*.styled-select select {
+   background: transparent;
+   width: 268px;
+   padding: 5px;
+   font-size: 16px;
+   line-height: 1;
+   border: 0;
+   border-radius: 0;
+   height: 34px;
+   -webkit-appearance: none;
+   }
+
+.styled-select {
+   width: 240px;
+   height: 34px;
+   overflow: hidden;
+   background: url(new_arrow.png) no-repeat right #ddd;
+   border: 1px solid #ccc;
+   }
+*/
 .small_icons {background:url(../images/interface/small-contact-icons.png) no-repeat left top; padding-left:24px; height:20px; display:block; line-height:20px; color:#454545; margin-bottom:2px; padding-top:8px; font-weight:600;}
 #small_address {background-position:0 0;}
 #small_phone {background-position:0 -84px;}

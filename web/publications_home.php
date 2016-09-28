@@ -94,7 +94,7 @@ include('session.php');
         		<td>" . $row["search_tags"] . "</td>
         		<td>" . $row["creation_date"]. "</td>
         		<td>" . $published_status . "</td>
-        		<td>[ <a href='admin_edit_publications.php?file_id=" . $row["file_id"]. "'>edit or publish</a> ]</td>
+        		<td>[ <a href='admin_edit_publications.php?file_id=" . $row["file_id"]. "'>edit and publish</a> ]</td>
         		</tr>";
     		}
 		} else {

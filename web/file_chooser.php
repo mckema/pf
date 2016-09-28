@@ -70,11 +70,34 @@ include('session.php');
 			</tr> 
 			<tr>
 				<td>Publisher:</td>
-        		<td><input type="text" class="search-text" name="file-publisher" id="file-publisher" style="width: 100px;" /> (e.g. ABC Macro Research) </td>
+        		<td><input type="text" class="search-text" name="file-publisher" id="file-publisher" style="width: 200px;" /> (e.g. ABC Macro Research) </td>
+        	</tr> 
 			<tr>
-				<td>Currency &amp; face value:</td>
-        		<td><input type="text" class="search-text" name="file-ccy" id="file-ccy" style="width: 20px;" /> (e.g. GBP)
+				<td>Author name:</td>
+        		<td><input type="text" class="search-text" name="file-author" id="file-author" style="width: 200px;" /> (e.g. John Smith)
+        	</tr>
+        	<tr>
+        		<td>Author email:</td>
+        		<td><input type="text" class="search-text" name="file-author-email" id="file-author-email" style="width: 200px;" /> (e.g. jmith@example.com) </td>
+        	</tr>
+			<tr>
+				<td>Currency &amp; standard price:</td>
+        		<td><input type="text" class="search-text" name="file-ccy" id="file-ccy" style="width: 40px;" /> (e.g. GBP)
         	&nbsp;&nbsp;&nbsp;<input type="text" class="search-text" name="file-face-value" id="file-face-value" style="width: 60px;" /> (e.g. 1000.00)</td>
+        	</tr>
+        	<tr>
+				<td>Frequency:</td>
+        		<td>
+        			<select name="file-frequency">
+        				<option>choose...</option>
+        				<option>weekly</option>
+        				<option>fortnightly</option>
+        				<option>monthly</option>
+        				<option>quarterly</option>
+        				<option>semi-annually</option>
+        				<option>annually</option>
+        			</select>
+        		</td>
         	</tr>
         </table>
         <p>

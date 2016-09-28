@@ -55,6 +55,12 @@ include('session.php');
 		$industryType = $_POST["industry_type"];
 		$fileAbstract = $_POST["file_abstract"];
 		$searchTags = $_POST["search_tags"];
+		$sellCcy = $_POST["sell_ccy"];
+		$faceValue = $_POST["face_value"];
+		$fileAuthor = $_POST["file_author"];
+		$fileAuthorEmail = $_POST["file_author_email"];
+		
+		//DB details
 		$servername = "127.0.0.1";
 		$username = "publishforce";
 		$password = "publishforce";
@@ -69,8 +75,10 @@ include('session.php');
 		} else {
     		//echo "CONNECT OK";
 		}
-		$sql = "update pf_research_files set file_name = '$fileName', file_title = '$fileTitle', 
-		industry_type = '$industryType', file_abstract = '$fileAbstract', user_company = '$userCompany', search_tags = '$searchTags' where file_id = $fileId";
+		$sql = "update pf_research_files set file_title = '$fileTitle', 
+		industry_type = '$industryType', file_abstract = '$fileAbstract', user_company = '$userCompany', search_tags = '$searchTags', 
+		sell_ccy = '$sellCcy', face_value = $faceValue, file_author = '$fileAuthor', file_author_email = '$fileAuthorEmail'
+		where file_id = $fileId";
 		$result = $connection->query($sql);
 ?>
 	

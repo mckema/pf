@@ -69,7 +69,7 @@ include('session.php');
 		} else {
     		//echo "CONNECT OK";
 		}
-		$sql = "select a.file_name as file_name, a.file_title as file_title, b.purchased_date as purchased_date, b.purchased_fee as purchased_fee, b.purchased_ccy as purchased_ccy
+		$sql = "select a.file_id as file_id, a.file_name as file_name, a.file_title as file_title, b.purchased_date as purchased_date, b.purchased_fee as purchased_fee, b.purchased_ccy as purchased_ccy
 			from pf_research_files a, pf_purchase_history b
 			where a.file_id = b.file_id and b.user_id = $session_user_id";
 		//echo $sql;
@@ -81,7 +81,7 @@ include('session.php');
     		while($row = $result->fetch_assoc()) {
     			
         		echo "<tr>
-        		<td class=\"blotter-lnk\"><a href='" . $row["file_name"] . "'>" . $row["file_title"]. "</a></td>
+        		<td class=\"blotter-lnk\"><a href=display_research.php?file_id=" . $row["file_id"] . ">" . $row["file_title"]. "</a></td>
         		<td>". $row["purchased_date"] . "</td>
         		<td>". $row["purchased_ccy"] . " " . $row["purchased_fee"] . "</td>
         		</tr>";
@@ -122,29 +122,7 @@ include('session.php');
 		}	
 		
 		$connection->close();
-?>		
-
-			<tr>
-				<td>Which CCY?</td>
-				<td>TBD amount</td>
-			</tr>
-			<tr>
-				<td>Payment method</td>
-				<td>TBD</td>
-			</tr>
-			<tr>
-				<td>External invoicing</td>
-				<td>Ref: ???</td>
-			</tr>
-			<tr>
-				<td>Internal invoicing</td>
-				<td>???</td>
-			</tr>
-			<tr>
-				<td>Volume retrocession</td>
-				<td>???</td>
-			</tr>
-			
+?>			
 		</table>		
 	</li>
 </ul>

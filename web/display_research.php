@@ -52,6 +52,7 @@ include('session.php');
 		$username = "publishforce";
 		$password = "publishforce";
 		$dbname = "publishforce";
+		echo "firm ID: $session_user_firm_id";
 
 		// Create connection
 		$connection = new mysqli($servername, $username, $password, $dbname);
@@ -101,6 +102,9 @@ include('session.php');
     			// has this file already been purchased?
     			$purchasedFlag = "";
         		$sqlPurchased = "select file_id, purchased_date from pf_purchase_history where file_id= $fileId and user_id = $session_user_id";
+        		
+        		// we need to match the firm to the fund too, so need to look up the firm
+        		$sqlAllocationDetails = "select file_id, purchased_date from pf_allocation_history where file_id= $fileId and user_id = $session_user_id";
         		//echo $sqlPurchased;
         		$resultFilePurchased = $connection->query($sqlPurchased);
         		if ($resultFilePurchased->num_rows > 0) {
@@ -125,8 +129,11 @@ include('session.php');
         			//nada
         		}
         		echo "<tr>
-        		<td width='100'>Title: </td><td width='600'>" . $row["file_title"]. " " . $purchasedFlag . "" . $bookmarkedFlag . "</td></tr>
-        		
+        		<td width='100'>Title: </td><td width='600'>" . $row["file_title"]. " " . $purchasedFlag . "" . $bookmarkedFlag . "</td></tr>";
+        		if( $purchasedFlag != "" ) {
+        			echo "<tr><td>Allocated to: </td><td>TODO, list of funds</td></tr>";
+        		}
+        		echo "
         		<tr><td>Publisher: </td><td>". $row["user_company"] . "</td></tr>
         		<tr><td>Face value: </td><td>". $row["sell_ccy"] . " ". $row["face_value"] . "</td></tr>
         		<tr><td>Industry: </td><td>" . $row["industry_type"]. "</td></tr>

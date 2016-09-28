@@ -44,7 +44,18 @@ include('session.php');
     <div class="white-section">
         <div class="container">
         <h3>Manage my funds</h3>
-        <p>       
+        <p>
+        <form id="searchForm" method="POST">
+        	<!--<div class="styled-select">-->
+        	<select name="filterData">
+        		<option>choose...</option>
+        		<option>Blackrock</option>
+        		<option>UBS</option>
+        	</select>
+        	<a href='javascript:document.getElementById("searchForm").submit();'><span class="button1">filter by issuer</span></a>
+        	<!--</div>-->
+        	
+        </form>     
 <?php
 		$fileId = $_REQUEST["file_id"];
 		$servername = "127.0.0.1";
@@ -67,25 +78,26 @@ include('session.php');
         <form id="purchasePublications" action="confirm_purchase.php" method="post" enctype="multipart/form-data">
 
 	<p>
-			<table class="search-table" style="width:700px;">
+			<table class="search-table" style="width:800px;">
 			<tr>
-				<th>Fund name</th>
-				<th>Fund value</th>
+				<th>Issuer</th>
+				<th>ISIN / Fund name</th>
 			</tr>
 			
 <?php
 		//TBD, display the firm ID of the session user!
-        $sqlFunds = "select fd.firm_name as firm_name, f.fund_name as fund_name, f.fund_amount as fund_amount, 
+        /*$sqlFunds = "select fd.firm_name as firm_name, f.fund_name as fund_name, f.fund_amount as fund_amount, 
         	f.fund_ccy as fund_ccy from pf_firm_details fd, pf_funds f
 			where fd.firm_id = f.firm_id
-			and fd.firm_id = 1";
+			and fd.firm_id = 1";*/
+		$sqlFunds = "select * from pf_funds where Security_Status = 'Tradeable' order by Issuer_name";
 		$resultFunds = $connection->query($sqlFunds);
 		if ($resultFunds->num_rows > 0) {
     		// output data of each row
     		while($row = $resultFunds->fetch_assoc()) {
     			echo "<tr>
-        		<td width='200'>" . $row["fund_name"]. "</td>
-        		<td width='300'>". $row["fund_ccy"] . " ". $row["fund_amount"] . "</td>
+        		<td width='300'>" . $row["Issuer_name"]. "</td>
+        		<td width='500'>". $row["ISIN"] . " / ". $row["Security_Description"] . "</td>
         		</tr>";
     		}
     	}

@@ -12,6 +12,7 @@ where a.user_name='$user_check' and a.user_name = b.username and a.active_flag=1
 $row = mysql_fetch_assoc($ses_sql);
 $login_session =$row['user_name'];
 $session_user_id =$row['user_id'];
+//$session_user_firm_id =$row['firm_id'];
 $session_sys_admin =$row['sys_admin'];
 
 // MANAGE HOW LONG THE USER SESSION LASTS

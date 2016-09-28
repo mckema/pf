@@ -50,6 +50,7 @@ CREATE TABLE `pf_user` (
   `fname` varchar(50) NOT NULL,
   `lname` varchar(50) NOT NULL,
   `user_company` varchar(100) NOT NULL,
+  `firm_id` int(10) NOT NULL,
   `job_title` varchar(100) NOT NULL,
   `user_mobile` varchar(50) NOT NULL,
   `publisher_user` bit(1) NOT NULL,
@@ -64,7 +65,8 @@ CREATE TABLE `pf_user` (
 -- User types: publisher, consumer, public viewer, paying member, consumer/publisher dual role
 
 -- TEST VALUES
-
+-- NEW FIRM_ID FIELD!!!!
+-- **********************
 INSERT INTO `pf_user`(`user_name`, `user_email`, `fname`, `lname`, `user_company`, `job_title`, `user_mobile`, `publisher_user`, `consumer_user`, `publisher_and_consumer_user`, `creation_date`, `sys_admin_flag`, `active_flag`) 
   VALUES ('mmckee','mark.mckee@publishforce.com','Mark','McKee','PublishForce Ltd','Sys admin','07801 105014',1,0,0,NOW(),1,1);
 INSERT INTO `pf_user`(`user_name`, `user_email`, `fname`, `lname`, `user_company`, `job_title`, `user_mobile`, `publisher_user`, `consumer_user`, `publisher_and_consumer_user`, `creation_date`, `sys_admin_flag`, `active_flag`) 
@@ -105,17 +107,32 @@ CREATE TABLE `pf_research_files` (
   `published_flag` BIT(1) NOT NULL,
   `published_date` datetime DEFAULT NULL,
   `creation_date` datetime NOT NULL,
+  `file_author` varchar(255) NOT NULL, 
+  `file_author_email` varchar(255) NOT NULL, 
+  `file_frequency` varchar(255) DEFAULT NULL,
   PRIMARY KEY (file_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+-- NEW FIELDS for `file-author`, `file-author-email`, `file-frequency`
+
+
 -- ALTER TABLE `pf_research_files` ADD `published_flag` BIT(1) NOT NULL AFTER `sell_ccy`;
 
-INSERT INTO `pf_research_files`(`user_id`, `file_name`, `file_type`, `file_title`, `industry_type`, `file_abstract`, `search_tags`, `user_company`, `face_value`, `sell_ccy`, `published_flag`, `creation_date`) 
-VALUES ('mmckee','uploads/brazil_comm.pdf','pdf','Brazil Commodities 2016','commodities','Some abstract information here...','Brazil raw materials, commodities, Latin America','ABC Research Ltd',5000.00, 'GBP', 0, NOW());
+ALTER TABLE `pf_research_files` ADD `file_author` varchar(255) NOT NULL AFTER `creation_date`;
+ALTER TABLE `pf_research_files` ADD `file_author_email` varchar(255) NOT NULL AFTER `file_author`; 
+ALTER TABLE `pf_research_files` ADD `file_frequency` varchar(255) DEFAULT NULL AFTER `file_author_email`;
+
+
+INSERT INTO `pf_research_files`(`user_id`, `file_name`, `file_type`, `file_title`, `industry_type`, `file_abstract`, `search_tags`, `user_company`, `face_value`, `sell_ccy`, `published_flag`, `creation_date`, `file_author`, `file_author_email`, `file_frequency`) 
+VALUES ('mmckee','uploads/brazil_comm.pdf','pdf','Brazil Commodities 2016','commodities','Some abstract information here...','Brazil raw materials, commodities, Latin America','ABC Research Ltd',5000.00, 'GBP', 0, NOW(), 'John Smith', 'jmith@example.com', 'yearly');
 INSERT INTO `pf_research_files`(`user_id`, `file_name`, `file_type`, `file_title`, `industry_type`, `file_abstract`, `search_tags`, `user_company`, `face_value`, `sell_ccy`, `published_flag`, `creation_date`) 
 VALUES ('mmckee','uploads/ukraine_machinery.pdf','pdf','Machinery in Ukraine','Agriculture','Some abstract information here...','farming, ukraine, manufacturing, xyz','Farm Research Ltd',10000.00, 'GBP', 0, NOW());
 INSERT INTO `pf_research_files`(`user_id`, `file_name`, `file_type`, `file_title`, `industry_type`, `file_abstract`, `search_tags`, `user_company`, `face_value`, `sell_ccy`, `published_flag`, `creation_date`) 
 VALUES ('mmckee','uploads/craft_beer.pdf','pdf','London craft ale','Beverages','The beer brewing industry is changing and we think now is the time to invest...','brewing, upstart industry, beer','Value Add Ltd',12000.00, 'GBP', 0, NOW());
+
+
+
+
 
 --
 -- Table structure for table `pf_user_registration`
@@ -213,7 +230,7 @@ INSERT INTO `pf_firm_details`(`firm_name`, `active_flag`, `creation_date`) VALUE
 -- FUND DETAILS
 DROP TABLE IF EXISTS `pf_funds`;
 
-CREATE TABLE `pf_funds` (
+/*CREATE TABLE `pf_funds` (
   `fund_id` int(10) NOT NULL AUTO_INCREMENT,
   `fund_name` varchar(100) NOT NULL,
   `firm_id` int(10) NOT NULL,
@@ -224,12 +241,119 @@ CREATE TABLE `pf_funds` (
   CONSTRAINT pf_funds_primary 
 UNIQUE (fund_id, firm_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+*/
 
-INSERT INTO `pf_funds`(`fund_name`,`firm_id`, `fund_amount`, `fund_ccy`, `active_flag`, `creation_date`) 
+CREATE TABLE `pf_funds` (
+`Issuer_name` varchar(100) NOT NULL,
+`Country_of_Incorporation` varchar(100) NOT NULL,
+`ISIN` varchar(100) NOT NULL,
+`CFI_Code` varchar(100) NOT NULL,
+`Security_Type` varchar(100) NOT NULL,
+`Security_Description` varchar(100) NOT NULL,
+`Country_of_Register` varchar(100) NOT NULL,
+`Security_Form` varchar(100) NOT NULL,
+`Security_Status` varchar(100) NOT NULL,
+  PRIMARY KEY (ISIN)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+/*
+DISPLAY FIELDS
+Issuer_name
+Country_of_Incorporation
+ISIN
+CFI_Code
+Security_Type
+Security_Description
+Country_of_Register
+Security_Form
+Security_Status
+
+*/
+
+
+INSERT INTO `pf_funds`(`Issuer_name`,`Country_of_Incorporation`,`ISIN`,`CFI_Code`,`Security_Type`,`Security_Description`,`Country_of_Register`,`Security_Form`,`Security_Status`)
+VALUES ('JUPITER SPLIT TRUST','Great Britain - GB','GB00B02WQB60','ESVUFR','Par Value','CAP GBP0.05(ASS JUPITER 2ND SPT PKG UTS)','Great Britain - GB','Registered','Tradeable');
+
+INSERT INTO `pf_funds`(`Issuer_name`,`Country_of_Incorporation`,`ISIN`,`CFI_Code`,`Security_Type`,`Security_Description`,`Country_of_Register`,`Security_Form`,`Security_Status`)
+VALUES ('JUPITER SPLIT TRUST','Great Britain - GB','GB00B02WQG16','ESVUFR','Par Value','CAP GBP0.05(ASSD SCHEME CASH)','Great Britain - GB','Registered','Inactive');
+INSERT INTO `pf_funds`(`Issuer_name`,`Country_of_Incorporation`,`ISIN`,`CFI_Code`,`Security_Type`,`Security_Description`,`Country_of_Register`,`Security_Form`,`Security_Status`)
+VALUES ('JUPITER SPLIT TRUST','Great Britain - GB','GB00B02WQX80','ESVUFR','Par Value','INC GBP0.05(ASS JUP 2ND ENH INC PKG UT)','Great Britain - GB','Registered','Tradeable');
+INSERT INTO `pf_funds`(`Issuer_name`,`Country_of_Incorporation`,`ISIN`,`CFI_Code`,`Security_Type`,`Security_Description`,`Country_of_Register`,`Security_Form`,`Security_Status`)
+VALUES ('BLACKROCK (CHANNEL ISLANDS) LTD','Jersey - JE','JE00B4RG7R45','EUOGMR','Funds/OEICs','HIGH PERFORMANCE OVER 5 YR IDX LKD GILT','Jersey - JE','Registered','Tradeable');
+INSERT INTO `pf_funds`(`Issuer_name`,`Country_of_Incorporation`,`ISIN`,`CFI_Code`,`Security_Type`,`Security_Description`,`Country_of_Register`,`Security_Form`,`Security_Status`)
+VALUES ('BLACKROCK (CHANNEL ISLANDS) LTD','Jersey - JE','JE00B4VVKY30','EUOGMR','Funds/OEICs','HIGH PERFORMANCE OVER 15 YEAR GILT','Jersey - JE','Registered','Tradeable');
+INSERT INTO `pf_funds`(`Issuer_name`,`Country_of_Incorporation`,`ISIN`,`CFI_Code`,`Security_Type`,`Security_Description`,`Country_of_Register`,`Security_Form`,`Security_Status`)
+VALUES ('BLACKROCK (CHANNEL ISLANDS) LTD','Jersey - JE','JE00B51WK762','EUOIMR','Funds/OEICs','DYNAMIC DIVERSIFIED GROWTH I INC','Jersey - JE','Registered','Tradeable');
+INSERT INTO `pf_funds`(`Issuer_name`,`Country_of_Incorporation`,`ISIN`,`CFI_Code`,`Security_Type`,`Security_Description`,`Country_of_Register`,`Security_Form`,`Security_Status`)
+VALUES ('BLACKROCK (CHANNEL ISLANDS) LTD','Jersey - JE','JE00B54ZWL01','EUOGMR','Funds/OEICs','DYNAMIC DIVERSIFIED GROWTH I ACC','Jersey - JE','Registered','Tradeable');
+INSERT INTO `pf_funds`(`Issuer_name`,`Country_of_Incorporation`,`ISIN`,`CFI_Code`,`Security_Type`,`Security_Description`,`Country_of_Register`,`Security_Form`,`Security_Status`)
+VALUES ('BLACKROCK ABSOLUTE RETURN STRATEGIE','Jersey - JE','JE00B2PXDB91','EUXXXR','NPV','RED PART SHS NPV GBP','Jersey - JE','Registered','Inactive');
+INSERT INTO `pf_funds`(`Issuer_name`,`Country_of_Incorporation`,`ISIN`,`CFI_Code`,`Security_Type`,`Security_Description`,`Country_of_Register`,`Security_Form`,`Security_Status`)
+VALUES ('UBS AG','Switzerland - CH','GB0031402265','EUXXXR','Funds/OEICs','EUROPA SUBSTANZ PLUS INDEX','Great Britain - GB','Registered','Tradeable');
+INSERT INTO `pf_funds`(`Issuer_name`,`Country_of_Incorporation`,`ISIN`,`CFI_Code`,`Security_Type`,`Security_Description`,`Country_of_Register`,`Security_Form`,`Security_Status`)
+VALUES ('UBS AG','Switzerland - CH','GB0031404428','EUXXXR','Funds/OEICs','US GROWTH 25 INDEX','Great Britain - GB','Registered','Tradeable');
+INSERT INTO `pf_funds`(`Issuer_name`,`Country_of_Incorporation`,`ISIN`,`CFI_Code`,`Security_Type`,`Security_Description`,`Country_of_Register`,`Security_Form`,`Security_Status`)
+VALUES ('UBS AG','Switzerland - CH','GB0032236555','EUXXXR','Funds/OEICs','EUROPEAN FOCUS CONVERTIBLE INDEX','Great Britain - GB','Registered','Tradeable');
+INSERT INTO `pf_funds`(`Issuer_name`,`Country_of_Incorporation`,`ISIN`,`CFI_Code`,`Security_Type`,`Security_Description`,`Country_of_Register`,`Security_Form`,`Security_Status`)
+VALUES ('UBS AG','Switzerland - CH','GB0032705989','EUXXXR','Funds/OEICs','MULTI STRATEGY INDEX BASKET','Not any country (I.e.Bearer) - ZZ','Bearer','Tradeable');
+INSERT INTO `pf_funds`(`Issuer_name`,`Country_of_Incorporation`,`ISIN`,`CFI_Code`,`Security_Type`,`Security_Description`,`Country_of_Register`,`Security_Form`,`Security_Status`)
+VALUES ('UBS AG','Switzerland - CH','GB0032800814','EUXXXR','Funds/OEICs','EUROPA WACHSTUM PLUS INDEX','Not any country (I.e.Bearer) - ZZ','Bearer','Tradeable');
+INSERT INTO `pf_funds`(`Issuer_name`,`Country_of_Incorporation`,`ISIN`,`CFI_Code`,`Security_Type`,`Security_Description`,`Country_of_Register`,`Security_Form`,`Security_Status`)
+VALUES ('UBS AG','Switzerland - CH','GB0034372853','MRIXXX','Miscellaneous','EMERGING MARKETS REFERENCE PORTFOLIO','Great Britain - GB','Registered','Tradeable');
+INSERT INTO `pf_funds`(`Issuer_name`,`Country_of_Incorporation`,`ISIN`,`CFI_Code`,`Security_Type`,`Security_Description`,`Country_of_Register`,`Security_Form`,`Security_Status`)
+VALUES ('UBS AG','Switzerland - CH','GB0034372960','MRIXXX','Miscellaneous','WEALTH MANAGEMENT STRATEGIC 20 EQTY PORT','Great Britain - GB','Registered','Tradeable');
+INSERT INTO `pf_funds`(`Issuer_name`,`Country_of_Incorporation`,`ISIN`,`CFI_Code`,`Security_Type`,`Security_Description`,`Country_of_Register`,`Security_Form`,`Security_Status`)
+VALUES ('INVESTEC ALL AFRICA FUND LTD','Guernsey, C.I. - GG','GG00B28CQP89','EUXXXR','NPV','ORD NPV','Great Britain - GB','Registered','Inactive');
+INSERT INTO `pf_funds`(`Issuer_name`,`Country_of_Incorporation`,`ISIN`,`CFI_Code`,`Security_Type`,`Security_Description`,`Country_of_Register`,`Security_Form`,`Security_Status`)
+VALUES ('INVESTEC ASSET MANAGEMENT LTD','Great Britain - GB','GB00B82FK756','EUXIMR','Funds/OEICs','RETIREMENT ADV INVESTEC CAUTIOUS MANAG','Great Britain - GB','Registered','Tradeable');
+INSERT INTO `pf_funds`(`Issuer_name`,`Country_of_Incorporation`,`ISIN`,`CFI_Code`,`Security_Type`,`Security_Description`,`Country_of_Register`,`Security_Form`,`Security_Status`)
+VALUES ('INVESTEC ASSET MANAGEMENT LTD','Great Britain - GB','GB00B8433781','EUXIMR','Funds/OEICs','RETIREMENT ADV INVESTEC MAP','Great Britain - GB','Registered','Tradeable');
+INSERT INTO `pf_funds`(`Issuer_name`,`Country_of_Incorporation`,`ISIN`,`CFI_Code`,`Security_Type`,`Security_Description`,`Country_of_Register`,`Security_Form`,`Security_Status`)
+VALUES ('INVESTEC ASSET MGMT GUERNSEY LTD','Guernsey, C.I. - GG','GB0003945879','EUXXXR','Funds/OEICs','WORLDWIDE UMBRELLA FD LTD ASIAN SMCOS','Great Britain - GB','Registered','Inactive');
+INSERT INTO `pf_funds`(`Issuer_name`,`Country_of_Incorporation`,`ISIN`,`CFI_Code`,`Security_Type`,`Security_Description`,`Country_of_Register`,`Security_Form`,`Security_Status`)
+VALUES ('INVESTEC FUND MANAGERS','Great Britain - GB','GB00BWH5XY60','EUOIMR','Funds/OEICs','EMERGING MKTS DYNAMIC EQT S GBP NET ACC','Great Britain - GB','Registered','Tradeable');
+INSERT INTO `pf_funds`(`Issuer_name`,`Country_of_Incorporation`,`ISIN`,`CFI_Code`,`Security_Type`,`Security_Description`,`Country_of_Register`,`Security_Form`,`Security_Status`)
+VALUES ('INVESTEC FUND MANAGERS','Great Britain - GB','GB00BWH5XZ77','EUOIMR','Funds/OEICs','EMERGING MKTS DYNAMIC EQT A GBP NET ACC','Great Britain - GB','Registered','Tradeable');
+INSERT INTO `pf_funds`(`Issuer_name`,`Country_of_Incorporation`,`ISIN`,`CFI_Code`,`Security_Type`,`Security_Description`,`Country_of_Register`,`Security_Form`,`Security_Status`)
+VALUES ('INVESTEC FUND MANAGERS','Great Britain - GB','GB00BWH5Y098','EUOGMR','Funds/OEICs','EMERGING MKTS DYNAMIC EQT I GBP NET ACC','Great Britain - GB','Registered','Tradeable');
+INSERT INTO `pf_funds`(`Issuer_name`,`Country_of_Incorporation`,`ISIN`,`CFI_Code`,`Security_Type`,`Security_Description`,`Country_of_Register`,`Security_Form`,`Security_Status`)
+VALUES ('INVESTEC FUND MANAGERS','Great Britain - GB','GB00BWH5Y106','EUOIMR','Funds/OEICs','EMERGING MKTS DYNAMIC EQT S GBP NET ACC','Great Britain - GB','Registered','Tradeable');
+INSERT INTO `pf_funds`(`Issuer_name`,`Country_of_Incorporation`,`ISIN`,`CFI_Code`,`Security_Type`,`Security_Description`,`Country_of_Register`,`Security_Form`,`Security_Status`)
+VALUES ('INVESTEC FUND MANAGERS','Great Britain - GB','GB00BWH5Y544','EUOGMR','Funds/OEICs','GLOBAL DIVIDEND A GBP NET ACC','Great Britain - GB','Registered','Tradeable');
+INSERT INTO `pf_funds`(`Issuer_name`,`Country_of_Incorporation`,`ISIN`,`CFI_Code`,`Security_Type`,`Security_Description`,`Country_of_Register`,`Security_Form`,`Security_Status`)
+VALUES ('INVESTEC FUND MANAGERS','Great Britain - GB','GB00BWH5Y650','EUOIMR','Funds/OEICs','GLOBAL DIVIDEND A GBP NET INC 2','Great Britain - GB','Registered','Tradeable');
+INSERT INTO `pf_funds`(`Issuer_name`,`Country_of_Incorporation`,`ISIN`,`CFI_Code`,`Security_Type`,`Security_Description`,`Country_of_Register`,`Security_Form`,`Security_Status`)
+VALUES ('INVESTEC FUND MANAGERS','Great Britain - GB','GB00BWH5Y767','EUOGMR','Funds/OEICs','GLOBAL DIVIDEND I GBP NET ACC','Great Britain - GB','Registered','Tradeable');
+INSERT INTO `pf_funds`(`Issuer_name`,`Country_of_Incorporation`,`ISIN`,`CFI_Code`,`Security_Type`,`Security_Description`,`Country_of_Register`,`Security_Form`,`Security_Status`)
+VALUES ('INVESTEC FUND MANAGERS','Great Britain - GB','GB00BWH5Y874','EUOIMR','Funds/OEICs','GLOBAL DIVIDEND I GBP NET INC 2','Great Britain - GB','Registered','Tradeable');
+INSERT INTO `pf_funds`(`Issuer_name`,`Country_of_Incorporation`,`ISIN`,`CFI_Code`,`Security_Type`,`Security_Description`,`Country_of_Register`,`Security_Form`,`Security_Status`)
+VALUES ('M&G EQUITY INVESTMENT TRUST','Great Britain - GB','GB0005510929','EPXXXR','Preference','Shares/Preferred Stock	ZERO DIV PRF 1P','Great Britain - GB','Registered','Inactive');
+INSERT INTO `pf_funds`(`Issuer_name`,`Country_of_Incorporation`,`ISIN`,`CFI_Code`,`Security_Type`,`Security_Description`,`Country_of_Register`,`Security_Form`,`Security_Status`)
+VALUES ('M&G GLOBAL DIVIDEND FUND','Great Britain - GB','GB00B39R2S49','EUOGXR','Funds/OEICs','EUR A ACC','Great Britain - GB','Registered','Tradeable');
+INSERT INTO `pf_funds`(`Issuer_name`,`Country_of_Incorporation`,`ISIN`,`CFI_Code`,`Security_Type`,`Security_Description`,`Country_of_Register`,`Security_Form`,`Security_Status`)
+VALUES ('M&G GLOBAL DIVIDEND FUND','Great Britain - GB','GB00B39R2T55','EUOGXR','Funds/OEICs','EUR C ACC','Great Britain - GB','Registered','Tradeable');
+
+INSERT INTO `pf_funds`(`Issuer_name`,`Country_of_Incorporation`,`ISIN`,`CFI_Code`,`Security_Type`,`Security_Description`,`Country_of_Register`,`Security_Form`,`Security_Status`)
+VALUES ('M&G HIGH INCOME INVESTMENT TRUST','Great Britain - GB','GB0005532709','ESXXXR','Par Value','CAP SHS GBP0.01','Great Britain - GB','Registered','Tradeable');
+INSERT INTO `pf_funds`(`Issuer_name`,`Country_of_Incorporation`,`ISIN`,`CFI_Code`,`Security_Type`,`Security_Description`,`Country_of_Register`,`Security_Form`,`Security_Status`)
+VALUES ('M&G HIGH INCOME INVESTMENT TRUST','Great Britain - GB','GB0005532816','ESXXXR','Par Value','INC SHS GBP0.01','Great Britain - GB','Registered','Tradeable');
+INSERT INTO `pf_funds`(`Issuer_name`,`Country_of_Incorporation`,`ISIN`,`CFI_Code`,`Security_Type`,`Security_Description`,`Country_of_Register`,`Security_Form`,`Security_Status`)
+VALUES ('M&G HIGH INCOME INVESTMENT TRUST','Great Britain - GB','GB0005532923','EMXXXR','Units','INC & GW UTS(COMPR 1 INC & 1CAP SH)','Great Britain - GB','Registered','Tradeable');
+INSERT INTO `pf_funds`(`Issuer_name`,`Country_of_Incorporation`,`ISIN`,`CFI_Code`,`Security_Type`,`Security_Description`,`Country_of_Register`,`Security_Form`,`Security_Status`)
+VALUES ('M&G HIGH INCOME INVESTMENT TRUST','Great Britain - GB','GB0005533004','EMXXXR','Units','PACK UTS(COMPR 1-0-DIV PF 1INC&1CAP SH)','Great Britain - GB','Registered','Tradeable');
+INSERT INTO `pf_funds`(`Issuer_name`,`Country_of_Incorporation`,`ISIN`,`CFI_Code`,`Security_Type`,`Security_Description`,`Country_of_Register`,`Security_Form`,`Security_Status`)
+VALUES ('M&G HIGH INCOME INVESTMENT TRUST','Great Britain - GB','GB0005533228','EPXXXR','Preference Shares/Preferred Stock','ZERO DIV PRF SHS GBP0.01','Great Britain - GB','Registered','Tradeable');
+
+INSERT INTO `pf_funds`(`Issuer_name`,`Country_of_Incorporation`,`ISIN`,`CFI_Code`,`Security_Type`,`Security_Description`,`Country_of_Register`,`Security_Form`,`Security_Status`)
+VALUES ('M&G INCOME INVESTMENT CO','Guernsey, C.I. - GG','GB0030826639','ESVUFR','Par Value','ORD GBP0.01','Great Britain - GB','Registered','Inactive');
+INSERT INTO `pf_funds`(`Issuer_name`,`Country_of_Incorporation`,`ISIN`,`CFI_Code`,`Security_Type`,`Security_Description`,`Country_of_Register`,`Security_Form`,`Security_Status`)
+VALUES ('M&G INCOME INVESTMENT CO','Guernsey, C.I. - GG','GB0030826746','EPRXXR','Preference Shares/Preferred Stock','ZERO DIV PRF SHS GBP0.01','Great Britain - GB','Registered','Inactive');
+
+/*INSERT INTO `pf_funds`(`fund_name`,`firm_id`, `fund_amount`, `fund_ccy`, `active_flag`, `creation_date`) 
 	VALUES ('ABC Fund 1', 1, 100000.00, 'GBP', 1, NOW());
 INSERT INTO `pf_funds`(`fund_name`,`firm_id`, `fund_amount`, `fund_ccy`, `active_flag`, `creation_date`) 
 	VALUES ('ABC Fund 2', 1, 150000.00, 'GBP', 1, NOW());
-
+*/
 -- RESEARCH PURCHASE ACCOUNT DETAILS
 DROP TABLE IF EXISTS `pf_rpa`;
 
