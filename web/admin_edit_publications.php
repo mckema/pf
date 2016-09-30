@@ -109,9 +109,10 @@ include('session.php');
         		<tr><td>Author email: </td><td><input type='text' class='search-text' name='file_author_email' id='file_author_email' value='". $row["file_author_email"] . "'/></td></tr>
         		<tr><td>Creation date: </td><td>" . $row["creation_date"]. "  </td></tr>
         		<tr><td>Publication status: </td><td>$publicationStatus</td></tr>
-        		<tr><td><strong>Action?</strong></td><td>[ <a href='javascript:submitform();'>save for later</a> ]  
+        		<tr><td><strong>Action?</strong></td><td>[ <a href='javascript:submitform();'>save changes</a> ]  
         		&nbsp;&nbsp;&nbsp;&nbsp;
         		[ <a href='admin_publish_publications.php?file_id=" . $row["file_id"]. "&action=$publishFlag'>$publishFlag now</a> ]
+        		<br/><em>(please save any changes before you publish)</em>
         		</td></tr>";
     		}
 		} else {
@@ -149,13 +150,13 @@ function submitform()
     </div>
     <div class="white-section">
 	
-    <div class="container" style="text-align:center;">
+    <!--<div class="container" style="text-align:center;">
     	<div style="padding:0 150px;">
             <h4 class="large-header">Contact Us</h4>
             <p class="mbottom10">If you have any questions about our research platform, or if you have an enquiry, please contact us using the details below, or by filling out the form on our contact page.</p>
             <a href="contact.php"><span class="button3">Get in touch</span></a>
         </div>
-    </div>
+    </div>-->
    
 </div>
 

@@ -61,6 +61,9 @@ CREATE TABLE `pf_user` (
   `active_flag` bit(1) NOT NULL,
   PRIMARY KEY (user_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+ALTER table `pf_user` add `firm_id` int(10) NOT NULL AFTER `user_company`;
+
 -- Implementation notes:
 -- User types: publisher, consumer, public viewer, paying member, consumer/publisher dual role
 
@@ -226,6 +229,9 @@ CREATE TABLE `pf_firm_details` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 INSERT INTO `pf_firm_details`(`firm_name`, `active_flag`, `creation_date`) VALUES ('ABC Research Ltd', 1, NOW());
+INSERT INTO `pf_firm_details`(`firm_name`, `active_flag`, `creation_date`) VALUES ('Danske Bank', 1, NOW());
+INSERT INTO `pf_firm_details`(`firm_name`, `active_flag`, `creation_date`) VALUES ('Barclays PLC', 1, NOW());
+INSERT INTO `pf_firm_details`(`firm_name`, `active_flag`, `creation_date`) VALUES ('London Research Ltd', 1, NOW());
 
 -- FUND DETAILS
 DROP TABLE IF EXISTS `pf_funds`;
@@ -354,37 +360,48 @@ VALUES ('M&G INCOME INVESTMENT CO','Guernsey, C.I. - GG','GB0030826746','EPRXXR'
 INSERT INTO `pf_funds`(`fund_name`,`firm_id`, `fund_amount`, `fund_ccy`, `active_flag`, `creation_date`) 
 	VALUES ('ABC Fund 2', 1, 150000.00, 'GBP', 1, NOW());
 */
--- RESEARCH PURCHASE ACCOUNT DETAILS
-DROP TABLE IF EXISTS `pf_rpa`;
 
-CREATE TABLE `pf_rpa` (
+-- RESEARCH PURCHASE ACCOUNT DETAILS
+DROP TABLE IF EXISTS `pf_rpa_details`;
+
+CREATE TABLE `pf_rpa_details` (
   `rpa_id` int(10) NOT NULL AUTO_INCREMENT,
   `rpa_name` varchar(100) NOT NULL,
   `firm_id` int(10) NOT NULL,
+  `asset_owner_id` int(10) NOT NULL,
+  `budget_ccy` varchar(3) NOT NULL,
+  `budget_amount` decimal(15,2) NOT NULL,
+  `start_date` date NULL,
+  `end_date` date NULL,
   `active_flag` bit(1) NOT NULL,
   `creation_date` datetime NOT NULL,
   PRIMARY KEY (rpa_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO `pf_rpa`(`rpa_name`, `firm_id`, `active_flag`, `creation_date`) VALUES ('ABC RPA', 1, 1, NOW());
+INSERT INTO `pf_rpa_details`(`rpa_name`, `firm_id`, `asset_owner_id`, `budget_ccy`, `budget_amount`, `start_date`, `end_date`, `active_flag`, `creation_date`) 
+VALUES ('ABC RPA for IBM', 1, 1, 'GBP', 100000.00, '2016-10-01', '2017-10-01', 1, NOW());
 
 
 -- RESEARCH ALLOCATION HISTORY
 DROP TABLE IF EXISTS `pf_allocation_history`;
 
 CREATE TABLE `pf_allocation_history` (
-  `fund_id` int(10) NOT NULL,
+  `firm_id` int(10) NOT NULL,
   `file_id` int(10) NOT NULL,
+  `ISIN` varchar(100) NOT NULL,
   `allocation_amount` decimal(15,2) NOT NULL,
   `allocation_ccy` varchar(3) NOT NULL,
   `active_flag` bit(1) NOT NULL,
   `creation_date` datetime NOT NULL,
   CONSTRAINT pf_allocation_history_primary 
-UNIQUE (fund_id, file_id)
+UNIQUE (firm_id, file_id, ISIN)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO `pf_allocation_history`(`fund_id`, `file_id`, `allocation_amount`, `allocation_ccy`, `active_flag`, `creation_date`) 
-VALUES (1, 1, 11000.00, 'GBP', 1, NOW());
+ALTER TABLE `pf_allocation_history` ADD `ISIN` varchar(100) NOT NULL AFTER `file_id`;
+
+
+INSERT INTO `pf_allocation_history`(`firm_id`, `file_id`, `ISIN`, `allocation_amount`, `allocation_ccy`, `active_flag`, `creation_date`) 
+VALUES (1, 1, 'TEST_ISIN', 11000.00, 'GBP', 1, NOW());
 
 
 

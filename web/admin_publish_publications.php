@@ -76,9 +76,9 @@ include('session.php');
 
 
 		if ($connection->query($sql) === TRUE) {
-    		echo "Research $publishAction successfully";
+    		echo "Research " . $publishAction . "ed successfully";
 		} else {
-    		echo "Error $publishAction research: " . $conn->error;
+    		echo "Oh dear: " . $publishAction . " error with  research: " . $conn->error;
 		}
 		$connection->close();
 ?>
@@ -95,13 +95,13 @@ include('session.php');
     </div>
     <div class="white-section">
 	
-    <div class="container" style="text-align:center;">
+    <!--<div class="container" style="text-align:center;">
     	<div style="padding:0 150px;">
             <h4 class="large-header">Contact Us</h4>
             <p class="mbottom10">If you have any questions about our research platform, or if you have an enquiry, please contact us using the details below, or by filling out the form on our contact page.</p>
             <a href="contact.php"><span class="button3">Get in touch</span></a>
         </div>
-    </div>
+    </div>-->
    
 </div>
 

@@ -7,12 +7,12 @@ session_start();// Starting Session
 // Storing Session
 $user_check=$_SESSION['login_user'];
 // SQL Query To Fetch Complete Information Of ACTIVE User
-$ses_sql=mysql_query("select a.user_name as user_name, a.user_id, a.sys_admin_flag as sys_admin from pf_user a, login b 
+$ses_sql=mysql_query("select a.user_name as user_name, a.firm_id as firm_id, a.user_id, a.sys_admin_flag as sys_admin from pf_user a, login b 
 where a.user_name='$user_check' and a.user_name = b.username and a.active_flag=1 and b.is_temp_psswd = 0;", $connection);
 $row = mysql_fetch_assoc($ses_sql);
 $login_session =$row['user_name'];
 $session_user_id =$row['user_id'];
-//$session_user_firm_id =$row['firm_id'];
+$session_user_firm_id =$row['firm_id'];
 $session_sys_admin =$row['sys_admin'];
 
 // MANAGE HOW LONG THE USER SESSION LASTS

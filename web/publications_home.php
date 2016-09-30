@@ -85,8 +85,10 @@ include('session.php');
     		// output data of each row
     		while($row = $result->fetch_assoc()) {
 				$published_status = "N/A";
+    			$linkText = "edit and publish";
     			if( $row["published_flag"] == 1 ) {
     				$published_status = $row["published_date"];
+    				$linkText = "edit or unpublish";
     			}     		
         		echo "<tr>
         		<td><a href='" . $row["file_name"]. "'</a>" . $row["file_title"]. "</td>
@@ -94,7 +96,7 @@ include('session.php');
         		<td>" . $row["search_tags"] . "</td>
         		<td>" . $row["creation_date"]. "</td>
         		<td>" . $published_status . "</td>
-        		<td>[ <a href='admin_edit_publications.php?file_id=" . $row["file_id"]. "'>edit and publish</a> ]</td>
+        		<td>[ <a href='admin_edit_publications.php?file_id=" . $row["file_id"]. "'>" . $linkText . "</a> ]</td>
         		</tr>";
     		}
 		} else {

@@ -32,6 +32,12 @@ include('session.php');
         <!-- END menu nav -->
         <!--<div class="clr"></div>-->
     </div>
+	<!--<div class="container">
+	<div id="title-container">
+        	<h2>Search PublishForce</h2>
+        </div>-->
+        <!-- CLOSE HEADING DIVS -->
+    <!--</div>-->
 </div>
 <!-- CLOSE HEADING DIVS -->
 	<div style="text-align:center;">
@@ -40,27 +46,26 @@ include('session.php');
 		<?php require("menu_my_account.php"); ?>
         <!-- END menu for my account -->
     </div>
-
     <div class="white-section">
         <div class="container">
-        <h3>Edit publications</h3>
+        <h3>Manage my commission sharing agreements</h3>
         <p>
-        << <a href="publications_home.php">Back</a> to list of publications<br/>
+        	<a href="file_chooser.php">Create a new commission sharing agreement</a>
+			
+			<table class="search-table">
+			<tr>
+				<th>CSA ID</th>
+				<th>CSA name</th>
+				<th>Broker</th>
+				<th>Budget assigned</th>
+				<th>Period covered</th>
+				<th>Created on</th>
+				<th>Status</th>
+				<th>Action</th>
+			</tr>
 <?php
-		$fileId = $_POST["file_id"];
-		$fileId = $_POST["file_id"];
-		$fileName = $_POST["file_name"];
-		$fileTitle = $_POST["file_title"];
-		$userCompany = $_POST["user_company"];
-		$industryType = $_POST["industry_type"];
-		$fileAbstract = $_POST["file_abstract"];
-		$searchTags = $_POST["search_tags"];
-		$sellCcy = $_POST["sell_ccy"];
-		$faceValue = $_POST["face_value"];
-		$fileAuthor = $_POST["file_author"];
-		$fileAuthorEmail = $_POST["file_author_email"];
-		
-		//DB details
+		$userName = $_SESSION['login_user'];
+		//$searchTag = $_POST['search_text'];
 		$servername = "127.0.0.1";
 		$username = "publishforce";
 		$password = "publishforce";
@@ -75,35 +80,42 @@ include('session.php');
 		} else {
     		//echo "CONNECT OK";
 		}
-		$sql = "update pf_research_files set file_title = '$fileTitle', 
-		industry_type = '$industryType', file_abstract = '$fileAbstract', user_company = '$userCompany', search_tags = '$searchTags', 
-		sell_ccy = '$sellCcy', face_value = $faceValue, file_author = '$fileAuthor', file_author_email = '$fileAuthorEmail'
-		where file_id = $fileId";
+		
+		/*$sql = "select * from pf_rpa_details where firm_id = $session_user_firm_id";
 		$result = $connection->query($sql);
-?>
-	
-	
-        
-<?php
-
-		if ($connection->query($sql) === TRUE) {
-    		echo $fileTitle . ": changes have been saved";
+		if ($result->num_rows > 0) {  // && $searchTag!="") {
+    		// output data of each row
+    		while($row = $result->fetch_assoc()) {
+				$rpa_status = "N/A";
+    			if( $row["active_flag"] == 1 ) {
+    				$rpa_status = "active";
+    			}     		
+        		echo "<tr>
+        		<td>" . $row["rpa_id"] . "</td>
+        		<td>" . $row["rpa_name"] . "</td>
+        		<td>" . $row["asset_owner_id"] . "</td>
+        		<td>" . $row["budget_ccy"] . " " . $row["budget_amount"] . "</td>
+        		<td>" . $row["start_date"] . " to " . $row["end_date"] . "</td>
+        		<td>" . $row["creation_date"]. "</td>
+        		<td>" . $rpa_status . "</td>
+        		<td>[ <a href='admin_edit_publications.php?file_id=xxx'>edit</a> ]</td>
+        		</tr>";
+    		}
 		} else {
-    		echo "Error updating record: " . $conn->error;
-		}
+    		echo "Try refining your search";
+		}*/
 		$connection->close();
-?>
-			
-		</p>
-		</form>
-<p>		
-		<!--If these results were not what you are looking for, please try the following options:
+?>				
+        	</table>
+        </p>
+	<p>
+		If you don't find what you are looking for then you may want to try the following options:
 	
 <ul>
 	
 	<li>Contact us for help</li>
 	<li>Put a request to publishers for the material you are looking for</li>
-</ul>-->
+</ul>
 	</p>
             
         </div>
@@ -113,7 +125,7 @@ include('session.php');
     <div class="white-section">
 	
     <div class="container" style="text-align:center;">
-    	<div style="padding:0 150px;">
+    	<div style="padding:0 15px;">
             <h4 class="large-header">Contact Us</h4>
             <p class="mbottom10">If you have any questions about our research platform, or if you have an enquiry, please contact us using the details below, or by filling out the form on our contact page.</p>
             <a href="contact.php"><span class="button3">Get in touch</span></a>

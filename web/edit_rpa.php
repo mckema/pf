@@ -1,5 +1,6 @@
 <?php
 include('session.php');
+require_once("dbconn.php");
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -43,31 +44,15 @@ include('session.php');
 
     <div class="white-section">
         <div class="container">
-        <h3>Edit publications</h3>
+        <h3>Edit RPA</h3>
         <p>
-        << <a href="publications_home.php">Back</a> to list of publications<br/>
+        << <a href="publications_home.php">Back</a> to my list of publications<br/>
 <?php
-		$fileId = $_POST["file_id"];
-		$fileId = $_POST["file_id"];
-		$fileName = $_POST["file_name"];
-		$fileTitle = $_POST["file_title"];
-		$userCompany = $_POST["user_company"];
-		$industryType = $_POST["industry_type"];
-		$fileAbstract = $_POST["file_abstract"];
-		$searchTags = $_POST["search_tags"];
-		$sellCcy = $_POST["sell_ccy"];
-		$faceValue = $_POST["face_value"];
-		$fileAuthor = $_POST["file_author"];
-		$fileAuthorEmail = $_POST["file_author_email"];
-		
-		//DB details
-		$servername = "127.0.0.1";
-		$username = "publishforce";
-		$password = "publishforce";
-		$dbname = "publishforce";
-
+		$rpaId = $_REQUEST["rpa_id"];
 		// Create connection
-		$connection = new mysqli($servername, $username, $password, $dbname);
+		$dbConn = new DBConn();
+		// Create connection
+		$connection = new mysqli($dbConn->dbservername, $dbConn->dbusername, $dbConn->dbpassword, $dbConn->dbname);
 		// Check connection
 		if ($connection->connect_error) {
     		die("Connection failed: " . $connection->connect_error);
@@ -75,27 +60,68 @@ include('session.php');
 		} else {
     		//echo "CONNECT OK";
 		}
-		$sql = "update pf_research_files set file_title = '$fileTitle', 
-		industry_type = '$industryType', file_abstract = '$fileAbstract', user_company = '$userCompany', search_tags = '$searchTags', 
-		sell_ccy = '$sellCcy', face_value = $faceValue, file_author = '$fileAuthor', file_author_email = '$fileAuthorEmail'
-		where file_id = $fileId";
+		$sql = "select * from pf_rpa_details where rpa_id = $rpaId";
+		//echo $sql;
 		$result = $connection->query($sql);
 ?>
 	
 	
-        
+        <form id="updatePublications" action="admin_update_publications.php" method="post" enctype="multipart/form-data">
+
+	<p>
+			<table class="search-table" style="width:700px;">
+			<tr>
+				<th>Name</th>
+				<th>Value</th>
+			</tr>
+			
 <?php
 
-		if ($connection->query($sql) === TRUE) {
-    		echo $fileTitle . ": changes have been saved";
+
+		if ($result->num_rows > 0) {  // && $searchTag!="") {
+    		// output data of each row
+    		while($row = $result->fetch_assoc()) {
+        		// file_id, file_name, file_title, file_type, user_id, industry_type, 
+        		// search_tags, user_company, creation_date
+        		//echo "something " . $row["file_title"]. "again? ";
+        		$publishFlag = "publish";
+        		$publicationStatus = "Not published";
+        		if( $row["active_flag"] == 1 ) {
+        			$publishFlag = "unpublish";
+        			$publicationStatus = "Activated on " . $row["start_date"];
+        		}
+        		
+        		echo "<tr>
+        		<td width='100'>RPA name: </td><td width='600'><input type='text' class='search-text' name='file_title' id='file_title' value='" . $row["rpa_name"]. "'/></td></tr>
+        		<tr><td>Asset owner: </td><td>". $row["asset_owner_id"] . "</td></tr>
+        		<tr><td>Budget:</td><td>
+        			<input type='text' style='width:40px;' class='search-text' name='sell_ccy' id='sell_ccy' value='" . $row["budget_ccy"]. "' />
+        			<input type='text' style='width:60px;' class='search-text' name='face_value' id='face_value' value='" . $row["budget_amount"]. "' />
+        			</td></tr>
+        		<tr><td>Active?</td><td>$publicationStatus</td></tr>
+        		<tr><td><strong>Action?</strong></td><td>[ <a href='javascript:submitform();'>save changes</a> ]  
+        		&nbsp;&nbsp;&nbsp;&nbsp;
+        		</td></tr>";
+    		}
 		} else {
-    		echo "Error updating record: " . $conn->error;
+    		echo "Try refining your search";
 		}
 		$connection->close();
 ?>
 			
-		</p>
+		</table>
+		
+</p>
 		</form>
+		
+<!-- The function that submits the form-->
+<script type="text/javascript">
+function submitform()
+{
+ 	var user_form = document.getElementById("updatePublications");
+ 	user_form.submit();
+}
+</script>
 <p>		
 		<!--If these results were not what you are looking for, please try the following options:
 	
@@ -112,13 +138,13 @@ include('session.php');
     </div>
     <div class="white-section">
 	
-    <div class="container" style="text-align:center;">
+    <!--<div class="container" style="text-align:center;">
     	<div style="padding:0 150px;">
             <h4 class="large-header">Contact Us</h4>
             <p class="mbottom10">If you have any questions about our research platform, or if you have an enquiry, please contact us using the details below, or by filling out the form on our contact page.</p>
             <a href="contact.php"><span class="button3">Get in touch</span></a>
         </div>
-    </div>
+    </div>-->
    
 </div>
 

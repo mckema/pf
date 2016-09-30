@@ -85,7 +85,9 @@ function grab_data(val) {
 }
 </script>        
 
-<?php	
+<?php
+		echo "FIRM ID: $session_user_firm_id";
+		$fileId = $_REQUEST["file_id"];	
 		$fundsToReview = array();
 		$fundsToReview2 = array();
 		foreach ($_POST['a'] as $selectedOption) {
@@ -106,24 +108,11 @@ function grab_data(val) {
 		if (isset($_POST['submit'])) {  
 			$allocationAmounts = $_POST['alloc-amount'];  
 		}
-		$fileId = $_POST['file_id'];
+		$fileId = $_REQUEST['file_id'];
 		$servername = "127.0.0.1";
 		$username = "publishforce";
 		$password = "publishforce";
 		$dbname = "publishforce";
-		echo "<< <a href='allocate_purchase.php?file_id=$fileId'>Back</a> to amend fund choices<br/>";
-		
-		/* Now we display the amounts allocated to the funds for review purposes
-			We have 2 arrays to match up, hence using this $myPosition to cheat so we 
-			cycle through the funds to review starting at position 0 
-			and finally, create the insert statements for each allocation */
-		$myPosition = -1;
-		foreach ($allocationAmounts as $reviewAmounts ) {
-  			$myPosition ++;
-  			echo "GBP " . $reviewAmounts . " research cost is allocated to fund " . $fundsToReview2[$myPosition] . "<br/>";
-  			$testSQL = "insert into pf_purchase history(`fund_id`, `file_id`, `allocation_amount`,) values ('$fundsToReview2[$myPosition]', $fileId, $reviewAmounts)";
-  			//echo "the SQL: " . $testSQL . "<br/>";
-		}
 		// Create connection
 		$connection = new mysqli($servername, $username, $password, $dbname);
 		// Check connection
@@ -132,6 +121,30 @@ function grab_data(val) {
     		echo "FAILED TO CONNECT";
 		} else {
     		//echo "CONNECT OK";
+		}
+		echo "<< <a href='allocate_purchase.php?file_id=$fileId'>Back</a> to amend fund choices<br/>";
+		
+		/* Now we display the amounts allocated to the funds for review purposes
+			We have 2 arrays to match up, hence using this $myPosition to cheat so we 
+			cycle through the funds to review starting at position 0 
+			and finally, create the insert statements for each allocation */
+		$myPosition = -1;
+		//TBD, get the CCY from previous page
+		//TBD, pass in th firm_id from user profile
+		$ccy = 'GBP';
+		foreach ($allocationAmounts as $reviewAmounts ) {
+  			$myPosition ++;
+  			echo $ccy . " " . $reviewAmounts . " research cost is allocated to fund " . $fundsToReview2[$myPosition] . "<br/>";
+  			$fundAllocationSQL = "insert into pf_allocation_history(`firm_id`, `file_id`, `ISIN`, `allocation_amount`, `allocation_ccy`, `creation_date`, `active_flag`) 
+  				values ($session_user_firm_id, $fileId, '$fundsToReview2[$myPosition]', $reviewAmounts, '$ccy', NOW(), 1);";
+  			//echo "the SQL: " . $fundAllocationSQL . "<br/>";
+  			//$insertAllocations = $connection->query($fundAllocationSQL);
+  			if ($connection->query($fundAllocationSQL) === TRUE) {
+    			//echo "inserted successfully";
+			}
+			else {
+    			echo "Error inserting record: " . $connection->error;
+			}
 		}
         //display the funds you will be allocating to:
         $ISINids = join("', '", $fundsToReview);
@@ -146,6 +159,7 @@ function grab_data(val) {
 		if (isset($_POST['submit'])) {
 			echo "<strong>I confirm I am allocating this research to my account and the above 
 			" . $displayNumberOfFunds . " funds:</strong><br/>";
+			echo "<a href='confirm_purchase.php?file_id=". $fileId ."'>confirm purchase</a>";
 		}
 		else {
 			echo "<strong>Enter the amounts you would like to allocate to each fund:</strong><br/>";
@@ -158,9 +172,12 @@ function grab_data(val) {
         	}
         }
         $connection->close();
+        if (!isset($_POST['submit'])) {
+			echo "<input name='submit' type='submit' value=' Proceed with allocation &gt;&gt;' />";
+		}
 ?>
 <input type="hidden" name="file_id" value="<?php echo "$fileId";?>" />
-<input name="submit" type="submit" value=" Proceed with allocation &gt;&gt;" />
+
 </form>
 
 <!-- The function that submits the form-->

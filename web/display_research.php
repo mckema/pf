@@ -52,7 +52,7 @@ include('session.php');
 		$username = "publishforce";
 		$password = "publishforce";
 		$dbname = "publishforce";
-		echo "firm ID: $session_user_firm_id";
+		//echo "firm ID: $session_user_firm_id";
 
 		// Create connection
 		$connection = new mysqli($servername, $username, $password, $dbname);

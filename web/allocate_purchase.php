@@ -65,6 +65,7 @@ function getSelectValues(select) {
   return result;
 }
 function grab_data(val) {
+	//pass data from the main list of fund to what you want to allocate
 	var result = [];
 	var a = document.getElementById(val.id).value;
 	var options = val && val.options;
@@ -77,7 +78,6 @@ function grab_data(val) {
     	if (opt.selected) {
     		result.push(opt.value || opt.text);
     		targetField.options[targetCount] = new Option(opt.text, opt.value, i);
-    		//targetField.options.value[targetCount] = new Option(opt.text, i);
     		targetCount++;
     	}
   	}
@@ -85,6 +85,7 @@ function grab_data(val) {
 }
 
 function clear_data(val) {
+	//remove some or all of the items you have selected
 	var result = [];
 	var a = document.getElementById(val.id).value;
 	var options = val && val.options;
@@ -94,22 +95,22 @@ function clear_data(val) {
 	for (var i=0, iLen=options.length; i<iLen; i++) {	
     	opt = options[i];
     	if (opt.selected) {
-    		//alert('anything?');
     		result.push(opt.value || opt.text);
     		targetField.options[i] = new Option('', '', i-targetCount);
-    		//result.push(opt.value || opt.text);
-    		//result.splice(i, 1);
-    		//targetField.options[targetCount] = new Option(opt.text, opt.value, i);
-    		//targetField.options.value[targetCount] = new Option(opt.text, i);
     		targetCount++;
     	}
   	}
   	return result;
 }
-</script>        
-<form id="purchasePublications" action="review_purchase.php" method="post" enctype="multipart/form-data">
+</script>
 <?php
 		$fileId = $_REQUEST["file_id"];
+?>     
+<form id="purchasePublications" action="review_purchase.php?file_id=<?php echo $fileId;?>" method="post" enctype="multipart/form-data">
+<table style="width:800px;">
+	<tr>
+		<td>
+<?php
 		$servername = "127.0.0.1";
 		$username = "publishforce";
 		$password = "publishforce";
@@ -143,18 +144,27 @@ function clear_data(val) {
         }
         $connection->close();
 ?>
+		</td>
 &nbsp;<!--<button onclick="javsacript:grab_data(myselect);">select funds &gt;&gt;</button>
 <a href="javascript:grab_data(myselect);">select funds &gt;&gt;</a>-->
-<a id="clearData" href="#" onclick="clear_data(copy_to);return false;">&lt;&lt; remove funds</a><br/>
-<a id="myLink" href="#" onclick="grab_data(myselect);return false;">select funds &gt;&gt;</a>
-  &nbsp;
-  	<select name ="a[]" id="copy_to" multiple style='height:220px;width:500px;overflow-y: auto;'>";
+		<td>
+			
+			<a id="myLink" href="#" onclick="grab_data(myselect);return false;">add&nbsp;&gt;&gt;</a><br/><br/>
+			<a id="clearData" href="#" onclick="clear_data(copy_to);return false;">&lt;&lt;&nbsp;remove</a>
+			&nbsp;
+		</td>
+		<td>
+			<br/><strong>Funds I have selected:</strong><br/>
+  			<select name ="a[]" id="copy_to" multiple style='height:220px;width:500px;overflow-y: auto;'>
 		
-	</select>
-	<input type="hidden" name="file_id" value="<?php echo "$fileId";?>" />
+			</select>
+			<input type="hidden" name="file_id" value="<?php echo "$fileId";?>" />
+		</td>
+	</tr>
+</table>
 </form>
 <!--<a href="review_purchase.php">next step</a>-->
-<a id="nextPage" href="review_purchase.php?file_id=<?php echo $file_id;?>" onclick="submitform();return false;">next step</a>
+<a id="nextPage" href="review_purchase.php?file_id=<?php echo $fileId;?>" onclick="submitform();return false;">next step</a>
 
 <!-- The function that submits the form-->
 <script type="text/javascript">
