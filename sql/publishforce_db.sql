@@ -369,6 +369,8 @@ INSERT INTO `pf_rpa_details`(`rpa_name`, `firm_id`, `asset_owner_id`, `budget_cc
 VALUES ('IBM RPA - ABC', 1, 1, 'GBP', 100000.00, '2016-10-01', '2017-10-01', 1, NOW());
 INSERT INTO `pf_rpa_details`(`rpa_name`, `firm_id`, `asset_owner_id`, `budget_ccy`, `budget_amount`, `start_date`, `end_date`, `active_flag`, `creation_date`) 
 VALUES ('TESCO RPA - ABC', 2, 1, 'GBP', 150000.00, '2016-10-01', '2017-10-01', 1, NOW());
+INSERT INTO `pf_rpa_details`(`rpa_name`, `firm_id`, `asset_owner_id`, `budget_ccy`, `budget_amount`, `start_date`, `end_date`, `active_flag`, `creation_date`) 
+VALUES ('BRIT GAS RPA - ABC', 1, 1, 'GBP', 150000.00, '', '', 1, NOW());
 
 -- ASSET OWNER DETAILS
 DROP TABLE IF EXISTS `pf_asset_owner_details`;
@@ -383,6 +385,10 @@ CREATE TABLE `pf_asset_owner_details` (
 
 INSERT INTO `pf_asset_owner_details`(`asset_owner_name`, `active_flag`, `creation_date`)
 VALUES ('IBM',  1, NOW());
+INSERT INTO `pf_asset_owner_details`(`asset_owner_name`, `active_flag`, `creation_date`)
+VALUES ('General Electric',  1, NOW());
+INSERT INTO `pf_asset_owner_details`(`asset_owner_name`, `active_flag`, `creation_date`)
+VALUES ('Rolls Royce',  1, NOW());
 
 -- RESEARCH ALLOCATION HISTORY
 DROP TABLE IF EXISTS `pf_allocation_history`;

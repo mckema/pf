@@ -93,10 +93,8 @@ require_once("DBConn.php");
         		<input type='hidden' name='user_id' id='user_id' value='" . $row["user_id"]. "' /></td>
         		
         		
-        		<td>[ <a href='javascript:submitform();'>update</a> ] <br/>
-        		
-        		[ <a href='admin_delete_user.php?user_id=" . $row["user_id"]. "'>delete</a> ]
-        		</td></tr>";
+        		<td>[ <a href='javascript:submitform();'>update</a> ] </td>
+        	</tr>";
     		}
 		} else {
     		echo "Try refining your search";

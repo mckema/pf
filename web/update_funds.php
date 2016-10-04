@@ -1,6 +1,6 @@
 <?php
 include('session.php');
-require_once("dbconn.php");
+require_once("DBConn.php");
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -44,24 +44,29 @@ require_once("dbconn.php");
 
     <div class="white-section">
         <div class="container">
-        <h3>Manage my funds</h3>
+        <h3>Edit Funds</h3>
         <p>
-        <form id="searchForm" method="POST">
-        	<!--<div class="styled-select">-->
-        	<select name="filterData">
-        		<option>choose...</option>
-        		<option>Blackrock</option>
-        		<option>UBS</option>
-        	</select>
-        	<a href='javascript:document.getElementById("searchForm").submit();'><span class="button1">filter by issuer</span></a>
-        	<!--</div>-->
-        	
-        </form>     
+        << <a href="my_funds.php">Back</a> to list of Funds<br/>
 <?php
-		$fileId = $_REQUEST["file_id"];
-		$dbConn = new DBConn();
 		// Create connection
+		$dbConn = new DBConn();
 		$connection = new mysqli($dbConn->dbservername, $dbConn->dbusername, $dbConn->dbpassword, $dbConn->dbname);
+		
+		//sends an email to the sys adming that someone has submitted a registration request
+		$newRecord = $_POST["new_record"];
+		echo "new record: " . $newRecord;
+		$isinId = $_POST["isin_id"];
+		$issuerName = $_POST["issuer_name"];
+		$countryOfIncorporation = $_POST["country_of_incorporation"];
+		$cfiCode = $_POST["cfi_code"];
+		$securityType = $_POST["security_type"];
+		$securityDescription = $_POST["security_description"];
+		$countryOfRegister = $_POST["country_of_register"];
+		$securityForm = $_POST["security_form"];
+		$securityStatus = $_POST["security_status"];
+		//something for an allocation method and allocation limit?
+		//$activeFlag = $_POST["active_status"];
+		
 		// Check connection
 		if ($connection->connect_error) {
     		die("Connection failed: " . $connection->connect_error);
@@ -69,63 +74,34 @@ require_once("dbconn.php");
 		} else {
     		//echo "CONNECT OK";
 		}
-?>
-	
-	
-        <form id="purchasePublications" action="confirm_purchase.php" method="post" enctype="multipart/form-data">
+		if ($newRecord != "new") {
+			//we're updating an existing RPA
+			$sql = "update pf_funds set issuer_name = '$issuerName', country_of_incorporation = '$countryOfIncorporation', 
+				cfi_code = '$cfiCode', security_type = '$securityType', 
+				security_description = '$securityDescription', country_of_register = '$countryOfRegister',
+				security_form = '$securityForm', security_status = '$securityStatus'
+				where ISIN = '$isinId';";
+			//echo $sql;
+		}
+		else {
+			//we're inserting a new record
+			/*$sql = "INSERT INTO `pf_rpa_details`(`rpa_name`, `firm_id`, `asset_owner_id`, `budget_ccy`, `budget_amount`, `start_date`, `end_date`, `active_flag`, `creation_date`) 
+			 values ('$rpaName', $session_user_firm_id, $assetOwnerId, '$budgetCcy', $budgetAmount, $startDate, $endDate, $activeFlag, NOW());";
+			echo $sql;*/
+		}
 
-	<p>
-			<table class="search-table" style="width:850px;">
-			<tr>
-				<th>Issuer</th>
-				<th>ISIN / Fund name</th>
-				<th>Action?</th>
-			</tr>
-			
-<?php
-		//TBD, display the firm ID of the session user!
-        /*$sqlFunds = "select fd.firm_name as firm_name, f.fund_name as fund_name, f.fund_amount as fund_amount, 
-        	f.fund_ccy as fund_ccy from pf_firm_details fd, pf_funds f
-			where fd.firm_id = f.firm_id
-			and fd.firm_id = 1";*/
-		$sqlFunds = "select * from pf_funds where Security_Status = 'Tradeable' order by Issuer_name";
-		$resultFunds = $connection->query($sqlFunds);
-		if ($resultFunds->num_rows > 0) {
-    		// output data of each row
-    		while($row = $resultFunds->fetch_assoc()) {
-    			echo "<tr>
-        		<td width='300'>" . $row["Issuer_name"]. "</td>
-        		<td width='500'>". $row["ISIN"] . " / ". $row["Security_Description"] . "</td>
-        		<td width='50'><a href='edit_funds.php?isin=". $row["ISIN"] . "'> [ edit ]</a></td>
-        		</tr>";
-    		}
-    	}
-    	else{
-    		echo "<tr><td width='100'>nada</td><td>nada</td></tr>";
-    	}
+		if ($connection->query($sql) === TRUE) {
+    		echo "Fund details for <strong>$securityDescription</strong> updated successfully";
+		}
+		else {
+    		echo "Error updating fund details: " . $connection->error;
+		}
 		$connection->close();
 ?>
 			
-		</table>
-</p>
+		</p>
 		</form>
-		
-<!-- The function that submits the form-->
-<script type="text/javascript">
-function submitform()
-{
- 	var user_form = document.getElementById("purchasePublications");
- 	user_form.submit();
-}
-</script>
-<p>		
-		<!--If these results were not what you are looking for, please try the following options:
-	
-<ul>
-	
-	<li>Contact us for help</li>
-	<li>Put a request to publishers for the material you are looking for</li>
-</ul>-->
+	<p>
 	</p>
             
         </div>
