@@ -31,6 +31,7 @@ require_once("DBConn.php");
 		<!-- menu nav -->
 		<?php require("menu_logged-in.php"); ?>
         <!-- END menu nav -->
+        <!--<div class="clr"></div>-->
     </div>
 </div>
 <!-- CLOSE HEADING DIVS -->
@@ -40,29 +41,44 @@ require_once("DBConn.php");
 		<?php require("menu_my_account.php"); ?>
         <!-- END menu for my account -->
     </div>
+
     <div class="white-section">
         <div class="container">
-        <h3>Manage my research payment accounts</h3>
+        <h3>Edit RPA</h3>
         <p>
-        	<a href="edit_rpa.php?action=create">Create a new research payment account</a>
-			
-			<table class="search-table">
-			<tr>
-				<th>RPA ID</th>
-				<th>RPA name</th>
-				<th>Asset owner</th>
-				<th>Budget assigned</th>
-				<th>Period covered</th>
-				<th>Created on</th>
-				<th>Status</th>
-				<th>Action</th>
-			</tr>
+        << <a href="rpa_home.php">Back</a> to list of RPAs<br/>
 <?php
-		$userName = $_SESSION['login_user'];
-		//echo "Hello?";
-		$dbConn = new DBConn();
 		// Create connection
+		$dbConn = new DBConn();
 		$connection = new mysqli($dbConn->dbservername, $dbConn->dbusername, $dbConn->dbpassword, $dbConn->dbname);
+		
+		//sends an email to the sys adming that someone has submitted a registration request
+		$newRecord = $_POST["new_record"];
+		echo "new record: " . $newRecord;
+		$rpaId = $_POST["rpa_id"];
+		$rpaName = $_POST["rpa_name"];
+		$assetOwnerId = $_POST["asset_owner_id"];
+		$budgetCcy = $_POST["budget_ccy"];
+		$budgetAmount = $_POST["budget_amount"];
+		$startDate = $_POST["start_date"];
+		if( $startDate == "" ) {
+			$startDate = 'NULL';
+		}
+		else {
+			$startDate = "'" . $startDate . "'";
+		}
+		$endDate = $_POST["end_date"];
+		if( $endDate == "" ) {
+			$endDate = 'NULL';
+		}
+		else {
+			$endDate = "'" . $endDate . "'";
+		}
+		$activeFlag = $_POST["active_status"];
+		
+		// Create connection
+		/*$connection_1 = new mysqli($servername, $username, $password, $dbname);
+		$connection_2 = new mysqli($servername, $username, $password, $dbname);*/
 		// Check connection
 		if ($connection->connect_error) {
     		die("Connection failed: " . $connection->connect_error);
@@ -70,54 +86,34 @@ require_once("DBConn.php");
 		} else {
     		//echo "CONNECT OK";
 		}
-		
-		$sql = "select a.rpa_id, a.rpa_name, b.asset_owner_name, a.budget_ccy,
-		a.budget_amount, a.start_date, a.end_date, a.creation_date, a.active_flag
-		from pf_rpa_details a, pf_asset_owner_details b 
-		where a.asset_owner_id = b.asset_owner_id and a.firm_id = $session_user_firm_id";
-		//$sql = "select * from pf_rpa_details";
-		$result = $connection->query($sql);
-		if ($result->num_rows > 0) {  // && $searchTag!="") {
-    		// output data of each row
-    		while($row = $result->fetch_assoc()) {
-				$rpa_status = "N/A";
-    			if( $row["active_flag"] == 1 ) {
-    				$rpa_status = "active";
-    			}
-    			$startDate = "N/A";
-    			$endDate = "N/A";
-    			if( !is_null($row["start_date"]) ) {
-    				$startDate = $row["start_date"];
-    			}
-    			if( !is_null($row["end_date"]) ) {
-    				$endDate = $row["end_date"];
-    			}
-        		echo "<tr>
-        		<td>" . $row["rpa_id"] . "</td>
-        		<td>" . $row["rpa_name"] . "</td>
-        		<td>" . $row["asset_owner_name"] . "</td>
-        		<td>" . $row["budget_ccy"] . " " . $row["budget_amount"] . "</td>
-        		<td>" . $startDate . " to " . $endDate . "</td>
-        		<td>" . $row["creation_date"]. "</td>
-        		<td>" . $rpa_status . "</td>
-        		<td>[ <a href='edit_rpa.php?rpa_id=" . $row["rpa_id"] . "'>edit</a> ]</td>
-        		</tr>";
-    		}
-		} else {
-    		echo "Try refining your search";
+		if ($newRecord != "new") {
+			//we're updating an existing RPA
+			$sql = "update pf_rpa_details set rpa_name = '$rpaName', asset_owner_id = $assetOwnerId, 
+				budget_ccy = '$budgetCcy', budget_amount = $budgetAmount, 
+				start_date = $startDate, end_date = $endDate, 
+				active_flag = $activeFlag where rpa_id = $rpaId";
+			//echo $sql;
+		}
+		else {
+			//we're inserting a new record
+			//INSERT INTO `pf_rpa_details`(`rpa_name`, `firm_id`, `asset_owner_id`, `budget_ccy`, `budget_amount`, `start_date`, `end_date`, `active_flag`, `creation_date`) 
+			$sql = "INSERT INTO `pf_rpa_details`(`rpa_name`, `firm_id`, `asset_owner_id`, `budget_ccy`, `budget_amount`, `start_date`, `end_date`, `active_flag`, `creation_date`) 
+			 values ('$rpaName', $session_user_firm_id, $assetOwnerId, '$budgetCcy', $budgetAmount, $startDate, $endDate, $activeFlag, NOW());";
+			echo $sql;
+		}
+
+		if ($connection->query($sql) === TRUE) {
+    		echo "RPA details for <strong>$rpaName</strong> updated successfully";
+		}
+		else {
+    		echo "Error updating RPA details: " . $connection->error;
 		}
 		$connection->close();
-?>				
-        	</table>
-        </p>
+?>
+			
+		</p>
+		</form>
 	<p>
-		If you don't find what you are looking for then you may want to try the following options:
-	
-<ul>
-	
-	<li>Contact us for help</li>
-	<li>Put a request to publishers for the material you are looking for</li>
-</ul>
 	</p>
             
         </div>
@@ -127,7 +123,7 @@ require_once("DBConn.php");
     <div class="white-section">
 	
     <div class="container" style="text-align:center;">
-    	<div style="padding:0 15px;">
+    	<div style="padding:0 150px;">
             <h4 class="large-header">Contact Us</h4>
             <p class="mbottom10">If you have any questions about our research platform, or if you have an enquiry, please contact us using the details below, or by filling out the form on our contact page.</p>
             <a href="contact.php"><span class="button3">Get in touch</span></a>

@@ -46,12 +46,11 @@ require_once("dbconn.php");
         <div class="container">
         <h3>Edit RPA</h3>
         <p>
-        << <a href="publications_home.php">Back</a> to my list of publications<br/>
+        << <a href="rpa_home.php">Back</a> to my list of RPAs<br/>
 <?php
 		$rpaId = $_REQUEST["rpa_id"];
 		// Create connection
 		$dbConn = new DBConn();
-		// Create connection
 		$connection = new mysqli($dbConn->dbservername, $dbConn->dbusername, $dbConn->dbpassword, $dbConn->dbname);
 		// Check connection
 		if ($connection->connect_error) {
@@ -60,13 +59,20 @@ require_once("dbconn.php");
 		} else {
     		//echo "CONNECT OK";
 		}
-		$sql = "select * from pf_rpa_details where rpa_id = $rpaId";
+		//$sql = "select * from pf_rpa_details where rpa_id = $rpaId";
+		$sql = "select a.rpa_id, a.rpa_name, a.asset_owner_id, b.asset_owner_name, a.budget_ccy,
+		a.budget_amount, a.start_date, a.end_date, a.creation_date, a.active_flag
+		from pf_rpa_details a, pf_asset_owner_details b 
+		where a.asset_owner_id = b.asset_owner_id and a.rpa_id = $rpaId";
 		//echo $sql;
 		$result = $connection->query($sql);
+		//populate the santa
+		$newSQL = "select * from pf_asset_owner_details;";
+    	$resultAssetOwner = $connection->query($newSQL);
 ?>
 	
 	
-        <form id="updatePublications" action="admin_update_publications.php" method="post" enctype="multipart/form-data">
+        <form id="updatePublications" action="update_rpa.php" method="post" enctype="multipart/form-data">
 
 	<p>
 			<table class="search-table" style="width:700px;">
@@ -78,33 +84,102 @@ require_once("dbconn.php");
 <?php
 
 
-		if ($result->num_rows > 0) {  // && $searchTag!="") {
+		if ($result->num_rows > 0) {
     		// output data of each row
     		while($row = $result->fetch_assoc()) {
-        		// file_id, file_name, file_title, file_type, user_id, industry_type, 
-        		// search_tags, user_company, creation_date
-        		//echo "something " . $row["file_title"]. "again? ";
         		$publishFlag = "publish";
-        		$publicationStatus = "Not published";
+        		$publicationStatus = "Not active";
+        		$selectedAssetOwnerId = $row["asset_owner_id"];
+        		//echo "AO ID: " . $selectedAssetOwnerId;
         		if( $row["active_flag"] == 1 ) {
         			$publishFlag = "unpublish";
         			$publicationStatus = "Activated on " . $row["start_date"];
         		}
         		
         		echo "<tr>
-        		<td width='100'>RPA name: </td><td width='600'><input type='text' class='search-text' name='file_title' id='file_title' value='" . $row["rpa_name"]. "'/></td></tr>
-        		<tr><td>Asset owner: </td><td>". $row["asset_owner_id"] . "</td></tr>
+        		<td width='100'>RPA name: </td><td width='600'><input type='text' class='search-text' name='rpa_name' id='rpa_name' value='" . $row["rpa_name"]. "'/></td></tr>
+        		<tr>
+        			<td>Asset owner: </td>
+        			<td>
+        				<input type='hidden' name='asset_owner_hidden' id='asset_owner_hidden' value='". $row["asset_owner_id"] . "'/>
+        				<select name='asset_owner_id'>";
+        				
+        				if ($resultAssetOwner->num_rows > 0) {
+        					
+        					
+    						while($rowAO = $resultAssetOwner->fetch_assoc()) {
+    							$selectedElem = "";
+    							if ($selectedAssetOwnerId == $rowAO["asset_owner_id"]) {
+    								$selectedElem = "selected";
+    							}
+    							echo "<option value='". $rowAO["asset_owner_id"] . "' " . $selectedElem . ">". $rowAO["asset_owner_name"] . "</option>";
+    						}
+    					}
+    				echo "</select>
+        			<input type='hidden' name='rpa_id' id='rpa_id' value='". $row["rpa_id"] . "'/>
+        		</td></tr>
         		<tr><td>Budget:</td><td>
-        			<input type='text' style='width:40px;' class='search-text' name='sell_ccy' id='sell_ccy' value='" . $row["budget_ccy"]. "' />
-        			<input type='text' style='width:60px;' class='search-text' name='face_value' id='face_value' value='" . $row["budget_amount"]. "' />
-        			</td></tr>
-        		<tr><td>Active?</td><td>$publicationStatus</td></tr>
+        			<input type='text' style='width:40px;' class='search-text' name='budget_ccy' id='budget_ccy' value='" . $row["budget_ccy"]. "' />
+        			<input type='text' style='width:100px;' class='search-text' name='budget_amount' id='budget_amount' value='" . $row["budget_amount"]. "' />
+        			</td>
+        		</tr>
+        		<tr>
+        			<td>Dates (start-end): </td><td><input type='text' class='search-text' name='start_date' id='start_date' value='". $row["start_date"] . "'/> to 
+        			<input type='text' class='search-text' name='end_date' id='end_date' value='". $row["end_date"] . "'/>
+        			</td>
+        		</tr>
+        		<tr>
+        			<td>Active?</td>
+        			<td>";
+        ?>
+    					<select name="active_status">
+        					<option value="0" <?php if ($row["active_flag"] == '0') echo ' selected="selected"'; ?>>Not active</option>
+        					<option value="1" <?php if ($row["active_flag"] == '1') echo ' selected="selected"'; ?>>Active</option>
+        				</select>
+        			</td>
+        <?php
+        		echo"</tr>
         		<tr><td><strong>Action?</strong></td><td>[ <a href='javascript:submitform();'>save changes</a> ]  
         		&nbsp;&nbsp;&nbsp;&nbsp;
         		</td></tr>";
     		}
-		} else {
-    		echo "Try refining your search";
+		} 
+		else {
+    		//new record to be created by user
+    		echo "<tr>
+        		<td width='100'>RPA name: </td><td width='600'><input type='text' class='search-text' name='rpa_name' id='rpa_name' value=''/></td></tr>
+        		<tr><td>Asset owner: </td>
+        		<td width='600'><select name='asset_owner_id'>
+        			<option value=''>choose...</option>";
+        	
+    		if ($resultAssetOwner->num_rows > 0) {
+    			// output data of each row
+    			while($rowAO = $resultAssetOwner->fetch_assoc()) {
+    				echo "<option value='". $rowAO["asset_owner_id"] . "'>". $rowAO["asset_owner_name"] . "</option>";
+    			}
+    		}
+        	echo "</select></td></tr>
+        		<tr><td>Budget:</td><td>
+        			<input type='text' style='width:40px;' class='search-text' name='budget_ccy' id='budget_ccy' value='' placeholder='GBP'/>
+        			<input type='text' style='width:100px;' class='search-text' name='budget_amount' id='budget_amount' value='' />
+        			</td>
+        		</tr>
+        		<tr>
+        			<td>Dates (start-end): </td><td><input type='text' class='search-text' name='start_date' id='start_date' value=''/> to 
+        			<input type='text' class='search-text' name='end_date' id='end_date' value=''/> (yyyy-mm-dd)
+        		</td>
+        		</tr>
+        		<tr>
+        			<td>Active?</td>
+        			<td>
+        				<select name='active_status'>
+        					<option value='0'>Not active</option>
+        					<option value='1'>Active</option>
+        				</select>
+        			</td></tr>
+        		<tr><td><strong>Action?</strong></td><td>[ <a href='javascript:submitform();'>save changes</a> ]  
+        		<input type='text' name='new_record' value='new' />
+        		</td></tr>";
 		}
 		$connection->close();
 ?>

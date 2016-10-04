@@ -61,7 +61,7 @@ function getSelectValues(select) {
       result.push(opt.value || opt.text);
     }
   }
-  selected_funds.value = result;
+  //selected_funds.value = result;
   return result;
 }
 function grab_data(val) {
@@ -71,16 +71,20 @@ function grab_data(val) {
 	var options = val && val.options;
 	var opt;
 	var targetCount = 0;
-	var targetField = document.getElementById("copy_to");
+	//var targetField = document.getElementsByName("userselectedfunds");
+	var targetField = document.getElementById("userselectedfunds");
+	var targetHiddenField = document.getElementById("hiddenselectedfunds");
 	for (var i=0, iLen=options.length; i<iLen; i++) {
 		
     	opt = options[i];
     	if (opt.selected) {
-    		result.push(opt.value || opt.text);
+    		result.push("'" + opt.value + "'" || "'" + opt.text + "'");
     		targetField.options[targetCount] = new Option(opt.text, opt.value, i);
     		targetCount++;
     	}
   	}
+  	targetHiddenField.value = result;
+  	//alert(result);
   	return result;
 }
 
@@ -91,7 +95,8 @@ function clear_data(val) {
 	var options = val && val.options;
 	var opt;
 	var targetCount = 0;
-	var targetField = document.getElementById("copy_to");
+	//var targetField = document.getElementsByName("userselectedfunds");
+	var targetField = document.getElementById("userselectedfunds");
 	for (var i=0, iLen=options.length; i<iLen; i++) {	
     	opt = options[i];
     	if (opt.selected) {
@@ -106,7 +111,8 @@ function clear_data(val) {
 <?php
 		$fileId = $_REQUEST["file_id"];
 ?>     
-<form id="purchasePublications" action="review_purchase.php?file_id=<?php echo $fileId;?>" method="post" enctype="multipart/form-data">
+<!--<form id="allocatePublications" name="allocatePublications" action="review_purchase.php?file_id=<?php echo $fileId;?>" method="post">-->
+<form id="allocatePublications" name="allocatePublications" action="review_purchase.php" method="post">
 <table style="width:800px;">
 	<tr>
 		<td>
@@ -134,7 +140,7 @@ function clear_data(val) {
 		$resultFunds = $connection->query($sqlFunds);
 		echo "<strong>Funds I manage:</strong><br/>";
 		if ($resultFunds->num_rows > 0) {
-        	echo "<select id='myselect' multiple style='height:220px;width:500px;overflow-y: auto;'>";
+        	echo "<select id='myselect' name='myselect' multiple style='height:220px;width:500px;overflow-y: auto;'>";
         	while($rowFunds = $resultFunds->fetch_assoc()) {
         		
           		echo" <option value='" . $rowFunds["ISIN"]. "'>" . $rowFunds["Issuer_name"]. ": " . $rowFunds["ISIN"]. ": "  . $rowFunds["Security_Description"]. "</option>";
@@ -150,27 +156,27 @@ function clear_data(val) {
 		<td>
 			
 			<a id="myLink" href="#" onclick="grab_data(myselect);return false;">add&nbsp;&gt;&gt;</a><br/><br/>
-			<a id="clearData" href="#" onclick="clear_data(copy_to);return false;">&lt;&lt;&nbsp;remove</a>
+			<a id="clearData" href="#" onclick="clear_data(userselectedfunds);return false;">&lt;&lt;&nbsp;remove</a>
 			&nbsp;
 		</td>
 		<td>
 			<br/><strong>Funds I have selected:</strong><br/>
-  			<select name ="a[]" id="copy_to" multiple style='height:220px;width:500px;overflow-y: auto;'>
-		
+  			<select name="userselectedfunds[]" id="userselectedfunds" multiple style="height:220px;width:500px;overflow-y: auto;">
 			</select>
 			<input type="hidden" name="file_id" value="<?php echo "$fileId";?>" />
+			<input type="hidden" name="hiddenselectedfunds" id="hiddenselectedfunds" value="" />
 		</td>
 	</tr>
 </table>
+<a id="nextPage" href="#" onclick="submitform();return false;">next steps</a>
 </form>
 <!--<a href="review_purchase.php">next step</a>-->
-<a id="nextPage" href="review_purchase.php?file_id=<?php echo $fileId;?>" onclick="submitform();return false;">next step</a>
 
 <!-- The function that submits the form-->
 <script type="text/javascript">
 function submitform()
 {
- 	var user_form = document.getElementById("purchasePublications");
+ 	var user_form = document.getElementById("allocatePublications");
  	user_form.submit();
 }
 </script>	

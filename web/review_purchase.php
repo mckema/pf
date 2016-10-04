@@ -24,7 +24,15 @@ include('session.php');
 </head>
 
 <body>
-
+<?php
+	//echo "seeing it?? ";
+	$listOfIsinsChosen = $_POST["hiddenselectedfunds"];
+	//echo $listOfIsinsChosen . " vals?";
+	/*foreach ($values as $listOfFunds){
+    	echo $listOfFunds . " values";
+	}*/
+	//print_r($_POST["myselect"]);
+?>
 <div id="header-section">
 	<div id="header-bar">
 		<!-- menu nav -->
@@ -47,23 +55,7 @@ include('session.php');
         <p>
         
 <script language="javascript">
-// Return an array of the selected opion values
-// select is an HTML select element
-function getSelectValues(select) {
-  var result = [];
-  var options = select && select.options;
-  var opt;
 
-  for (var i=0, iLen=options.length; i<iLen; i++) {
-    opt = options[i];
-
-    if (opt.selected) {
-      result.push(opt.value || opt.text);
-    }
-  }
-  selected_funds.value = result;
-  return result;
-}
 function grab_data(val) {
 	var result = [];
 	
@@ -86,18 +78,32 @@ function grab_data(val) {
 </script>        
 
 <?php
-		echo "FIRM ID: $session_user_firm_id";
-		$fileId = $_REQUEST["file_id"];	
+		//echo "FIRM ID ok: $session_user_firm_id";
+		//$fileId = $_REQUEST["file_id"];
+		$fileId = $_POST["file_id"];
+		//echo "File ID: " . $fileId;
 		$fundsToReview = array();
 		$fundsToReview2 = array();
-		foreach ($_POST['a'] as $selectedOption) {
-    		array_push($fundsToReview, $selectedOption);
+		
+		/*if (isset($_POST['userselectedfunds'])) {
+			echo "what is up?";
+			foreach ($_POST['userselectedfunds'] as $selectedOption) {
+    			array_push($fundsToReview,$selectedOption);
+    		}
+    	}*/
+		if (isset($_POST['hiddenselectedfunds'])) {
+			//this crap to be removed as superseded by $listOfIsinsChosen
+			foreach ($_POST['hiddenselectedfunds'] as $selectedOption) {
+    			array_push($fundsToReview,$selectedOption);
+    		}
     	}
-    	//print_r($fundsToReview);
+    	
+    	print_r($selectedOption);
     	$amountsChosen = array();
-    	$names = "";
+    	//$names = "";
     	
   		if (isset($_POST['funds'])) { 
+  			//echo "what is up?";
   			//$fundsToReview2 = $_POST['funds'];
   			foreach ($_POST['funds'] as $selectedFunds) {
     			array_push($fundsToReview2, $selectedFunds);
@@ -108,7 +114,7 @@ function grab_data(val) {
 		if (isset($_POST['submit'])) {  
 			$allocationAmounts = $_POST['alloc-amount'];  
 		}
-		$fileId = $_REQUEST['file_id'];
+		//$fileId = $_REQUEST['file_id'];
 		$servername = "127.0.0.1";
 		$username = "publishforce";
 		$password = "publishforce";
@@ -130,7 +136,6 @@ function grab_data(val) {
 			and finally, create the insert statements for each allocation */
 		$myPosition = -1;
 		//TBD, get the CCY from previous page
-		//TBD, pass in th firm_id from user profile
 		$ccy = 'GBP';
 		foreach ($allocationAmounts as $reviewAmounts ) {
   			$myPosition ++;
@@ -150,7 +155,8 @@ function grab_data(val) {
         $ISINids = join("', '", $fundsToReview);
         //$ISINids2 = join("', '", $fundsToReview2);
         
-		$sqlFunds = "select * from pf_funds where Security_Status = 'Tradeable' and ISIN IN ('$ISINids')";
+		$sqlFunds = "select * from pf_funds where Security_Status = 'Tradeable' and ISIN IN ($listOfIsinsChosen)";
+		//echo "sql: " . $sqlFunds;
 		$resultFunds = $connection->query($sqlFunds);
 ?>
 <form method="post">

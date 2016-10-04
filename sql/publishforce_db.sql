@@ -230,24 +230,11 @@ CREATE TABLE `pf_firm_details` (
 
 INSERT INTO `pf_firm_details`(`firm_name`, `active_flag`, `creation_date`) VALUES ('ABC Research Ltd', 1, NOW());
 INSERT INTO `pf_firm_details`(`firm_name`, `active_flag`, `creation_date`) VALUES ('Danske Bank', 1, NOW());
-INSERT INTO `pf_firm_details`(`firm_name`, `active_flag`, `creation_date`) VALUES ('Barclays PLC', 1, NOW());
+INSERT INTO `pf_firm_details`(`firm_name`, `active_flag`, `creation_date`) VALUES ('FMR Advisory', 1, NOW());
 INSERT INTO `pf_firm_details`(`firm_name`, `active_flag`, `creation_date`) VALUES ('London Research Ltd', 1, NOW());
 
 -- FUND DETAILS
 DROP TABLE IF EXISTS `pf_funds`;
-
-/*CREATE TABLE `pf_funds` (
-  `fund_id` int(10) NOT NULL AUTO_INCREMENT,
-  `fund_name` varchar(100) NOT NULL,
-  `firm_id` int(10) NOT NULL,
-  `fund_amount` decimal(15,2) NOT NULL,
-  `fund_ccy` varchar(3) NOT NULL,
-  `active_flag` bit(1) NOT NULL,
-  `creation_date` datetime NOT NULL,
-  CONSTRAINT pf_funds_primary 
-UNIQUE (fund_id, firm_id)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-*/
 
 CREATE TABLE `pf_funds` (
 `Issuer_name` varchar(100) NOT NULL,
@@ -379,8 +366,23 @@ CREATE TABLE `pf_rpa_details` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 INSERT INTO `pf_rpa_details`(`rpa_name`, `firm_id`, `asset_owner_id`, `budget_ccy`, `budget_amount`, `start_date`, `end_date`, `active_flag`, `creation_date`) 
-VALUES ('ABC RPA for IBM', 1, 1, 'GBP', 100000.00, '2016-10-01', '2017-10-01', 1, NOW());
+VALUES ('IBM RPA - ABC', 1, 1, 'GBP', 100000.00, '2016-10-01', '2017-10-01', 1, NOW());
+INSERT INTO `pf_rpa_details`(`rpa_name`, `firm_id`, `asset_owner_id`, `budget_ccy`, `budget_amount`, `start_date`, `end_date`, `active_flag`, `creation_date`) 
+VALUES ('TESCO RPA - ABC', 2, 1, 'GBP', 150000.00, '2016-10-01', '2017-10-01', 1, NOW());
 
+-- ASSET OWNER DETAILS
+DROP TABLE IF EXISTS `pf_asset_owner_details`;
+
+CREATE TABLE `pf_asset_owner_details` (
+  `asset_owner_id` int(10) NOT NULL AUTO_INCREMENT,
+  `asset_owner_name` varchar(100) NOT NULL,
+  `active_flag` bit(1) NOT NULL,
+  `creation_date` datetime NOT NULL,
+  PRIMARY KEY (asset_owner_id)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+INSERT INTO `pf_asset_owner_details`(`asset_owner_name`, `active_flag`, `creation_date`)
+VALUES ('IBM',  1, NOW());
 
 -- RESEARCH ALLOCATION HISTORY
 DROP TABLE IF EXISTS `pf_allocation_history`;
@@ -397,7 +399,7 @@ CREATE TABLE `pf_allocation_history` (
 UNIQUE (firm_id, file_id, ISIN)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-ALTER TABLE `pf_allocation_history` ADD `ISIN` varchar(100) NOT NULL AFTER `file_id`;
+-- ALTER TABLE `pf_allocation_history` ADD `ISIN` varchar(100) NOT NULL AFTER `file_id`;
 
 
 INSERT INTO `pf_allocation_history`(`firm_id`, `file_id`, `ISIN`, `allocation_amount`, `allocation_ccy`, `active_flag`, `creation_date`) 
