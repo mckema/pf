@@ -1,4 +1,5 @@
 <?php
+require_once("DBConn.php");
 session_start(); // Starting Session
 $error=''; // Variable To Store Error Message
 $username=$_POST['user_id'];
@@ -14,11 +15,9 @@ if (isset($_POST['submit_new_password'])) {
 	else {
 		//header("Location: reset_my_password.php?error_msg=ok"); // Redirecting back to reset password
 		//persist the new password to the DB
-		$dbservername = "127.0.0.1";
-		$dbusername = "publishforce";
-		$dbpassword = "publishforce";
-		$dbname = "publishforce";
-		$connection = new mysqli($dbservername, $dbusername, $dbpassword, $dbname);
+		$dbConn = new DBConn();
+		// Create connection
+		$connection = new mysqli($dbConn->dbservername, $dbConn->dbusername, $dbConn->dbpassword, $dbConn->dbname);
 		// SQL query to fetch information of registerd users and finds user match.
 		$sql = "update login set password = '$userPassword1', is_temp_psswd = 0 where username='$username'";
 		//echo $sql;
@@ -51,27 +50,12 @@ if (isset($_POST['submit'])) {
 		// Define $username and $password
 		//$username=$_POST['user_id'];
 		$password=$_POST['user_password'];
-		// Establishing Connection with Server by passing server_name, user_id and password as a parameter
-		//$connection = mysql_connect("127.0.0.1", "publishforce", "publishforce");
-		
-		$dbservername = "127.0.0.1";
-		$dbusername = "publishforce";
-		$dbpassword = "publishforce";
-		$dbname = "publishforce";
-		$connection = new mysqli($dbservername, $dbusername, $dbpassword, $dbname);
-		// To protect MySQL injection for Security purpose
-		/*$username = stripslashes($username);
-		$password = stripslashes($password);
-		$username = mysql_real_escape_string($username);
-		$password = mysql_real_escape_string($password);
-		// Selecting Database
-		$db = mysql_select_db("publishforce", $connection);*/
-		// SQL query to fetch information of registerd users and finds user match.
+		$dbConn = new DBConn();
+		// Create connection
+		$connection = new mysqli($dbConn->dbservername, $dbConn->dbusername, $dbConn->dbpassword, $dbConn->dbname);
 		$sql = "select * from login where password='$password' AND username='$username'";
 		$result = $connection->query($sql);
 		
-		//$query = mysql_query("select * from login where password='$password' AND username='$username'", $connection);
-		//$rows = mysql_num_rows($query);
 		if ($result->num_rows ==1) {
 			while($row = $result->fetch_assoc()) {
 			$myval = $row["is_temp_psswd"];

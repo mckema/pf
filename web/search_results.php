@@ -1,5 +1,6 @@
 <?php
 include('session.php');
+require_once("dbconn.php");
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -30,14 +31,7 @@ include('session.php');
 		<!-- menu nav -->
 		<?php require("menu_logged-in.php"); ?>
         <!-- END menu nav -->
-        <!--<div class="clr"></div>-->
     </div>
-	<!--<div class="container">
-	<div id="title-container">
-        	<h2>Search PublishForce</h2>
-        </div>-->
-        <!-- CLOSE HEADING DIVS -->
-    <!--</div>-->
 </div>
 <!-- CLOSE HEADING DIVS -->
 	<div style="text-align:center;">
@@ -58,13 +52,9 @@ include('session.php');
         </form>
 <?php
 		$searchTag = $_POST['search_text'];
-		$servername = "127.0.0.1";
-		$username = "publishforce";
-		$password = "publishforce";
-		$dbname = "publishforce";
-
+		$dbConn = new DBConn();
 		// Create connection
-		$connection = new mysqli($servername, $username, $password, $dbname);
+		$connection = new mysqli($dbConn->dbservername, $dbConn->dbusername, $dbConn->dbpassword, $dbConn->dbname);
 		// Check connection
 		if ($connection->connect_error) {
     		die("Connection failed: " . $connection->connect_error);
@@ -73,9 +63,7 @@ include('session.php');
     		//echo "CONNECT OK";
 		}
 		
-		//$sql = "select * from pf_research_files";
 		$sql = "select * from pf_research_files where search_tags like '%$searchTag%' and published_flag = 1";
-		//echo "SQL " . $sql;
 		if ( $searchTag!="" ) {
 			$result = $connection->query($sql);
 			if ($result->num_rows == 1) {

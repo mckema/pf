@@ -59,7 +59,6 @@ require_once("DBConn.php");
 			</tr>
 <?php
 		$userName = $_SESSION['login_user'];
-		//echo "Hello?";
 		$dbConn = new DBConn();
 		// Create connection
 		$connection = new mysqli($dbConn->dbservername, $dbConn->dbusername, $dbConn->dbpassword, $dbConn->dbname);

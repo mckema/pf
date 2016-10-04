@@ -1,5 +1,6 @@
 <?php
 include('session.php');
+require_once("dbconn.php");
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -25,13 +26,7 @@ include('session.php');
 
 <body>
 <?php
-	//echo "seeing it?? ";
 	$listOfIsinsChosen = $_POST["hiddenselectedfunds"];
-	//echo $listOfIsinsChosen . " vals?";
-	/*foreach ($values as $listOfFunds){
-    	echo $listOfFunds . " values";
-	}*/
-	//print_r($_POST["myselect"]);
 ?>
 <div id="header-section">
 	<div id="header-bar">
@@ -78,10 +73,7 @@ function grab_data(val) {
 </script>        
 
 <?php
-		//echo "FIRM ID ok: $session_user_firm_id";
-		//$fileId = $_REQUEST["file_id"];
 		$fileId = $_POST["file_id"];
-		//echo "File ID: " . $fileId;
 		$fundsToReview = array();
 		$fundsToReview2 = array();
 		
@@ -115,12 +107,9 @@ function grab_data(val) {
 			$allocationAmounts = $_POST['alloc-amount'];  
 		}
 		//$fileId = $_REQUEST['file_id'];
-		$servername = "127.0.0.1";
-		$username = "publishforce";
-		$password = "publishforce";
-		$dbname = "publishforce";
+		$dbConn = new DBConn();
 		// Create connection
-		$connection = new mysqli($servername, $username, $password, $dbname);
+		$connection = new mysqli($dbConn->dbservername, $dbConn->dbusername, $dbConn->dbpassword, $dbConn->dbname);
 		// Check connection
 		if ($connection->connect_error) {
     		die("Connection failed: " . $connection->connect_error);
@@ -142,8 +131,6 @@ function grab_data(val) {
   			echo $ccy . " " . $reviewAmounts . " research cost is allocated to fund " . $fundsToReview2[$myPosition] . "<br/>";
   			$fundAllocationSQL = "insert into pf_allocation_history(`firm_id`, `file_id`, `ISIN`, `allocation_amount`, `allocation_ccy`, `creation_date`, `active_flag`) 
   				values ($session_user_firm_id, $fileId, '$fundsToReview2[$myPosition]', $reviewAmounts, '$ccy', NOW(), 1);";
-  			//echo "the SQL: " . $fundAllocationSQL . "<br/>";
-  			//$insertAllocations = $connection->query($fundAllocationSQL);
   			if ($connection->query($fundAllocationSQL) === TRUE) {
     			//echo "inserted successfully";
 			}

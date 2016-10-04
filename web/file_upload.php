@@ -1,5 +1,6 @@
 <?php
 include('session.php');
+require_once("DBConn.php");
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -58,14 +59,9 @@ $fileAuthor = $_POST['file-author'];
 $fileEuthorEmail = $_POST['file-author-email'];
 $fileFrequency =  $_POST['file-frequency'];
 
-// Establishing DB connection to persist file upload details, tags, author, etc.
-$servername = "127.0.0.1";
-$username = "publishforce";
-$password = "publishforce";
-$dbname = "publishforce";
-
+$dbConn = new DBConn();
 // Create connection
-$connection = new mysqli($servername, $username, $password, $dbname);
+$connection = new mysqli($dbConn->dbservername, $dbConn->dbusername, $dbConn->dbpassword, $dbConn->dbname);
 $target_dir = "uploads/";
 $myDate = $_SERVER['REQUEST_TIME'];
 $target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
