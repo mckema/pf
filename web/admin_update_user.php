@@ -1,5 +1,6 @@
 <?php
 include('session.php');
+require_once("DBConn.php");
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -62,14 +63,10 @@ include('session.php');
 		$consumerUser = $_POST["consumer_user"];
 		$publisherAndConsumerUser = $_POST["publisher_and_consumer_user"];
 		$activeFlag = $_POST["active_flag"];
-		$servername = "127.0.0.1";
-		$username = "publishforce";
-		$password = "publishforce";
-		$dbname = "publishforce";
-
+		$dbConn = new DBConn();
 		// Create connection
-		$connection_1 = new mysqli($servername, $username, $password, $dbname);
-		$connection_2 = new mysqli($servername, $username, $password, $dbname);
+		$connection_1 = new mysqli($dbConn->dbservername, $dbConn->dbusername, $dbConn->dbpassword, $dbConn->dbname);
+		$connection_2 = new mysqli($dbConn->dbservername, $dbConn->dbusername, $dbConn->dbpassword, $dbConn->dbname);
 		// Check connection
 		if ($connection_1->connect_error) {
     		die("Connection failed: " . $connection_1->connect_error);

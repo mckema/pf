@@ -1,5 +1,6 @@
 <?php
 include('session.php');
+require_once("DBConn.php");
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -48,11 +49,9 @@ include('session.php');
         << <a href="publications_home.php">Back</a> to list of publications<br/>
 <?php
 		$fileId = $_REQUEST["file_id"];
-		$publishAction = $_REQUEST["action"];
-		$servername = "127.0.0.1";
-		$username = "publishforce";
-		$password = "publishforce";
-		$dbname = "publishforce";
+		$dbConn = new DBConn();
+		// Create connection
+		$connection = new mysqli($dbConn->dbservername, $dbConn->dbusername, $dbConn->dbpassword, $dbConn->dbname);
 
 		// Create connection
 		$connection = new mysqli($servername, $username, $password, $dbname);
