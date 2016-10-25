@@ -50,6 +50,7 @@ require_once("DBConn.php");
         You have successfully purchased this research:
 <?php
 		$fileId = $_REQUEST["file_id"];
+		$rpaId = $_REQUEST["rpa_id"];
 		$dbConn = new DBConn();
 		// Create connection
 		$connection = new mysqli($dbConn->dbservername, $dbConn->dbusername, $dbConn->dbpassword, $dbConn->dbname);
@@ -63,9 +64,9 @@ require_once("DBConn.php");
 		$sql = "select * from pf_research_files where file_id = $fileId";
 		//echo $sql;
 		$result = $connection->query($sql);
-		//now tell the DB that the user has read this publication
-        $sqlResearchFilePurchased = "insert into pf_purchase_history(`user_id`, `file_id`, `purchased_date`, `purchased_fee`, `purchased_ccy`) 
-        	values ($session_user_id, $fileId, NOW(), 1000.00, 'GBP')";
+		//now tell the DB that the user has bought this publication
+        $sqlResearchFilePurchased = "insert into pf_purchase_history(`user_id`, `file_id`, `purchased_date`, `purchased_fee`, `purchased_ccy`, `rpa_id`) 
+        	values ($session_user_id, $fileId, NOW(), 1000.00, 'GBP', $rpaId)";
         //echo "sqlResearchFilePurchased: $sqlResearchFilePurchased";
         $sqlResearchFilePurchased = $connection->query($sqlResearchFilePurchased);
         if ($result->num_rows > 0) {

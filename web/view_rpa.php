@@ -44,7 +44,7 @@ require_once("dbconn.php");
 
     <div class="white-section">
         <div class="container">
-        <h3>Edit RPA</h3>
+        <h3>RPA Summary</h3>
         <p>
         << <a href="rpa_home.php">Back</a> to my list of RPAs<br/>
 <?php
@@ -59,16 +59,26 @@ require_once("dbconn.php");
 		} else {
     		//echo "CONNECT OK";
 		}
-		//$sql = "select * from pf_rpa_details where rpa_id = $rpaId";
 		$sql = "select a.rpa_id, a.rpa_name, a.asset_owner_id, b.asset_owner_name, a.budget_ccy,
 		a.budget_amount, a.start_date, a.end_date, a.creation_date, a.active_flag
 		from pf_rpa_details a, pf_asset_owner_details b 
 		where a.asset_owner_id = b.asset_owner_id and a.rpa_id = $rpaId";
-		//echo $sql;
 		$result = $connection->query($sql);
-		//populate the santa
-		$newSQL = "select * from pf_asset_owner_details;";
-    	$resultAssetOwner = $connection->query($newSQL);
+		
+		//which funds are linked to this RPA
+        $chosenFundsSQL = "select * from pf_funds_linked_to_rpa where rpa_id = $rpaId;";
+    	$resultChosenFunds = $connection->query($chosenFundsSQL);
+		
+		//what has been spent so far on the RPA
+		$sqlSpent = "SELECT allocation_ccy, FORMAT(SUM(allocation_amount),2) total
+			FROM `pf_allocation_history`
+			where ISIN in ('GB0005533228','GB00B82FK756','JE00B4RG7R45')
+			GROUP BY allocation_ccy";
+		$resultSpent = $connection->query($sqlSpent);
+		
+		//who owns the assets
+		/*$newSQL = "select * from pf_asset_owner_details;";
+    	$resultAssetOwner = $connection->query($newSQL);*/
 ?>
 	
 	
@@ -83,28 +93,27 @@ require_once("dbconn.php");
 			
 <?php
 
-
+		$budgetTotal = 0;
+		$budgetRemaining = 0;
 		if ($result->num_rows > 0) {
     		// output data of each row
     		while($row = $result->fetch_assoc()) {
-        		$publishFlag = "publish";
-        		$publicationStatus = "Not active";
+        		$rpaStatus = "Not active";
         		$selectedAssetOwnerId = $row["asset_owner_id"];
         		//echo "AO ID: " . $selectedAssetOwnerId;
         		if( $row["active_flag"] == 1 ) {
-        			$publishFlag = "unpublish";
-        			$publicationStatus = "Activated on " . $row["start_date"];
+        			$rpaStatus = "Active";
         		}
         		
         		echo "<tr>
-        		<td width='100'>RPA name: </td><td width='600'><input type='text' class='search-text' name='rpa_name' id='rpa_name' value='" . $row["rpa_name"]. "'/></td></tr>
+        			<td width='160'>RPA name: </td><td width='600'>" . $row["rpa_name"]. "</td>
+        		</tr>
         		<tr>
         			<td>Asset owner: </td>
         			<td>
-        				<input type='hidden' name='asset_owner_hidden' id='asset_owner_hidden' value='". $row["asset_owner_id"] . "'/>
-        				<select name='asset_owner_id'>";
+        				<input type='hidden' name='asset_owner_hidden' id='asset_owner_hidden' value='". $row["asset_owner_id"] . "'/>";
         				
-        				if ($resultAssetOwner->num_rows > 0) {
+        				/*if ($resultAssetOwner->num_rows > 0) {
         					
         					
     						while($rowAO = $resultAssetOwner->fetch_assoc()) {
@@ -112,55 +121,80 @@ require_once("dbconn.php");
     							if ($selectedAssetOwnerId == $rowAO["asset_owner_id"]) {
     								$selectedElem = "selected";
     							}
-    							echo "<option value='". $rowAO["asset_owner_id"] . "' " . $selectedElem . ">". $rowAO["asset_owner_name"] . "</option>";
+    							echo $rowAO["asset_owner_name"];
     						}
-    					}
-    				echo "</select>
-        			<input type='hidden' name='rpa_id' id='rpa_id' value='". $row["rpa_id"] . "'/>
+    					}*/
+    				echo $row["asset_owner_name"] . "<input type='hidden' name='rpa_id' id='rpa_id' value='". $row["rpa_id"] . "'/>
         			</td>
         		</tr>
         		<tr>
-        			<td>Budget:</td><td>
-        				<input type='text' style='width:40px;' class='search-text' name='budget_ccy' id='budget_ccy' value='" . $row["budget_ccy"]. "' />
-        				<input type='text' style='width:100px;' class='search-text' name='budget_amount' id='budget_amount' value='" . $row["budget_amount"]. "' />
+        			<td>Budget currency:</td><td>";
+        				echo $row["budget_ccy"]. "
         			</td>
+        		</tr>
+        		<tr>
+        			<td>Budget set at:</td><td>";
+        				$budgetTotal = number_format($row["budget_amount"], 2);
+        				//$budgetTotal = $row["budget_amount"];
+        				echo $row["budget_ccy"]. " " . $budgetTotal . "
+        			</td>
+        		</tr>
+        		<tr>
+        			<td>Budget spent:</td>";
+        			//display what has been spent
+    				if ($resultSpent->num_rows > 0) {
+        				while($rowSpent = $resultSpent->fetch_assoc()) {
+        					$budgetSpent = $rowSpent["total"];
+        					$budgetSpentStripped = str_replace( ',', '', $budgetSpent );
+        					$budgetSpent = $budgetSpentStripped;
+        					$budgetSpent = number_format($budgetSpentStripped, 2);
+    						echo "<td>" . $rowSpent["allocation_ccy"] . " " . $budgetSpent . "</td>";
+    						//echo "<td>nada</td>";
+    					}
+    				}
+    			
+    			echo " </tr>
+        		<tr>
+        			<td>Budget remaining:</td><td>";
+        				//$budgetRemaining = $budgetTotal - $budgetSpent;
+        				//echo $budgetTotal . " and spent: " . $budgetSpent;
+        				$budgetTotalStripped = str_replace( ',', '', $budgetTotal );
+        				$budgetSpentStripped = str_replace( ',', '', $budgetSpent );
+        				$budgetRemaining = $budgetTotalStripped - $budgetSpentStripped;
+        				//$budgetRemaining2DP = number_format((float)$budgetRemaining, 2, '.', '');
+        				$budgetRemaining2DP = number_format($budgetRemaining, 2);
+        				echo $row["budget_ccy"]. " " . $budgetRemaining2DP;
+        				//echo $row["budget_ccy"]. " " . $row["budget_amount"]. ";
+        			echo "</td>
         		</tr>
         		<tr>
         			<td>Dates (start-end): </td>
         			<td>
-        				<input type='text' class='search-text' name='start_date' id='start_date' value='". $row["start_date"] . "'/> to 
-        				<input type='text' class='search-text' name='end_date' id='end_date' value='". $row["end_date"] . "'/>
+        				" . $row["start_date"] . " to ". $row["end_date"] . "
         			</td>
         		</tr>
         		<tr>
         			<td>Active?</td>
-        			<td>";
-        ?>
-    					<select name="active_status">
-        					<option value="0" <?php if ($row["active_flag"] == '0') echo ' selected="selected"'; ?>>Not active</option>
-        					<option value="1" <?php if ($row["active_flag"] == '1') echo ' selected="selected"'; ?>>Active</option>
-        				</select>
+        			<td> ". $rpaStatus . "
         			</td>
         		</tr>
         		<tr>
         			<td>Chosen funds:</td>
-        			<td>
-        <?php
-        				//list the selected funds
-        				$chosenFundsSQL = "select * from pf_funds_linked_to_rpa where rpa_id = $rpaId;";
-    					$resultChosenFunds = $connection->query($chosenFundsSQL);
+        			<td>";
+  
+        				//list the selected funds and their amounts
     					if ($resultChosenFunds->num_rows > 0) {
         					while($rowFunds = $resultChosenFunds->fetch_assoc()) {
-    							echo $rowFunds["ISIN"] . "<br/>";
+    							echo $rowFunds["ISIN"] . "; limit = " . $rowFunds["fund_ccy"] . " " . $rowFunds["fund_limit_amount"] . "<br/>";
     						}
     					}
         ?>
-        				<a href="edit_rpa_funds?rpa_id=<?php echo $rpaId; ?>">Add/edit funds</a>
+        				<a href="edit_rpa_funds.php?rpa_id=<?php echo $rpaId; ?>">Add/edit funds</a>
         			</td>
         		</tr>
         <?php
         		echo "<tr>
-        			<td><strong>Action?</strong></td><td>[ <a href='javascript:submitform();'>save changes</a> ]  
+        			<td><strong>Action?</strong></td><td>[ <a href='edit_rpa.php?rpa_id=" . $rpaId . "'>Edit this RPA</a> ]  
         				&nbsp;&nbsp;&nbsp;&nbsp;
         			</td>
         		</tr>";

@@ -1,9 +1,8 @@
 <?php
-require_once("dbconn.php");
 // Establishing Connection with Server by passing server_name, user_id and password as a parameter
-$dbConn = new DBConn();
-// Create connection
-$connection = new mysqli($dbConn->dbservername, $dbConn->dbusername, $dbConn->dbpassword, $dbConn->dbname);
+$connection = mysql_connect("127.0.0.1", "publishforce", "publishforce");
+// Selecting Database
+$db = mysql_select_db("publishforce", $connection);
 session_start();// Starting Session
 // Storing Session
 $user_check=$_SESSION['login_user'];

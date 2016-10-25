@@ -411,6 +411,24 @@ UNIQUE (firm_id, file_id, ISIN)
 INSERT INTO `pf_allocation_history`(`firm_id`, `file_id`, `ISIN`, `allocation_amount`, `allocation_ccy`, `active_flag`, `creation_date`) 
 VALUES (1, 1, 'TEST_ISIN', 11000.00, 'GBP', 1, NOW());
 
+-- FUNDS LINKED TO A RESEARCH PAYMENT ACCOUNT
+-- and audit of who did the linking
+DROP TABLE IF EXISTS `pf_funds_linked_to_rpa`;
+
+CREATE TABLE `pf_funds_linked_to_rpa` (
+  `rpa_id` int(10) NOT NULL,
+  `ISIN` varchar(100) NOT NULL,
+  `user_id` int(10) NOT NULL,
+  `active_flag` bit(1) NOT NULL,
+  `creation_date` datetime NOT NULL,
+  CONSTRAINT pf_funds_linked_to_rpa_primary 
+UNIQUE (rpa_id, ISIN)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+INSERT INTO `pf_funds_linked_to_rpa`(`rpa_id`, `ISIN`, `user_id`, `active_flag`, `creation_date`) 
+VALUES (1, 'TEST_ISIN', 1, 1, NOW());
+INSERT INTO `pf_funds_linked_to_rpa`(`rpa_id`, `ISIN`, `user_id`, `active_flag`, `creation_date`) 
+VALUES (1, 'GB00BWH5Y544', 1, 1, NOW());
 
 
 

@@ -95,11 +95,11 @@ require_once("DBConn.php");
         		<td>" . $row["rpa_id"] . "</td>
         		<td>" . $row["rpa_name"] . "</td>
         		<td>" . $row["asset_owner_name"] . "</td>
-        		<td>" . $row["budget_ccy"] . " " . $row["budget_amount"] . "</td>
+        		<td>" . $row["budget_ccy"] . " " . number_format($row["budget_amount"], 2) . "</td>
         		<td>" . $startDate . " to " . $endDate . "</td>
         		<td>" . $row["creation_date"]. "</td>
         		<td>" . $rpa_status . "</td>
-        		<td>[ <a href='edit_rpa.php?rpa_id=" . $row["rpa_id"] . "'>edit</a> ]</td>
+        		<td>[ <a href='view_rpa.php?rpa_id=" . $row["rpa_id"] . "'>details</a> ]</td>
         		</tr>";
     		}
 		} else {

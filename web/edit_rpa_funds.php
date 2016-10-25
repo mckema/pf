@@ -41,14 +41,15 @@ require_once("dbconn.php");
 		<?php require("menu_my_account.php"); ?>
         <!-- END menu for my account -->
     </div>
-
+<?php
+		$rpaId = $_REQUEST["rpa_id"];
+?>
     <div class="white-section">
         <div class="container">
         <h3>Edit RPA</h3>
         <p>
-        << <a href="rpa_home.php">Back</a> to my list of RPAs<br/>
+        << <a href="edit_rpa.php?rpa_id=<?php echo $rpaId;?>">Back</a> to my RPA details<br/>
 <?php
-		$rpaId = $_REQUEST["rpa_id"];
 		// Create connection
 		$dbConn = new DBConn();
 		$connection = new mysqli($dbConn->dbservername, $dbConn->dbusername, $dbConn->dbpassword, $dbConn->dbname);
@@ -79,6 +80,8 @@ require_once("dbconn.php");
 			<tr>
 				<th>Name</th>
 				<th>Value</th>
+				<th>&nbsp;</th>
+				<th>&nbsp;</th>
 			</tr>
 			
 <?php
@@ -118,44 +121,42 @@ require_once("dbconn.php");
     				echo "</select>
         			<input type='hidden' name='rpa_id' id='rpa_id' value='". $row["rpa_id"] . "'/>
         			</td>
-        		</tr>
-        		<tr>
-        			<td>Budget:</td><td>
-        				<input type='text' style='width:40px;' class='search-text' name='budget_ccy' id='budget_ccy' value='" . $row["budget_ccy"]. "' />
-        				<input type='text' style='width:100px;' class='search-text' name='budget_amount' id='budget_amount' value='" . $row["budget_amount"]. "' />
-        			</td>
-        		</tr>
-        		<tr>
-        			<td>Dates (start-end): </td>
-        			<td>
-        				<input type='text' class='search-text' name='start_date' id='start_date' value='". $row["start_date"] . "'/> to 
-        				<input type='text' class='search-text' name='end_date' id='end_date' value='". $row["end_date"] . "'/>
-        			</td>
-        		</tr>
-        		<tr>
-        			<td>Active?</td>
-        			<td>";
+        			<td></td>
+        			<td></td>
+        		</tr>";
         ?>
-    					<select name="active_status">
-        					<option value="0" <?php if ($row["active_flag"] == '0') echo ' selected="selected"'; ?>>Not active</option>
-        					<option value="1" <?php if ($row["active_flag"] == '1') echo ' selected="selected"'; ?>>Active</option>
-        				</select>
-        			</td>
-        		</tr>
+    					
         		<tr>
-        			<td>Chosen funds:</td>
+        			<td>Choose funds:</td>
         			<td>
         <?php
-        				//list the selected funds
-        				$chosenFundsSQL = "select * from pf_funds_linked_to_rpa where rpa_id = $rpaId;";
-    					$resultChosenFunds = $connection->query($chosenFundsSQL);
-    					if ($resultChosenFunds->num_rows > 0) {
-        					while($rowFunds = $resultChosenFunds->fetch_assoc()) {
-    							echo $rowFunds["ISIN"] . "<br/>";
-    						}
-    					}
-        ?>
-        				<a href="edit_rpa_funds?rpa_id=<?php echo $rpaId; ?>">Add/edit funds</a>
+        $sqlFunds = "select * from pf_funds where Security_Status = 'Tradeable'";
+		$resultFunds = $connection->query($sqlFunds);
+		echo "<strong>Funds I manage:</strong><br/>";
+		if ($resultFunds->num_rows > 0) {
+        	echo "<select id='myselect' name='myselect' multiple style='height:220px;width:500px;overflow-y: auto;'>";
+        	while($rowFunds = $resultFunds->fetch_assoc()) {
+        		
+          		echo" <option value='" . $rowFunds["ISIN"]. "'>" . $rowFunds["Issuer_name"]. ": " . $rowFunds["ISIN"]. ": "  . $rowFunds["Security_Description"]. "</option>";
+        		//echo "<strong>ISIN</strong>: " . $rowFunds["ISIN"]. " &nbsp;&nbsp;<strong>Name</strong>: "  . $rowFunds["Security_Description"]. " [ <a href='#'>add this fund</a> ]<br/>";
+        	}
+        	echo "</select>";
+        }
+        
+        ?>			
+        			
+        			</td>
+        			<td>
+        				<a id="myLink" href="#" onclick="grab_data(myselect, userselectedfunds, hiddenselectedfunds);return false;">add&nbsp;&gt;&gt;</a><br/><br/>
+						<a id="clearData" href="#" onclick="clear_data(userselectedfunds, userselectedfunds2, hiddenselectedfunds);return false;">&lt;&lt;&nbsp;remove</a>
+						&nbsp;
+        			<!--persist them to pf_funds_linked_to_rpa table-->
+        			</td>
+        			<td>
+        				<br/><input type="hidden" name="hiddenselectedfunds" id="hiddenselectedfunds" value="" />
+        				<select name="userselectedfunds2[]" id="userselectedfunds2" multiple style="height:220px;width:500px;overflow-y: auto;">
+						</select>
+						<!--<a id="nextPage" href="#" onclick="submitform();return false;">next steps</a>-->
         			</td>
         		</tr>
         <?php

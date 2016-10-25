@@ -22,6 +22,7 @@ require_once("DBConn.php");
 <script type="text/javascript" src="js/mobile-nav.js"></script>
 <script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
 <script type="text/javascript" src="js/scripts.js"></script>
+<script type="text/javascript" src="js/data-scripts.js"></script>
 </head>
 
 <body>
@@ -50,7 +51,7 @@ require_once("DBConn.php");
 <script language="javascript">
 // Return an array of the selected opion values
 // select is an HTML select element
-function getSelectValues(select) {
+/*function getSelectValues(select) {
   var result = [];
   var options = select && select.options;
   var opt;
@@ -64,50 +65,7 @@ function getSelectValues(select) {
   }
   //selected_funds.value = result;
   return result;
-}
-function grab_data(val) {
-	//pass data from the main list of fund to what you want to allocate
-	var result = [];
-	var a = document.getElementById(val.id).value;
-	var options = val && val.options;
-	var opt;
-	var targetCount = 0;
-	//var targetField = document.getElementsByName("userselectedfunds");
-	var targetField = document.getElementById("userselectedfunds");
-	var targetHiddenField = document.getElementById("hiddenselectedfunds");
-	for (var i=0, iLen=options.length; i<iLen; i++) {
-		
-    	opt = options[i];
-    	if (opt.selected) {
-    		result.push("'" + opt.value + "'" || "'" + opt.text + "'");
-    		targetField.options[targetCount] = new Option(opt.text, opt.value, i);
-    		targetCount++;
-    	}
-  	}
-  	targetHiddenField.value = result;
-  	//alert(result);
-  	return result;
-}
-
-function clear_data(val) {
-	//remove some or all of the items you have selected
-	var result = [];
-	var a = document.getElementById(val.id).value;
-	var options = val && val.options;
-	var opt;
-	var targetCount = 0;
-	//var targetField = document.getElementsByName("userselectedfunds");
-	var targetField = document.getElementById("userselectedfunds");
-	for (var i=0, iLen=options.length; i<iLen; i++) {	
-    	opt = options[i];
-    	if (opt.selected) {
-    		result.push(opt.value || opt.text);
-    		targetField.options[i] = new Option('', '', i-targetCount);
-    		targetCount++;
-    	}
-  	}
-  	return result;
-}
+}*/
 </script>
 <?php
 		$fileId = $_REQUEST["file_id"];
@@ -136,6 +94,7 @@ function clear_data(val) {
 			and fd.firm_id = 1";*/
 		$sqlFunds = "select * from pf_funds where Security_Status = 'Tradeable'";
 		$resultFunds = $connection->query($sqlFunds);
+		echo "SHOW THE RPA!!!";
 		echo "<strong>Funds I manage:</strong><br/>";
 		if ($resultFunds->num_rows > 0) {
         	echo "<select id='myselect' name='myselect' multiple style='height:220px;width:500px;overflow-y: auto;'>";
@@ -153,8 +112,8 @@ function clear_data(val) {
 <a href="javascript:grab_data(myselect);">select funds &gt;&gt;</a>-->
 		<td>
 			
-			<a id="myLink" href="#" onclick="grab_data(myselect);return false;">add&nbsp;&gt;&gt;</a><br/><br/>
-			<a id="clearData" href="#" onclick="clear_data(userselectedfunds);return false;">&lt;&lt;&nbsp;remove</a>
+			<a id="myLink" href="#" onclick="grab_data(myselect, userselectedfunds, hiddenselectedfunds);return false;">add&nbsp;&gt;&gt;</a><br/><br/>
+			<a id="clearData" href="#" onclick="clear_data(userselectedfunds, userselectedfunds2, hiddenselectedfunds);return false;">&lt;&lt;&nbsp;remove</a>
 			&nbsp;
 		</td>
 		<td>
@@ -162,10 +121,12 @@ function clear_data(val) {
   			<select name="userselectedfunds[]" id="userselectedfunds" multiple style="height:220px;width:500px;overflow-y: auto;">
 			</select>
 			<input type="hidden" name="file_id" value="<?php echo "$fileId";?>" />
-			<input type="hidden" name="hiddenselectedfunds" id="hiddenselectedfunds" value="" />
+			<input type="text" style='width:300px;' name="hiddenselectedfunds" id="hiddenselectedfunds" value="" />
 		</td>
 	</tr>
 </table>
+<select name="userselectedfunds2[]" id="userselectedfunds2" multiple style="height:220px;width:500px;overflow-y: auto;">
+			</select>
 <a id="nextPage" href="#" onclick="submitform();return false;">next steps</a>
 </form>
 <!--<a href="review_purchase.php">next step</a>-->
