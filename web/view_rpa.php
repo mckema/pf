@@ -66,15 +66,38 @@ require_once("dbconn.php");
 		$result = $connection->query($sql);
 		
 		//which funds are linked to this RPA
-        $chosenFundsSQL = "select * from pf_funds_linked_to_rpa where rpa_id = $rpaId;";
+        //$chosenFundsSQL = "select * from pf_funds_linked_to_rpa where rpa_id = $rpaId;";
+        $chosenFundsSQL = "SELECT b.ISIN, FORMAT(SUM(b.allocation_amount),2) total, FORMAT(a.fund_limit_amount,2) fund_limit_amount, a.fund_ccy
+        	FROM pf_allocation_history b, pf_funds_linked_to_rpa a 
+        	where b.rpa_id = $rpaId and b.ISIN = a.ISIN 
+        	group by b.ISIN, a.fund_limit_amount, a.fund_ccy ORDER BY SUM(b.allocation_amount) DESC";
+
     	$resultChosenFunds = $connection->query($chosenFundsSQL);
 		
+		//what funds have we spent money on within the RPA?
+		$sqlMoneySpentOnfunds = "SELECT distinct a.ISIN, b.allocation_amount 
+			FROM `pf_funds_linked_to_rpa` a, `pf_allocation_history` b
+			where a.rpa_id = $rpaId and a.ISIN = b.ISIN";
+		echo $sqlMoneySpentOnfunds;
+		$resultMoneySpentOnfunds = $connection->query($sqlMoneySpentOnfunds);
+		$arrIsinInRPA = array();
+		if ($resultMoneySpentOnfunds->num_rows > 0) {
+    		// output data of each row
+    		while($rowMoneySpentOnfunds = $resultMoneySpentOnfunds->fetch_assoc()) {
+        		array_push($arrIsinInRPA, $rowMoneySpentOnfunds["ISIN"]);
+			}
+			$strIsinInRPA = join("','", $arrIsinInRPA);
+			$strIsinInRPAForSql = "('" . $strIsinInRPA . "')";
+			echo "ISIN spent: " . $strIsinInRPAForSql;
+		}
 		//what has been spent so far on the RPA
+		//use the list of funds obtained from $resultMoneySpentOnfunds
 		$sqlSpent = "SELECT allocation_ccy, FORMAT(SUM(allocation_amount),2) total
 			FROM `pf_allocation_history`
-			where ISIN in ('GB0005533228','GB00B82FK756','JE00B4RG7R45')
+			where ISIN in $strIsinInRPAForSql
 			GROUP BY allocation_ccy";
 		$resultSpent = $connection->query($sqlSpent);
+		//take $resultSpent to show what is spent for each fund vs. budget set
 		
 		//who owns the assets
 		/*$newSQL = "select * from pf_asset_owner_details;";
@@ -112,18 +135,6 @@ require_once("dbconn.php");
         			<td>Asset owner: </td>
         			<td>
         				<input type='hidden' name='asset_owner_hidden' id='asset_owner_hidden' value='". $row["asset_owner_id"] . "'/>";
-        				
-        				/*if ($resultAssetOwner->num_rows > 0) {
-        					
-        					
-    						while($rowAO = $resultAssetOwner->fetch_assoc()) {
-    							$selectedElem = "";
-    							if ($selectedAssetOwnerId == $rowAO["asset_owner_id"]) {
-    								$selectedElem = "selected";
-    							}
-    							echo $rowAO["asset_owner_name"];
-    						}
-    					}*/
     				echo $row["asset_owner_name"] . "<input type='hidden' name='rpa_id' id='rpa_id' value='". $row["rpa_id"] . "'/>
         			</td>
         		</tr>
@@ -185,7 +196,8 @@ require_once("dbconn.php");
         				//list the selected funds and their amounts
     					if ($resultChosenFunds->num_rows > 0) {
         					while($rowFunds = $resultChosenFunds->fetch_assoc()) {
-    							echo $rowFunds["ISIN"] . "; limit = " . $rowFunds["fund_ccy"] . " " . $rowFunds["fund_limit_amount"] . "<br/>";
+    							echo $rowFunds["ISIN"] . "; limit = " . $rowFunds["fund_ccy"] . " " . $rowFunds["fund_limit_amount"] . "
+    							; spent: " . $rowFunds["fund_ccy"] . " " . $rowFunds["total"] .  " <br/>";
     						}
     					}
         ?>

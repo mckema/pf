@@ -115,8 +115,12 @@ require_once("dbconn.php");
         		<tr><td>Tags: </td><td>" . $row["search_tags"]. "
         		<input type='hidden' name='file_id' id='file_id' value='" . $row["file_id"]. "' /></td></tr>
         		<tr><td>Creation date: </td><td>" . $row["creation_date"]. "  </td></tr>
-        		<tr><td><strong>Action?</strong></td> <td>I agree to [ <a href='allocate_purchase.php?file_id=". $row["file_id"] . "'>purchase</a> ]  this research
-        		</td></tr>";
+        		<tr>
+        			<td><strong>Action?</strong></td> 
+        			<!--<td>I agree to [ <a href='allocate_purchase.php?file_id=". $row["file_id"] . "'>purchase</a> ]  this research-->
+        			<td>I agree to [ <a href='choose_rpa.php?file_id=". $row["file_id"] . "'>purchase</a> ]  this research
+        			</td>
+        		</tr>";
     		}
 		} else {
     		//echo "Try refining your search";

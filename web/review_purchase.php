@@ -74,6 +74,8 @@ function grab_data(val) {
 
 <?php
 		$fileId = $_POST["file_id"];
+		$rpaId = $_POST["rpa_id"];
+		echo "RPA ID: " . $rpaId;
 		$fundsToReview = array();
 		$fundsToReview2 = array();
 		
@@ -125,7 +127,7 @@ function grab_data(val) {
 			and finally, create the insert statements for each allocation */
 		$myPosition = -1;
 		//TBD, get the CCY from previous page
-		$ccy = 'GBP';
+		$ccy = $_POST["budget_ccy"];
 		foreach ($allocationAmounts as $reviewAmounts ) {
   			$myPosition ++;
   			echo $ccy . " " . $reviewAmounts . " research cost is allocated to fund " . $fundsToReview2[$myPosition] . "<br/>";
@@ -159,14 +161,15 @@ function grab_data(val) {
 		}
 		if ($resultFunds->num_rows > 0) {
 			while($rowFunds = $resultFunds->fetch_assoc()) {
-        		echo "&pound; <input type='text' autocomplete='off' class='search-text' name='alloc-amount[]' style='width: 60px;' value='' />&nbsp;". $rowFunds["ISIN"]. ", " . $rowFunds["Issuer_name"]. ", "  . $rowFunds["Security_Description"]. "
+        		echo $ccy . " <input type='text' autocomplete='off' class='search-text' name='alloc-amount[]' style='width: 60px;' value='' />&nbsp;". $rowFunds["ISIN"]. ", " . $rowFunds["Issuer_name"]. ", "  . $rowFunds["Security_Description"]. "
         		<input type='hidden' name='funds[]' value='". $rowFunds["ISIN"] ."' /> <br/>";
         		
         	}
         }
         $connection->close();
         if (!isset($_POST['submit'])) {
-			echo "<input name='submit' type='submit' value=' Proceed with allocation &gt;&gt;' />";
+			echo "<input name='submit' type='submit' value=' Proceed with allocation &gt;&gt;' />
+			<input type='hidden' name='budget_ccy' value='". $ccy ."' />";
 		}
 ?>
 <input type="hidden" name="file_id" value="<?php echo "$fileId";?>" />

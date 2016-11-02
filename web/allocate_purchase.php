@@ -69,6 +69,9 @@ require_once("DBConn.php");
 </script>
 <?php
 		$fileId = $_REQUEST["file_id"];
+		$rpaId = $_POST["rpa_id"];
+		$budgetCcy = $_POST["budget_ccy"];
+		echo "RPA ID: " . $rpaId;
 ?>     
 <!--<form id="allocatePublications" name="allocatePublications" action="review_purchase.php?file_id=<?php echo $fileId;?>" method="post">-->
 <form id="allocatePublications" name="allocatePublications" action="review_purchase.php" method="post">
@@ -92,10 +95,25 @@ require_once("DBConn.php");
         	f.fund_ccy as fund_ccy from pf_firm_details fd, pf_funds f
 			where fd.firm_id = f.firm_id
 			and fd.firm_id = 1";*/
-		$sqlFunds = "select * from pf_funds where Security_Status = 'Tradeable'";
+		
+		//base this upon the RPA chosen...
+		//$sqlFunds = "select * from pf_funds where Security_Status = 'Tradeable'";
+		$sqlFunds = "select a.ISIN, a.Issuer_name, a.Security_Description
+			from `pf_funds` a, `pf_funds_linked_to_rpa` b
+			where b.rpa_id = $rpaId and b.ISIN = a.ISIN";
 		$resultFunds = $connection->query($sqlFunds);
-		echo "SHOW THE RPA!!!";
+		//echo $sqlFunds;
+		$sqlBudget = "select budget_ccy from `pf_rpa_details` where rpa_id = $rpaId";
+		//echo $sqlBudget;
+		$resultBudget = $connection->query($sqlBudget);
 		echo "<strong>Funds I manage:</strong><br/>";
+		if ($resultBudget->num_rows > 0) {
+			while($rowBudgetCcy = $resultBudget->fetch_assoc()) {
+				echo "<input type='hidden' name='budget_ccy' value='". $rowBudgetCcy["budget_ccy"] . "' />";
+			}
+		}
+		
+		echo "<input type='hidden' name='rpa_id' value='". $rpaId . "' />";
 		if ($resultFunds->num_rows > 0) {
         	echo "<select id='myselect' name='myselect' multiple style='height:220px;width:500px;overflow-y: auto;'>";
         	while($rowFunds = $resultFunds->fetch_assoc()) {

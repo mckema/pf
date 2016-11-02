@@ -201,6 +201,9 @@ CREATE TABLE `pf_purchase_history` (
 UNIQUE (user_id, file_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+ALTER TABLE `pf_purchase_history` ADD `rpa_id` int(10) NOT NULL AFTER `purchased_ccy`;
+
+
 INSERT INTO `pf_purchase_history`(`user_id`, `file_id`, `purchased_date`, `purchased_fee`, `purchased_ccy`) VALUES (2, 1, NOW(), 1000.00, 'GBP');
 INSERT INTO `pf_purchase_history`(`user_id`, `file_id`, `purchased_date`, `purchased_fee`, `purchased_ccy`) VALUES (1, 1, NOW(), 1000.00, 'GBP');
 
@@ -406,8 +409,14 @@ UNIQUE (firm_id, file_id, ISIN)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- ALTER TABLE `pf_allocation_history` ADD `ISIN` varchar(100) NOT NULL AFTER `file_id`;
+ALTER TABLE `pf_allocation_history` ADD `rpa_id` int(10) NOT NULL AFTER `ISIN`;
 
+SELECT distinct a.ISIN, b.allocation_amount FROM `pf_funds_linked_to_rpa` a, `pf_allocation_history` b where a.rpa_id = 1 and a.ISIN = b.ISINISIN 
+spent: ('GB00B39R2T55','GB00B82FK756','GB00B82FK756','GB00B82FK756') 
 
+SELECT distinct a.fund_limit_amount, a.ISIN, b.allocation_amount FROM `pf_funds_linked_to_rpa` a, `pf_allocation_history` b where a.rpa_id = 1 and b.rpa_id= a.rpa_id 
+
+			
 INSERT INTO `pf_allocation_history`(`firm_id`, `file_id`, `ISIN`, `allocation_amount`, `allocation_ccy`, `active_flag`, `creation_date`) 
 VALUES (1, 1, 'TEST_ISIN', 11000.00, 'GBP', 1, NOW());
 
@@ -425,10 +434,20 @@ CREATE TABLE `pf_funds_linked_to_rpa` (
 UNIQUE (rpa_id, ISIN)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+ALTER TABLE `pf_funds_linked_to_rpa`
+ADD `fund_limit_amount` decimal(15,2) NOT NULL AFTER `user_id`,
+ADD `fund_ccy` varchar(3) NOT NULL AFTER `fund_limit_amount`;
+
 INSERT INTO `pf_funds_linked_to_rpa`(`rpa_id`, `ISIN`, `user_id`, `active_flag`, `creation_date`) 
 VALUES (1, 'TEST_ISIN', 1, 1, NOW());
 INSERT INTO `pf_funds_linked_to_rpa`(`rpa_id`, `ISIN`, `user_id`, `active_flag`, `creation_date`) 
 VALUES (1, 'GB00BWH5Y544', 1, 1, NOW());
+INSERT INTO `pf_funds_linked_to_rpa` (`rpa_id`, `ISIN`, `user_id`, `fund_limit_amount`, `fund_ccy`, `active_flag`, `creation_date`) 
+VALUES (2, 'GB0031404428', 1, '25000', 'EUR', b'1', '2016-10-26 00:00:00');
+
+
+SELECT distinct a.ISIN FROM `pf_funds_linked_to_rpa` a, `pf_allocation_history` b
+where a.rpa_id = 1 and a.ISIN = b.ISIN
 
 
 
