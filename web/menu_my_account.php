@@ -20,5 +20,5 @@ include('session.php');
 		<a href="my_funds.php">My Funds</a> &nbsp;&nbsp; 
 		<a href="csa_home.php">My CSAs</a> &nbsp;&nbsp; 
 		<a href="rpa_home.php">My RPAs</a> &nbsp;&nbsp; 
-		<a href="#">My Pendings</a>
+		<a href="budget_home.php">My Budgets</a>
 		<br/><br/>

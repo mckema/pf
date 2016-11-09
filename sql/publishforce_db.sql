@@ -368,6 +368,8 @@ CREATE TABLE `pf_rpa_details` (
   PRIMARY KEY (rpa_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+ALTER TABLE `pf_rpa_details` ADD `budget_id` int(10) NOT NULL AFTER `rpa_name`;
+
 INSERT INTO `pf_rpa_details`(`rpa_name`, `firm_id`, `asset_owner_id`, `budget_ccy`, `budget_amount`, `start_date`, `end_date`, `active_flag`, `creation_date`) 
 VALUES ('IBM RPA - ABC', 1, 1, 'GBP', 100000.00, '2016-10-01', '2017-10-01', 1, NOW());
 INSERT INTO `pf_rpa_details`(`rpa_name`, `firm_id`, `asset_owner_id`, `budget_ccy`, `budget_amount`, `start_date`, `end_date`, `active_flag`, `creation_date`) 
@@ -414,7 +416,18 @@ ALTER TABLE `pf_allocation_history` ADD `rpa_id` int(10) NOT NULL AFTER `ISIN`;
 SELECT distinct a.ISIN, b.allocation_amount FROM `pf_funds_linked_to_rpa` a, `pf_allocation_history` b where a.rpa_id = 1 and a.ISIN = b.ISINISIN 
 spent: ('GB00B39R2T55','GB00B82FK756','GB00B82FK756','GB00B82FK756') 
 
-SELECT distinct a.fund_limit_amount, a.ISIN, b.allocation_amount FROM `pf_funds_linked_to_rpa` a, `pf_allocation_history` b where a.rpa_id = 1 and b.rpa_id= a.rpa_id 
+SELECT a.fund_limit_amount, a.ISIN, FORMAT(SUM(b.allocation_amount),2) total 
+FROM `pf_funds_linked_to_rpa` a, `pf_allocation_history` b 
+where a.rpa_id = 1 and a.rpa_id = b.rpa_id 
+group by a.ISIN ORDER BY SUM(b.allocation_amount) DESC 
+
+SELECT b.ISIN, FORMAT(SUM(b.allocation_amount),2) total, a.fund_limit_amount FROM pf_allocation_history b, pf_funds_linked_to_rpa a where b.rpa_id = 1 and b.ISIN = a.ISIN group by b.ISIN, a.fund_limit_amount ORDER BY SUM(b.allocation_amount) DESC 
+
+GB00B39R2T55; limit = GBP 5000.00 ; spent: TBD
+GB00B82FK756; limit = GBP 6000.00 ; spent: TBD 
+
+5000.00 	GB00B39R2T55 	5,250.00
+6000.00 	GB00B82FK756 	5,250.00
 
 			
 INSERT INTO `pf_allocation_history`(`firm_id`, `file_id`, `ISIN`, `allocation_amount`, `allocation_ccy`, `active_flag`, `creation_date`) 
@@ -445,6 +458,38 @@ VALUES (1, 'GB00BWH5Y544', 1, 1, NOW());
 INSERT INTO `pf_funds_linked_to_rpa` (`rpa_id`, `ISIN`, `user_id`, `fund_limit_amount`, `fund_ccy`, `active_flag`, `creation_date`) 
 VALUES (2, 'GB0031404428', 1, '25000', 'EUR', b'1', '2016-10-26 00:00:00');
 
+
+-- RESEARCH PURCHASE ACCOUNT DETAILS
+DROP TABLE IF EXISTS `pf_budget_AO`;
+
+CREATE TABLE `pf_budget_AO` (
+  `budget_id` int(10) NOT NULL AUTO_INCREMENT,
+  `budget_name` varchar(100) NOT NULL,
+  `firm_id` int(10) NOT NULL,
+  `asset_owner_id` int(10) NOT NULL,
+  `budget_ccy` varchar(3) NOT NULL,
+  `budget_amount` decimal(15,2) NOT NULL,
+  `start_date` date NULL,
+  `end_date` date NULL,
+  `active_flag` bit(1) NOT NULL,
+  `creation_date` datetime NOT NULL,
+  PRIMARY KEY (budget_id)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+INSERT INTO `pf_budget_AO`(`budget_name`, `firm_id`, `asset_owner_id`, `budget_ccy`, `budget_amount`, `start_date`, `end_date`, `active_flag`, `creation_date`) 
+VALUES ('IBM Budget - ABC', 1, 1, 'GBP', 100000.00, '2016-10-01', '2017-10-01', 1, NOW());
+INSERT INTO `pf_budget_AO`(`budget_name`, `firm_id`, `asset_owner_id`, `budget_ccy`, `budget_amount`, `start_date`, `end_date`, `active_flag`, `creation_date`) 
+VALUES ('TESCO RPA - ABC', 1, 1, 'EUR', '450000.00', '2016-10-01', '2017-10-01', 1, NOW())
+
+INSERT INTO `pf_budget_AO`(`budget_name`, `firm_id`, `asset_owner_id`, `budget_ccy`, `budget_amount`, `start_date`, `end_date`, `active_flag`, `creation_date`) 
+VALUES ('BRIT GAS RPA - ABC', 1, 3, 'GBP', '550000.00', '2016-10-03', NULL, 1, NOW())
+INSERT INTO `pf_budget_AO`(`budget_name`, `firm_id`, `asset_owner_id`, `budget_ccy`, `budget_amount`, `start_date`, `end_date`, `active_flag`, `creation_date`) 
+VALUES ('ARGOS RPA - ABC', 1, 1, 'GBP', '750000.00', '2016-10-03', '2017-10-03', 1, NOW())
+INSERT INTO `pf_budget_AO`(`budget_name`, `firm_id`, `asset_owner_id`, `budget_ccy`, `budget_amount`, `start_date`, `end_date`, `active_flag`, `creation_date`) 
+VALUES ('GE RPA 02', 1, 2, 'GBP', '525000.00', NULL, '2017-10-03', 1, NOW())
+
+-- show RPAs linked to a budget with an Asset Owner
+select a.rpa_name, a.rpa_id from pf_rpa_details a, pf_budget_AO b where a.budget_id = b.budget_id and a.budget_id = 1
 
 SELECT distinct a.ISIN FROM `pf_funds_linked_to_rpa` a, `pf_allocation_history` b
 where a.rpa_id = 1 and a.ISIN = b.ISIN
