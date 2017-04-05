@@ -51,7 +51,7 @@ require_once("DBConn.php");
         <div class="container">
         <h3>Manage my commission sharing agreements</h3>
         <p>
-        	<a href="file_chooser.php">Create a new commission sharing agreement</a>
+        	<a href="edit_csa.php?action=create">Create a new commission sharing agreement</a>
 			
 			<table class="search-table">
 			<tr>
@@ -77,7 +77,7 @@ require_once("DBConn.php");
     		//echo "CONNECT OK";
 		}
 		
-		/*$sql = "select * from pf_rpa_details where firm_id = $session_user_firm_id";
+		$sql = "select * from pf_csa_details where firm_id = $session_user_firm_id";
 		$result = $connection->query($sql);
 		if ($result->num_rows > 0) {  // && $searchTag!="") {
     		// output data of each row
@@ -87,19 +87,19 @@ require_once("DBConn.php");
     				$rpa_status = "active";
     			}     		
         		echo "<tr>
-        		<td>" . $row["rpa_id"] . "</td>
-        		<td>" . $row["rpa_name"] . "</td>
+        		<td>" . $row["csa_id"] . "</td>
+        		<td>" . $row["csa_name"] . "</td>
         		<td>" . $row["asset_owner_id"] . "</td>
         		<td>" . $row["budget_ccy"] . " " . $row["budget_amount"] . "</td>
         		<td>" . $row["start_date"] . " to " . $row["end_date"] . "</td>
         		<td>" . $row["creation_date"]. "</td>
         		<td>" . $rpa_status . "</td>
-        		<td>[ <a href='admin_edit_publications.php?file_id=xxx'>edit</a> ]</td>
+        		<td>[ <a href='edit_csa.php?csa_id=" . $row["csa_id"] . "'>edit</a> ]</td>
         		</tr>";
     		}
 		} else {
     		echo "Try refining your search";
-		}*/
+		}
 		$connection->close();
 ?>				
         	</table>

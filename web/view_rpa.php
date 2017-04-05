@@ -78,7 +78,7 @@ require_once("dbconn.php");
 		$sqlMoneySpentOnfunds = "SELECT distinct a.ISIN, b.allocation_amount 
 			FROM `pf_funds_linked_to_rpa` a, `pf_allocation_history` b
 			where a.rpa_id = $rpaId and a.ISIN = b.ISIN";
-		echo $sqlMoneySpentOnfunds;
+		//echo $sqlMoneySpentOnfunds;
 		$resultMoneySpentOnfunds = $connection->query($sqlMoneySpentOnfunds);
 		$arrIsinInRPA = array();
 		if ($resultMoneySpentOnfunds->num_rows > 0) {
@@ -88,7 +88,7 @@ require_once("dbconn.php");
 			}
 			$strIsinInRPA = join("','", $arrIsinInRPA);
 			$strIsinInRPAForSql = "('" . $strIsinInRPA . "')";
-			echo "ISIN spent: " . $strIsinInRPAForSql;
+			//echo "ISIN spent: " . $strIsinInRPAForSql;
 		}
 		//what has been spent so far on the RPA
 		//use the list of funds obtained from $resultMoneySpentOnfunds
@@ -203,6 +203,10 @@ require_once("dbconn.php");
         ?>
         				<a href="edit_rpa_funds.php?rpa_id=<?php echo $rpaId; ?>">Add/edit funds</a>
         			</td>
+        		</tr>
+        		<tr>
+        			<td>Research purchased (TBD):</td>
+        			<td>London craft ale [rating: 3/5]</td>
         		</tr>
         <?php
         		echo "<tr>

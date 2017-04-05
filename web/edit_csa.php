@@ -44,9 +44,9 @@ require_once("dbconn.php");
 
     <div class="white-section">
         <div class="container">
-        <h3>Edit RPA</h3>
+        <h3>Edit CSA</h3>
         <p>
-        << <a href="rpa_home.php">Back</a> to my list of RPAs<br/>
+        << <a href="csa_home.php">Back</a> to my list of CSAs<br/>
 <?php
 		$rpaId = $_REQUEST["rpa_id"];
 		// Create connection
@@ -193,7 +193,7 @@ require_once("dbconn.php");
 		else {
     		//new record to be created by user
     		echo "<tr>
-        		<td width='100'>RPA name: </td><td width='600'><input type='text' class='search-text' name='rpa_name' id='rpa_name' value=''/></td>
+        		<td width='100'>CSA name: </td><td width='600'><input type='text' class='search-text' name='rpa_name' id='rpa_name' value=''/></td>
         		</tr>
         		<tr>
         		<td>Budget name: </td>

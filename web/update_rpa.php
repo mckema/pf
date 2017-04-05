@@ -56,6 +56,7 @@ require_once("DBConn.php");
 		$newRecord = $_POST["new_record"];
 		echo "new record: " . $newRecord;
 		$rpaId = $_POST["rpa_id"];
+		$budgetId = $_POST["budget_id"];
 		$rpaName = $_POST["rpa_name"];
 		$assetOwnerId = $_POST["asset_owner_id"];
 		$budgetCcy = $_POST["budget_ccy"];
@@ -76,19 +77,15 @@ require_once("DBConn.php");
 		}
 		$activeFlag = $_POST["active_status"];
 		
-		// Create connection
-		/*$connection_1 = new mysqli($servername, $username, $password, $dbname);
-		$connection_2 = new mysqli($servername, $username, $password, $dbname);*/
 		// Check connection
 		if ($connection->connect_error) {
     		die("Connection failed: " . $connection->connect_error);
     		echo "FAILED TO CONNECT";
-		} else {
-    		//echo "CONNECT OK";
 		}
 		if ($newRecord != "new") {
 			//we're updating an existing RPA
-			$sql = "update pf_rpa_details set rpa_name = '$rpaName', asset_owner_id = $assetOwnerId, 
+			$sql = "update pf_rpa_details set rpa_name = '$rpaName', budget_id = $budgetId, 
+				asset_owner_id = $assetOwnerId, 
 				budget_ccy = '$budgetCcy', budget_amount = $budgetAmount, 
 				start_date = $startDate, end_date = $endDate, 
 				active_flag = $activeFlag where rpa_id = $rpaId";
@@ -97,8 +94,8 @@ require_once("DBConn.php");
 		else {
 			//we're inserting a new record
 			//INSERT INTO `pf_rpa_details`(`rpa_name`, `firm_id`, `asset_owner_id`, `budget_ccy`, `budget_amount`, `start_date`, `end_date`, `active_flag`, `creation_date`) 
-			$sql = "INSERT INTO `pf_rpa_details`(`rpa_name`, `firm_id`, `asset_owner_id`, `budget_ccy`, `budget_amount`, `start_date`, `end_date`, `active_flag`, `creation_date`) 
-			 values ('$rpaName', $session_user_firm_id, $assetOwnerId, '$budgetCcy', $budgetAmount, $startDate, $endDate, $activeFlag, NOW());";
+			$sql = "INSERT INTO `pf_rpa_details`(`rpa_name`, `budget_id`, `firm_id`, `asset_owner_id`, `budget_ccy`, `budget_amount`, `start_date`, `end_date`, `active_flag`, `creation_date`) 
+			 values ('$rpaName', '$budgetId', $session_user_firm_id, $assetOwnerId, '$budgetCcy', $budgetAmount, $startDate, $endDate, $activeFlag, NOW());";
 			echo $sql;
 		}
 

@@ -494,6 +494,25 @@ select a.rpa_name, a.rpa_id from pf_rpa_details a, pf_budget_AO b where a.budget
 SELECT distinct a.ISIN FROM `pf_funds_linked_to_rpa` a, `pf_allocation_history` b
 where a.rpa_id = 1 and a.ISIN = b.ISIN
 
+-- COMMISSION SHARING AGREEMENT DETAILS: US72
+DROP TABLE IF EXISTS `pf_csa_details`;
+
+CREATE TABLE `pf_csa_details` (
+  `csa_id` int(10) NOT NULL AUTO_INCREMENT,
+  `csa_name` varchar(100) NOT NULL,
+  `firm_id` int(10) NOT NULL,
+  `asset_owner_id` int(10) NOT NULL,
+  `budget_ccy` varchar(3) NOT NULL,
+  `budget_amount` decimal(15,2) NOT NULL,
+  `start_date` date NULL,
+  `end_date` date NULL,
+  `active_flag` bit(1) NOT NULL,
+  `creation_date` datetime NOT NULL,
+  PRIMARY KEY (csa_id)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+INSERT INTO `pf_csa_details`(`csa_name`, `firm_id`, `asset_owner_id`, `budget_ccy`, `budget_amount`, `start_date`, `end_date`, `active_flag`, `creation_date`) 
+VALUES ('CSA - ABC', 1, 1, 'GBP', 100000.00, '2017-01-01', '2017-12-31', 1, NOW());
 
 
 select a.file_title as file_title, b.bookmarks_date as bookmarks_date from pf_research_files a, pf_research_bookmarks b where a.file_id = b.file_id and b.user_id = 1
