@@ -1,7 +1,7 @@
 <?php
 include('session.php');
-require_once("DBConn.php");
-?>?>
+require_once("dbconn.php");
+?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 
@@ -44,11 +44,11 @@ require_once("DBConn.php");
 
     <div class="white-section">
         <div class="container">
-        <h3>Edit CSA</h3>
+        <h3>Edit RPA</h3>
         <p>
-        << <a href="csa_home.php">Back</a> to my list of CSAs<br/>
+        << <a href="rpa_home.php">Back</a> to my list of RPAs<br/>
 <?php
-		$csaId = $_REQUEST["csa_id"];
+		$rpaId = $_REQUEST["rpa_id"];
 		// Create connection
 		$dbConn = new DBConn();
 		$connection = new mysqli($dbConn->dbservername, $dbConn->dbusername, $dbConn->dbpassword, $dbConn->dbname);
@@ -60,11 +60,10 @@ require_once("DBConn.php");
     		//echo "CONNECT OK";
 		}
 		//$sql = "select * from pf_rpa_details where rpa_id = $rpaId";
-		$sql = "select * from pf_csa_details where csa_id = $csaId";
-		/*$sql = "select a.rpa_id, a.budget_id, a.rpa_name, a.asset_owner_id, b.asset_owner_name, a.budget_ccy,
+		$sql = "select a.rpa_id, a.budget_id, a.rpa_name, a.asset_owner_id, b.asset_owner_name, a.budget_ccy,
 		a.budget_amount, a.start_date, a.end_date, a.creation_date, a.active_flag
 		from pf_rpa_details a, pf_asset_owner_details b 
-		where a.asset_owner_id = b.asset_owner_id and a.rpa_id = $rpaId";*/
+		where a.asset_owner_id = b.asset_owner_id and a.rpa_id = $rpaId";
 		//echo $sql;
 		$result = $connection->query($sql);
 		//populate the asset owner
@@ -72,12 +71,11 @@ require_once("DBConn.php");
     	$resultAssetOwner = $connection->query($newSQL);
 		//populate the budgets listed for the asset owner
 		$budgetNameSQL = "select * from pf_budget_AO where firm_id = $session_user_firm_id;";
-		//echo $budgetNameSQL;
     	$resultBudgetName = $connection->query($budgetNameSQL);
 ?>
 	
 	
-        <form id="updatePublications" action="update_csa.php" method="post" enctype="multipart/form-data">
+        <form id="updatePublications" action="update_rpa.php" method="post" enctype="multipart/form-data">
 
 	<p>
 			<table class="search-table" style="width:700px;">
@@ -103,7 +101,7 @@ require_once("DBConn.php");
         		}
         		
         		echo "<tr>
-        		<td width='100'>CSA name: </td><td width='600'><input type='text' class='search-text' name='csa_name' id='csa_name' value='" . $row["csa_name"]. "'/></td></tr>
+        		<td width='100'>RPA name: </td><td width='600'><input type='text' class='search-text' name='rpa_name' id='rpa_name' value='" . $row["rpa_name"]. "'/></td></tr>
         		<tr>
         			<td>Budget name: </td>
         			<td>
@@ -121,7 +119,7 @@ require_once("DBConn.php");
     						}
     					}
     				echo "</select>
-        			<input type='hidden' name='csa_id' id='csa_id' value='". $row["csa_id"] . "'/>
+        			<input type='hidden' name='rpa_id' id='rpa_id' value='". $row["rpa_id"] . "'/>
         			</td>
         		</tr>
         		<tr>
@@ -195,7 +193,7 @@ require_once("DBConn.php");
 		else {
     		//new record to be created by user
     		echo "<tr>
-        		<td width='100'>CSA name: </td><td width='600'><input type='text' class='search-text' name='rpa_name' id='rpa_name' value=''/></td>
+        		<td width='100'>RPA name: </td><td width='600'><input type='text' class='search-text' name='rpa_name' id='rpa_name' value=''/></td>
         		</tr>
         		<tr>
         		<td>Budget name: </td>
