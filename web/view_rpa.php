@@ -66,7 +66,6 @@ require_once("DBConn.php");
 		$result = $connection->query($sql);
 		
 		//which funds are linked to this RPA
-        //$chosenFundsSQL = "select * from pf_funds_linked_to_rpa where rpa_id = $rpaId;";
         $chosenFundsSQL = "SELECT b.ISIN, FORMAT(SUM(b.allocation_amount),2) total, FORMAT(a.fund_limit_amount,2) fund_limit_amount, a.fund_ccy
         	FROM pf_allocation_history b, pf_funds_linked_to_rpa a 
         	where b.rpa_id = $rpaId and b.ISIN = a.ISIN 
@@ -190,7 +189,6 @@ require_once("DBConn.php");
         			</td>
         		</tr>
         		<tr>
-        			<td>Chosen funds:</td>
         			<td>";
   
         				//list the selected funds and their amounts

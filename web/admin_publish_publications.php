@@ -49,12 +49,10 @@ require_once("DBConn.php");
         << <a href="publications_home.php">Back</a> to list of publications<br/>
 <?php
 		$fileId = $_REQUEST["file_id"];
+		$publishAction = $_REQUEST["action"];
 		$dbConn = new DBConn();
 		// Create connection
 		$connection = new mysqli($dbConn->dbservername, $dbConn->dbusername, $dbConn->dbpassword, $dbConn->dbname);
-
-		// Create connection
-		$connection = new mysqli($servername, $username, $password, $dbname);
 		// Check connection
 		if ($connection->connect_error) {
     		die("Connection failed: " . $connection->connect_error);
@@ -69,8 +67,8 @@ require_once("DBConn.php");
 		else { 
 			$sql = "update pf_research_files set published_flag = 1, published_date = NOW() where file_id = $fileId";
 			$publishAction = "publish";
+			//echo "SQL: $sql;";
 		}
-		//echo "SQL: $sql;";
 		$result = $connection->query($sql);
 
 

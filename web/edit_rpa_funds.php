@@ -22,6 +22,7 @@ require_once("DBConn.php");
 <script type="text/javascript" src="js/mobile-nav.js"></script>
 <script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
 <script type="text/javascript" src="js/scripts.js"></script>
+<script type="text/javascript" src="js/data-scripts.js"></script>
 </head>
 
 <body>
@@ -43,6 +44,7 @@ require_once("DBConn.php");
     </div>
 <?php
 		$rpaId = $_REQUEST["rpa_id"];
+		$budgetCcy = $_POST["budget_ccy"];
 ?>
     <div class="white-section">
         <div class="container">
@@ -73,7 +75,7 @@ require_once("DBConn.php");
 ?>
 	
 	
-        <form id="updatePublications" action="update_rpa.php" method="post" enctype="multipart/form-data">
+        <form id="updatePublications" action="review_rpa_selected_funds.php" method="post" enctype="multipart/form-data">
 
 	<p>
 			<table class="search-table" style="width:700px;">
@@ -120,6 +122,7 @@ require_once("DBConn.php");
     					}
     				echo "</select>
         			<input type='hidden' name='rpa_id' id='rpa_id' value='". $row["rpa_id"] . "'/>
+        			<input type='hidden' name='budget_ccy' id='budget_ccy' value='". $row["budget_ccy"] . "'/>
         			</td>
         			<td></td>
         			<td></td>
@@ -154,7 +157,7 @@ require_once("DBConn.php");
         			</td>
         			<td>
         				<br/><input type="hidden" name="hiddenselectedfunds" id="hiddenselectedfunds" value="" />
-        				<select name="userselectedfunds2[]" id="userselectedfunds2" multiple style="height:220px;width:500px;overflow-y: auto;">
+        				<select name="userselectedfunds[]" id="userselectedfunds" multiple style="height:220px;width:500px;overflow-y: auto;">
 						</select>
 						<!--<a id="nextPage" href="#" onclick="submitform();return false;">next steps</a>-->
         			</td>
@@ -228,14 +231,6 @@ function submitform()
 
     </div>
     <div class="white-section">
-	
-    <!--<div class="container" style="text-align:center;">
-    	<div style="padding:0 150px;">
-            <h4 class="large-header">Contact Us</h4>
-            <p class="mbottom10">If you have any questions about our research platform, or if you have an enquiry, please contact us using the details below, or by filling out the form on our contact page.</p>
-            <a href="contact.php"><span class="button3">Get in touch</span></a>
-        </div>
-    </div>-->
    
 </div>
 

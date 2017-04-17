@@ -70,15 +70,10 @@ require_once("DBConn.php");
     		//echo "CONNECT OK";
 		}
 		
-		/*$sql = "select a.rpa_id, a.rpa_name, b.asset_owner_name, a.budget_ccy,
-		a.budget_amount, a.start_date, a.end_date, a.creation_date, a.active_flag
-		from pf_rpa_details a, pf_asset_owner_details b 
-		where a.asset_owner_id = b.asset_owner_id and a.firm_id = $session_user_firm_id";*/
 		$sql = "select a.budget_id, a.budget_name, b.asset_owner_name, a.budget_ccy,
 		a.budget_amount, a.start_date, a.end_date, a.creation_date, a.active_flag
 		from pf_budget_AO a, pf_asset_owner_details b 
 		where a.asset_owner_id = b.asset_owner_id and a.firm_id = $session_user_firm_id";
-		//$sql = "select * from pf_rpa_details";
 		$result = $connection->query($sql);
 		if ($result->num_rows > 0) {  // && $searchTag!="") {
     		// output data of each row

@@ -64,7 +64,7 @@ require_once("DBConn.php");
 		a.budget_amount, a.start_date, a.end_date, a.creation_date, a.active_flag
 		from pf_rpa_details a, pf_asset_owner_details b 
 		where a.asset_owner_id = b.asset_owner_id and a.rpa_id = $rpaId";
-		//echo $sql;
+		echo $sql;
 		$result = $connection->query($sql);
 		//populate the asset owner
 		$newSQL = "select * from pf_asset_owner_details;";
@@ -179,7 +179,7 @@ require_once("DBConn.php");
     						}
     					}
         ?>
-        				<a href="edit_rpa_funds?rpa_id=<?php echo $rpaId; ?>">Add/edit funds</a>
+        				<a href="edit_rpa_funds.php?rpa_id=<?php echo $rpaId; ?>">Add/edit funds</a>
         			</td>
         		</tr>
         <?php
