@@ -66,6 +66,9 @@ require_once("DBConn.php");
 		$result = $connection->query($sql);
 		
 		//which funds are linked to this RPA
+        $linkedFundsSQL = "select * from pf_funds_linked_to_rpa where rpa_id = $rpaId;";
+        $resultLinkedFunds = $connection->query($linkedFundsSQL);
+        
         $chosenFundsSQL = "SELECT b.ISIN, FORMAT(SUM(b.allocation_amount),2) total, FORMAT(a.fund_limit_amount,2) fund_limit_amount, a.fund_ccy
         	FROM pf_allocation_history b, pf_funds_linked_to_rpa a 
         	where b.rpa_id = $rpaId and b.ISIN = a.ISIN 
@@ -189,8 +192,19 @@ require_once("DBConn.php");
         			</td>
         		</tr>
         		<tr>
+        			<td>Linked funds:</td>
         			<td>";
-  
+        				//list the selected but unused funds and their amounts
+    					if ($resultLinkedFunds->num_rows > 0) {
+        					while($rowLinkedFunds = $resultLinkedFunds->fetch_assoc()) {
+    							echo $rowLinkedFunds["ISIN"] . "; limit = " . $rowLinkedFunds["fund_ccy"] . " " . $rowLinkedFunds["fund_limit_amount"] .  " <br/>";
+    						}
+    					}
+    				echo "
+        		</tr>
+        		<tr>
+        			<td>Utilised funds:</td>
+        			<td>";
         				//list the selected funds and their amounts
     					if ($resultChosenFunds->num_rows > 0) {
         					while($rowFunds = $resultChosenFunds->fetch_assoc()) {
