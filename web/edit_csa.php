@@ -77,7 +77,7 @@ require_once("DBConn.php");
 ?>
 	
 	
-        <form id="updatePublications" action="update_csa.php" method="post" enctype="multipart/form-data">
+        <form id="updatePublications" action="<?php $submissionValue;?>update_csa.php" method="post" enctype="multipart/form-data">
 
 	<p>
 			<table class="search-table" style="width:700px;">
@@ -195,7 +195,7 @@ require_once("DBConn.php");
 		else {
     		//new record to be created by user
     		echo "<tr>
-        		<td width='100'>CSA name: </td><td width='600'><input type='text' class='search-text' name='rpa_name' id='rpa_name' value=''/></td>
+        		<td width='100'>CSA name: </td><td width='600'><input type='text' class='search-text' name='csa_name' id='csa_name' value=''/></td>
         		</tr>
         		<tr>
         		<td>Budget name: </td>
@@ -238,7 +238,7 @@ require_once("DBConn.php");
         				</select>
         			</td></tr>
         		<tr><td><strong>Action?</strong></td><td>[ <a href='javascript:submitform();'>save changes</a> ]  
-        		<input type='text' name='new_record' value='new' />
+        		<input type='hidden' name='new_record' value='new' />
         		</td></tr>";
 		}
 		$connection->close();

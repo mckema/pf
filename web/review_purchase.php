@@ -74,7 +74,7 @@ function grab_data(val) {
 
 <?php
 		$fileId = $_POST["file_id"];
-		$rpaId = $_POST["rpa_id"];
+		$rpaId = $_REQUEST["rpa_id"];
 		echo "RPA ID: " . $rpaId;
 		$fundsToReview = array();
 		$fundsToReview2 = array();
@@ -97,18 +97,14 @@ function grab_data(val) {
     	//$names = "";
     	
   		if (isset($_POST['funds'])) { 
-  			//echo "what is up?";
-  			//$fundsToReview2 = $_POST['funds'];
   			foreach ($_POST['funds'] as $selectedFunds) {
     			array_push($fundsToReview2, $selectedFunds);
     		}
     	}
     	$ISINids2 = join("', '", $fundsToReview2);
-    	//echo "ISINids2: " . $ISINids2;
-		if (isset($_POST['submit'])) {  
+    	if (isset($_POST['submit'])) {  
 			$allocationAmounts = $_POST['alloc-amount'];  
 		}
-		//$fileId = $_REQUEST['file_id'];
 		$dbConn = new DBConn();
 		// Create connection
 		$connection = new mysqli($dbConn->dbservername, $dbConn->dbusername, $dbConn->dbpassword, $dbConn->dbname);
@@ -131,8 +127,9 @@ function grab_data(val) {
 		foreach ($allocationAmounts as $reviewAmounts ) {
   			$myPosition ++;
   			echo $ccy . " " . $reviewAmounts . " research cost is allocated to fund " . $fundsToReview2[$myPosition] . "<br/>";
-  			$fundAllocationSQL = "insert into pf_allocation_history(`firm_id`, `file_id`, `ISIN`, `allocation_amount`, `allocation_ccy`, `creation_date`, `active_flag`) 
-  				values ($session_user_firm_id, $fileId, '$fundsToReview2[$myPosition]', $reviewAmounts, '$ccy', NOW(), 1);";
+  			$fundAllocationSQL = "insert into pf_allocation_history(`firm_id`, `file_id`, `ISIN`, `rpa_id`, `allocation_amount`, `allocation_ccy`, `creation_date`, `active_flag`) 
+  				values ($session_user_firm_id, $fileId, '$fundsToReview2[$myPosition]', $rpaId, $reviewAmounts, '$ccy', NOW(), 1);";
+  			//echo $fundAllocationSQL;
   			if ($connection->query($fundAllocationSQL) === TRUE) {
     			//echo "inserted successfully";
 			}
@@ -162,7 +159,8 @@ function grab_data(val) {
 		if ($resultFunds->num_rows > 0) {
 			while($rowFunds = $resultFunds->fetch_assoc()) {
         		echo $ccy . " <input type='text' autocomplete='off' class='search-text' name='alloc-amount[]' style='width: 60px;' value='' />&nbsp;". $rowFunds["ISIN"]. ", " . $rowFunds["Issuer_name"]. ", "  . $rowFunds["Security_Description"]. "
-        		<input type='hidden' name='funds[]' value='". $rowFunds["ISIN"] ."' /> <br/>";
+        		<input type='hidden' name='funds[]' value='". $rowFunds["ISIN"] ."' /> <br/>
+        		<input type='hidden' name='rpa_id' value='". $rpaId ."' />";
         		
         	}
         }

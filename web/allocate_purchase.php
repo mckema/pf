@@ -69,12 +69,10 @@ require_once("DBConn.php");
 </script>
 <?php
 		$fileId = $_REQUEST["file_id"];
-		$rpaId = $_POST["rpa_id"];
+		$rpaId = $_REQUEST["rpa_id"];
 		$budgetCcy = $_POST["budget_ccy"];
-		echo "RPA ID: " . $rpaId;
 ?>     
-<!--<form id="allocatePublications" name="allocatePublications" action="review_purchase.php?file_id=<?php echo $fileId;?>" method="post">-->
-<form id="allocatePublications" name="allocatePublications" action="review_purchase.php" method="post">
+<form id="allocatePublications" name="allocatePublications" action="review_purchase.php?rpa_id=<?php $rpaId;?>" method="post">
 <table style="width:800px;">
 	<tr>
 		<td>
@@ -90,14 +88,7 @@ require_once("DBConn.php");
 		} else {
     		//echo "CONNECT OK";
 		}
-        //display the funds you will be allocating to:
-        /*$sqlFunds = "select fd.firm_name as firm_name, f.fund_name as fund_name, f.fund_amount as fund_amount, 
-        	f.fund_ccy as fund_ccy from pf_firm_details fd, pf_funds f
-			where fd.firm_id = f.firm_id
-			and fd.firm_id = 1";*/
-		
 		//base this upon the RPA chosen...
-		//$sqlFunds = "select * from pf_funds where Security_Status = 'Tradeable'";
 		$sqlFunds = "select a.ISIN, a.Issuer_name, a.Security_Description
 			from `pf_funds` a, `pf_funds_linked_to_rpa` b
 			where b.rpa_id = $rpaId and b.ISIN = a.ISIN";
@@ -139,12 +130,12 @@ require_once("DBConn.php");
   			<select name="userselectedfunds[]" id="userselectedfunds" multiple style="height:220px;width:500px;overflow-y: auto;">
 			</select>
 			<input type="hidden" name="file_id" value="<?php echo "$fileId";?>" />
-			<input type="text" style='width:300px;' name="hiddenselectedfunds" id="hiddenselectedfunds" value="" />
+			<input type="hidden" name="hiddenselectedfunds" id="hiddenselectedfunds" value="" />
 		</td>
 	</tr>
 </table>
-<select name="userselectedfunds2[]" id="userselectedfunds2" multiple style="height:220px;width:500px;overflow-y: auto;">
-			</select>
+<!--<select name="userselectedfunds2[]" id="userselectedfunds2" multiple style="height:220px;width:500px;overflow-y: auto;">
+			</select>-->
 <a id="nextPage" href="#" onclick="submitform();return false;">next steps</a>
 </form>
 <!--<a href="review_purchase.php">next step</a>-->

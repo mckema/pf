@@ -63,7 +63,8 @@ require_once("DBConn.php");
     		//echo "CONNECT OK";
 		}
 		
-		$sql = "select * from pf_research_files where search_tags like '%$searchTag%' and published_flag = 1";
+		$sql = "select * from pf_research_files where search_tags like '%$searchTag%' or file_title like '%$searchTag%' and published_flag = 1";
+		//echo $sql;
 		if ( $searchTag!="" ) {
 			$result = $connection->query($sql);
 			if ($result->num_rows == 1) {

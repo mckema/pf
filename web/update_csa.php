@@ -30,102 +30,89 @@ require_once("DBConn.php");
 	<div id="header-bar">
 		<!-- menu nav -->
 		<?php require("menu_logged-in.php"); ?>
-        <!-- END menu nav 
-        <div class="clr"></div>-->
+        <!-- END menu nav -->
+        <!--<div class="clr"></div>-->
     </div>
 </div>
 <!-- CLOSE HEADING DIVS -->
-	
 	<div style="text-align:center;">
 
 		<!-- menu for my account -->
 		<?php require("menu_my_account.php"); ?>
         <!-- END menu for my account -->
     </div>
+
     <div class="white-section">
         <div class="container">
-        <h3>My blotter</h3>
-<p>	
-<!--<span class="allocation-layout">-->
-<ul class="nav-list">
-	
-	<li class="nav-item">
-		<table class="shortcuts-table">
-			<tr>
-				<th colspan="2">Read & purchased</th>
-				<th>Amount</th>	
-			</tr>
+        <h3>Edit CSA</h3>
+        <p>
+        << <a href="rpa_home.php">Back</a> to list of CSAs<br/>
 <?php
-		$dbConn = new DBConn();
 		// Create connection
+		$dbConn = new DBConn();
 		$connection = new mysqli($dbConn->dbservername, $dbConn->dbusername, $dbConn->dbpassword, $dbConn->dbname);
+		
+		$newRecord = $_POST["new_record"];
+		echo "new record: " . $newRecord;
+		$csaId = $_POST["csa_id"];
+		$firmId = $session_user_firm_id;
+		$csaName = $_POST["csa_name"];
+		$assetOwnerId = $_POST["asset_owner_id"];
+		$budgetCcy = $_POST["budget_ccy"];
+		$budgetAmount = $_POST["budget_amount"];
+		$startDate = $_POST["start_date"];
+		if( $startDate == "" ) {
+			$startDate = 'NULL';
+		}
+		else {
+			$startDate = "'" . $startDate . "'";
+		}
+		$endDate = $_POST["end_date"];
+		if( $endDate == "" ) {
+			$endDate = 'NULL';
+		}
+		else {
+			$endDate = "'" . $endDate . "'";
+		}
+		$activeFlag = $_POST["active_status"];
+		
 		// Check connection
 		if ($connection->connect_error) {
     		die("Connection failed: " . $connection->connect_error);
     		echo "FAILED TO CONNECT";
-		} else {
-    		//echo "CONNECT OK";
 		}
-		$sql = "select a.file_id as file_id, a.file_name as file_name, a.file_title as file_title, b.purchased_date as purchased_date, b.purchased_fee as purchased_fee, b.purchased_ccy as purchased_ccy
-			from pf_research_files a, pf_purchase_history b
-			where a.file_id = b.file_id and b.user_id = $session_user_id";
-		//echo $sql;
-		$result = $connection->query($sql);
-		
-		//display the data
-		if ($result->num_rows > 0) {
-    		// output data of each row
-    		while($row = $result->fetch_assoc()) {
-    			
-        		echo "<tr>
-        		<td class=\"blotter-lnk\"><a href=display_research.php?file_id=" . $row["file_id"] . ">" . $row["file_title"]. "</a></td>
-        		<td>". $row["purchased_date"] . "</td>
-        		<td>". $row["purchased_ccy"] . " " . $row["purchased_fee"] . "</td>
-        		</tr>";
-			}
-		}	
+		echo "what is newRecord? " . $newRecord;
+		if ($newRecord != "new") {
+			//we're updating an existing RPA
+			//csa_id, csa_name, firm_id, asset_owner_id, budget_ccy, budget_amount, start_date, end_date, active_flag, creation_date
+			$sql = "update pf_csa_details set csa_name = '$rpaName', firm_id = $firmId, 
+				asset_owner_id = $assetOwnerId, 
+				budget_ccy = '$budgetCcy', budget_amount = $budgetAmount, 
+				start_date = $startDate, end_date = $endDate, 
+				active_flag = $activeFlag where csa_id = $csaId";
+			echo $sql;
+		}
+		else {
+			//we're inserting a new record
+			//INSERT INTO `pf_rpa_details`(`rpa_name`, `firm_id`, `asset_owner_id`, `budget_ccy`, `budget_amount`, `start_date`, `end_date`, `active_flag`, `creation_date`) 
+			$sql = "INSERT INTO `pf_csa_details`(`csa_name`, `budget_id`, `firm_id`, `asset_owner_id`, `budget_ccy`, `budget_amount`, `start_date`, `end_date`, `active_flag`, `creation_date`) 
+			 values ('$csaName', '$budgetId', $session_user_firm_id, $assetOwnerId, '$budgetCcy', $budgetAmount, $startDate, $endDate, $activeFlag, NOW());";
+			echo $sql;
+		}
+
+		if ($connection->query($sql) === TRUE) {
+    		echo "RPA details for <strong>$rpaName</strong> updated successfully";
+		}
+		else {
+    		echo "Error updating RPA details: " . $connection->error;
+		}
+		$connection->close();
 ?>
 			
-		</table>
-	</li>
-	<li class="nav-item"></li>
-	<li class="nav-item">
-		&nbsp;&nbsp;&nbsp;&nbsp;
-	</li>
-	<li class="nav-item">
-	
-	<table class="shortcuts-table">
-			<tr>
-				<th colspan="2">Selected/bookmarked and not purchased</th>
-			</tr>
-<?php			
-		//show bookmarked publications
-		$sqlBookmarks = "select a.file_id as file_id, a.file_title as file_title, b.bookmarks_date as bookmarks_date
-			from pf_research_files a, pf_research_bookmarks b
-			where a.file_id = b.file_id and b.user_id = $session_user_id";
-		//echo $sqlBookmarks;
-		$resultBookmarks = $connection->query($sqlBookmarks);
-		
-		//display the data
-		if ($resultBookmarks->num_rows > 0) {
-    		// output data of each row
-    		while($row = $resultBookmarks->fetch_assoc()) {
-    			
-        		echo "<tr>
-        		<td class=\"blotter-lnk\"><a href='display_research.php?file_id=" . $row["file_id"] . "'>" . $row["file_title"]. "</a></td>
-        		<td>". $row["bookmarks_date"] . "</td>
-        		</tr>";
-			}
-		}	
-		
-		$connection->close();
-?>			
-		</table>		
-	</li>
-</ul>
-<!--</span>	-->
-
-	</p><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+		</p>
+		</form>
+	<p>
+	</p>
             
         </div>
     </div>

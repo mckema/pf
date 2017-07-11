@@ -101,6 +101,7 @@ include('session.php');
         	</tr>
         </table>
         <p>
+    		<br/>
     		Select file to upload:
     		<input type="file" name="fileToUpload" id="fileToUpload">
     		<input type="submit" value="Upload file" name="submit">

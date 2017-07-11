@@ -236,7 +236,7 @@ require_once("DBConn.php");
         				</select>
         			</td></tr>
         		<tr><td><strong>Action?</strong></td><td>[ <a href='javascript:submitform();'>save changes</a> ]  
-        		<input type='text' name='new_record' value='new' />
+        		
         		</td></tr>";
 		}
 		$connection->close();

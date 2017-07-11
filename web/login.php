@@ -63,10 +63,10 @@ header("location: my_account.php");
         ?>
         </h3>
         <p>
-        <form id="loginForm" method="POST" action="login_helper.php">
+        <form id="loginForm" method="POST" action="login_helper.php" autocompete="off">
         	<!--<span class="login-form">-->
         		User name: 
-        		<input type="text" class="user-text" name="user_id" id="user_id" style="width: 40;" autofocus /><br/>
+        		<input type="text" autocompete="nope" class="user-text" name="user_id" id="user_id" style="width: 40;" placeholder="" autofocus /><br/>
         		Password: &nbsp;
         		<input type="password" class="user-password" name="user_password" id="user_password" style="width: 40;" />
         		&nbsp;

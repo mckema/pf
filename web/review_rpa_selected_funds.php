@@ -133,7 +133,7 @@ function grab_data(val) {
   			//	values ($session_user_firm_id, $fileId, '$fundsToReview2[$myPosition]', $reviewAmounts, '$ccy', NOW(), 1);";
   			$fundAllocationSQL = "insert into pf_funds_linked_to_rpa (`rpa_id`, `ISIN`, `user_id`, `fund_limit_amount`, `fund_ccy`, `creation_date`, `active_flag`) 
   				values ($rpaId, '$fundsToReview2[$myPosition]', $session_user_id, $reviewAmounts, '$ccy', NOW(), 1);";
-  			echo "fundAllocationSQL: " . $fundAllocationSQL;
+  			//echo "fundAllocationSQL: " . $fundAllocationSQL;
   			if ($connection->query($fundAllocationSQL) === TRUE) {
     			//echo "inserted successfully";
 			}
