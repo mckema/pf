@@ -394,6 +394,8 @@ INSERT INTO `pf_asset_owner_details`(`asset_owner_name`, `active_flag`, `creatio
 VALUES ('General Electric',  1, NOW());
 INSERT INTO `pf_asset_owner_details`(`asset_owner_name`, `active_flag`, `creation_date`)
 VALUES ('Rolls Royce',  1, NOW());
+INSERT INTO `pf_asset_owner_details`(`asset_owner_name`, `active_flag`, `creation_date`)
+VALUES ('Tesco Plc',  1, NOW());
 
 -- RESEARCH ALLOCATION HISTORY
 DROP TABLE IF EXISTS `pf_allocation_history`;
@@ -527,3 +529,34 @@ where a.file_id = b.file_id and b.user_id = 1
 select fd.firm_name, f.fund_name, f.fund_amount, f.fund_ccy from pf_firm_details fd, pf_funds f
 where fd.firm_id = f.firm_id
 and fd.firm_id = 1
+
+-- US94: Manage my interested parties for publication notifications
+-- EMAIL GROUPS THAT HAVE BEEN LINKED TO A PUBLICATION
+DROP TABLE IF EXISTS `pf_publication_notification`;
+
+CREATE TABLE `pf_publication_notification` (
+  `file_id` int(10) NOT NULL,
+  `email_group_id` varchar(100) NOT NULL,
+  `user_id` int(10) NOT NULL,
+  `active_flag` bit(1) NOT NULL,
+  `creation_date` datetime NOT NULL,
+  CONSTRAINT pf_funds_linked_to_rpa_primary 
+UNIQUE (file_id, email_group_id)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- US94: Manage my interested parties for publication notifications
+-- EMAIL GROUPS TO MANGE
+DROP TABLE IF EXISTS `pf_email_group_notification`;
+
+CREATE TABLE `pf_email_group_notification` (
+  `email_group_id` int(10) NOT NULL AUTO_INCREMENT,
+  `email_group_name` varchar(100) NOT NULL,
+  `email_addresses` TEXT NULL,
+  `user_id` int(10) NOT NULL,
+  `firm_id` int(10) NOT NULL,
+  `active_flag` bit(1) NOT NULL,
+  `creation_date` datetime NOT NULL,
+  PRIMARY KEY (email_group_id)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+

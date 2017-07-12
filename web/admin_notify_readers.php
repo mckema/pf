@@ -44,7 +44,7 @@ require_once("DBConn.php");
 
     <div class="white-section">
         <div class="container">
-        <h3>Edit publication</h3>
+        <h3>Tell clients about this publication</h3>
         <p>
         << <a href="publications_home.php">Back</a> to my list of publications<br/>
 <?php
@@ -59,12 +59,13 @@ require_once("DBConn.php");
 		} else {
     		//echo "CONNECT OK";
 		}
-		$sql = "select * from pf_research_files where file_id = $fileId";
+		//TO DO, design table to store who has already gotten this
+		$sql = "select * from pf_email_publication_notification where file_id = $fileId";
 		//echo $sql;
 		$result = $connection->query($sql);
 ?>
 	
-	
+		<!-- TO DO, which form to send this to -->
         <form id="updatePublications" action="admin_update_publications.php" method="post" enctype="multipart/form-data">
 
 	<p>
@@ -77,21 +78,19 @@ require_once("DBConn.php");
 <?php
 
 
-		if ($result->num_rows > 0) {  // && $searchTag!="") {
+		if ($result->num_rows > 0) {
     		// output data of each row
     		while($row = $result->fetch_assoc()) {
-        		// file_id, file_name, file_title, file_type, user_id, industry_type, 
-        		// search_tags, user_company, creation_date
-        		//echo "something " . $row["file_title"]. "again? ";
-        		$publishFlag = "publish";
-        		$publicationStatus = "Not published";
-        		if( $row["published_flag"] == 1 ) {
-        			$publishFlag = "unpublish";
-        			$publicationStatus = "Published on " . $row["published_date"];
+        		$notificationStatus = "Not notified";
+        		if( $row["active_flag"] == 1 ) {
+        			$notificationStatus = "Notified to " . $row["email_group_id"];
         		}
         		
         		echo "<tr>
-        		<td width='100'>Title: </td><td width='600'><input type='text' class='search-text' name='file_title' id='file_title' value='" . $row["file_title"]. "'/></td></tr>
+        		<td width='200'>Title: </td><td width='600'>" . $row["file_title"]. "</td></tr>
+        		
+        		<tr><td>You have already published this to: </td><td>". $notificationStatus . "</td></tr>
+        		
         		<tr><td>File name: </td><td>". $row["file_name"] . "</td></tr>
         		<tr><td>Publisher: </td><td><input type='text' class='search-text' name='user_company' id='user_company' value='". $row["user_company"] . "'/></td></tr>
         		<tr><td>Industry: </td><td><input type='text' class='search-text' name='industry_type' id='industry_type' value='" . $row["industry_type"]. "' /></td></tr>
