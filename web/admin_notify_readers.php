@@ -57,11 +57,13 @@ require_once("DBConn.php");
     		die("Connection failed: " . $connection->connect_error);
     		echo "FAILED TO CONNECT";
 		} else {
-    		//echo "CONNECT OK";
+    		
 		}
-		//TO DO, design table to store who has already gotten this
-		$sql = "select * from pf_email_publication_notification where file_id = $fileId";
-		//echo $sql;
+		$sqlEmailGroups = "select * from pf_email_group where user_id = $session_user_id";
+		//echo $sqlEmailGroups;
+		$sql = "select a.email_group_name as group_name, b.file_id as fid, a.active_flag from pf_email_group a, pf_email_publication_notification b
+				where a.email_group_id = b.email_group_id and b.file_id = $fileId";
+		$resultEmailGroups = $connection->query($sqlEmailGroups);
 		$result = $connection->query($sql);
 ?>
 	
@@ -83,13 +85,20 @@ require_once("DBConn.php");
     		while($row = $result->fetch_assoc()) {
         		$notificationStatus = "Not notified";
         		if( $row["active_flag"] == 1 ) {
-        			$notificationStatus = "Notified to " . $row["email_group_id"];
+        			$notificationStatus = "Notified to " . $row["group_name"];
         		}
         		
         		echo "<tr>
         		<td width='200'>Title: </td><td width='600'>" . $row["file_title"]. "</td></tr>
         		
-        		<tr><td>You have already published this to: </td><td>". $notificationStatus . "</td></tr>
+        		<tr><td>You have already published this to: </td><td><strong>". $notificationStatus . 
+        		"</strong><br/>Choose others to notify:<br/>";
+        		//$emailGroupName = "N/A";
+        		while($rowEmailGroups = $resultEmailGroups->fetch_assoc()) {
+        			if( $row["group_name"] != $rowEmailGroups["email_group_name"] )
+        			echo $rowEmailGroups["email_group_name"] . "<br/>";
+        		}
+        		echo "</td></tr>
         		
         		<tr><td>File name: </td><td>". $row["file_name"] . "</td></tr>
         		<tr><td>Publisher: </td><td><input type='text' class='search-text' name='user_company' id='user_company' value='". $row["user_company"] . "'/></td></tr>

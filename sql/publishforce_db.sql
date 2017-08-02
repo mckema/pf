@@ -532,9 +532,9 @@ and fd.firm_id = 1
 
 -- US94: Manage my interested parties for publication notifications
 -- EMAIL GROUPS THAT HAVE BEEN LINKED TO A PUBLICATION
-DROP TABLE IF EXISTS `pf_publication_notification`;
+DROP TABLE IF EXISTS `pf_email_publication_notification`;
 
-CREATE TABLE `pf_publication_notification` (
+CREATE TABLE `pf_email_publication_notification` (
   `file_id` int(10) NOT NULL,
   `email_group_id` varchar(100) NOT NULL,
   `user_id` int(10) NOT NULL,
@@ -544,11 +544,14 @@ CREATE TABLE `pf_publication_notification` (
 UNIQUE (file_id, email_group_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+INSERT INTO `pf_email_publication_notification`(`file_id`, `email_group_id`, `user_id`, `active_flag`, `creation_date`) 
+VALUES (2, 1, 1, 1, NOW());
+
 -- US94: Manage my interested parties for publication notifications
 -- EMAIL GROUPS TO MANGE
-DROP TABLE IF EXISTS `pf_email_group_notification`;
+DROP TABLE IF EXISTS `pf_email_group`;
 
-CREATE TABLE `pf_email_group_notification` (
+CREATE TABLE `pf_email_group` (
   `email_group_id` int(10) NOT NULL AUTO_INCREMENT,
   `email_group_name` varchar(100) NOT NULL,
   `email_addresses` TEXT NULL,
@@ -558,5 +561,14 @@ CREATE TABLE `pf_email_group_notification` (
   `creation_date` datetime NOT NULL,
   PRIMARY KEY (email_group_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+INSERT INTO `pf_email_group`(`email_group_id`, `email_group_name`, `email_addresses`, `user_id`, `firm_id`, `active_flag`, `creation_date`) 
+VALUES (1, 'AM 1 group', 'jsmith@example.com; bwhite@ewst.com', 1, 1, 1, NOW());
+INSERT INTO `pf_email_group`(`email_group_id`, `email_group_name`, `email_addresses`, `user_id`, `firm_id`, `active_flag`, `creation_date`) 
+VALUES (2, 'Client group 2', 'jsmith@example.com; bwhite@ewst.com', 1, 1, 1, NOW());
+
+
+select a.email_group_name as group_name, b.file_id as fid, a.active_flag from pf_email_group a, pf_email_publication_notification b
+where a.email_group_id = b.email_group_id and b.file_id = 2
 
 
